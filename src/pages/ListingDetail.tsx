@@ -61,7 +61,6 @@ const ListingDetail = () => {
     );
   }
 
-  const mode = useStore((s) => s.mode);
   const profileComplete = mode === "provider"
     ? !!(provider.businessName?.trim() && provider.city?.trim())
     : !!(learner.name?.trim() && learner.city?.trim());
