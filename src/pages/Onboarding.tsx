@@ -1,13 +1,22 @@
 import { useNavigate } from "react-router-dom";
 import { store, useStore } from "@/lib/store";
-import { GraduationCap, Briefcase, Sparkles, ArrowRight } from "lucide-react";
+import { GraduationCap, Briefcase, Sparkles, ArrowRight, AtSign } from "lucide-react";
 import { useEffect, useState } from "react";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
+import { isUsernameTaken, slugifyUsername } from "@/lib/usernames";
+import { toast } from "sonner";
 
 const Onboarding = () => {
   const navigate = useNavigate();
   const onboarded = useStore((s) => s.onboarded);
   const mode = useStore((s) => s.mode);
+  const learner = useStore((s) => s.learner);
+  const provider = useStore((s) => s.provider);
   const [showSplash, setShowSplash] = useState(true);
+  const [pendingRole, setPendingRole] = useState<"learner" | "provider" | null>(null);
+  const [username, setUsername] = useState("");
 
   useEffect(() => {
     if (onboarded) {
@@ -19,8 +28,19 @@ const Onboarding = () => {
   }, [onboarded, mode, navigate]);
 
   function pick(m: "learner" | "provider") {
-    store.setOnboarded(m);
-    navigate(m === "provider" ? "/provider" : "/dashboard");
+    setPendingRole(m);
+    setUsername("");
+  }
+
+  function confirmUsername() {
+    if (!pendingRole) return;
+    const u = slugifyUsername(username);
+    if (u.length < 3) { toast.error("Pick a username (3+ characters)"); return; }
+    if (isUsernameTaken(store.get(), u)) { toast.error("That username is taken"); return; }
+    if (pendingRole === "learner") store.updateLearner({ username: u });
+    else store.updateProvider({ username: u });
+    store.setOnboarded(pendingRole);
+    navigate(pendingRole === "provider" ? "/provider" : "/dashboard");
   }
 
   if (showSplash) {
