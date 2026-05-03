@@ -646,13 +646,5 @@ function SeatsList({ title, slots, seats, onChange }: SeatsListProps) {
     </div>
   );
 }
-        <div className="flex justify-end gap-2">
-          <Button variant="outline" onClick={() => navigate("/provider")}>Cancel</Button>
-          <Button onClick={save}>{id ? "Save changes" : "Publish class"}</Button>
-        </div>
-      </main>
-    </div>
-  );
-};
 
 export default ListingForm;
