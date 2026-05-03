@@ -9,6 +9,7 @@ import { slotsToText } from "./ScheduleGrid";
 import { formatDuration, formatPrice } from "@/lib/listingUtils";
 import { useFxRates } from "@/lib/useFxRates";
 import { store, useStore } from "@/lib/store";
+import { distanceKmBetween, formatDistance } from "@/lib/distance";
 import {
   DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
