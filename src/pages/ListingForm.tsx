@@ -10,7 +10,9 @@ import { Switch } from "@/components/ui/switch";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { ScheduleGrid } from "@/components/ScheduleGrid";
 import { LocationFields } from "@/components/LocationFields";
-import { AGE_GROUPS, AgeGroup, CATEGORIES, Category, Mode, PriceUnit, SlotKey } from "@/lib/types";
+import { AGE_GROUPS, AgeGroup, Category, Mode, PriceUnit, SlotKey } from "@/lib/types";
+import { useCategories } from "@/lib/useCategories";
+import { Plus } from "lucide-react";
 import { store, useStore } from "@/lib/store";
 import { toast } from "sonner";
 
