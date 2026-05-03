@@ -12,9 +12,10 @@ import { SocialLinksRow } from "@/components/SocialLinksRow";
 import { ContactActions } from "@/components/ContactActions";
 import { useCategories } from "@/lib/useCategories";
 import { store, useStore } from "@/lib/store";
-import { Instagram, Facebook, Youtube, Twitter, Linkedin, Globe, MessageCircle, Phone, MapPin, Plus } from "lucide-react";
+import { Instagram, Facebook, Youtube, Twitter, Linkedin, Globe, MessageCircle, Phone, MapPin, Plus, X, Languages } from "lucide-react";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
+import { PinCodeInput } from "@/components/PinCodeInput";
 
 const SOCIAL_FIELDS: { key: keyof SocialLinks; icon: React.ComponentType<{ className?: string }>; label: string; placeholder: string }[] = [
   { key: "instagram", icon: Instagram, label: "Instagram", placeholder: "@yourhandle or full URL" },
