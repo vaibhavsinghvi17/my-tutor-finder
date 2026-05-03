@@ -13,6 +13,7 @@ import ProfilePicker from "./pages/ProfilePicker";
 import AdultProfileEditor from "./pages/AdultProfileEditor";
 import KidProfileEditor from "./pages/KidProfileEditor";
 import ProviderDashboard from "./pages/ProviderDashboard";
+import ProviderRequests from "./pages/ProviderRequests";
 import LearnerDashboard from "./pages/LearnerDashboard";
 import ListingForm from "./pages/ListingForm";
 import Auth from "./pages/Auth";
