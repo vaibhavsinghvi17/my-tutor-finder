@@ -35,12 +35,16 @@ export function ListingCard({ listing, reasons = [] }: Props) {
   return (
     <Link to={`/listing/${listing.id}`} className="block group animate-fade-in">
       <Card className="overflow-hidden h-full transition-all hover:shadow-elegant hover:-translate-y-0.5 border">
-        <div className={`${categoryGradient(listing.category)} h-24 relative flex items-end p-4`}>
-          <div className="absolute top-3 right-3 flex gap-1.5 items-center">
+        <div className={`${categoryGradient(listing.category)} h-14 relative flex items-center justify-between px-3`}>
+          <div className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-background/85 backdrop-blur text-foreground shadow-sm">
+            <CategoryIcon category={listing.category} className="h-3.5 w-3.5" />
+            <span className="text-[11px] font-semibold tracking-wide">{listing.category}</span>
+          </div>
+          <div className="flex gap-1.5 items-center">
             <button
               onClick={(e) => { stop(e); store.toggleSaved(listing.id); toast.success(isSaved ? "Removed from saved" : "Saved to your profile"); }}
               className={cn(
-                "h-7 w-7 rounded-full grid place-items-center bg-background/90 hover:bg-background transition-colors",
+                "h-7 w-7 rounded-full grid place-items-center bg-background/90 hover:bg-background transition-colors shadow-sm",
                 isSaved && "text-primary",
               )}
               title={isSaved ? "Saved" : "Save"}
@@ -51,7 +55,7 @@ export function ListingCard({ listing, reasons = [] }: Props) {
               <DropdownMenuTrigger asChild>
                 <button
                   onClick={stop}
-                  className="h-7 w-7 rounded-full grid place-items-center bg-background/90 hover:bg-background"
+                  className="h-7 w-7 rounded-full grid place-items-center bg-background/90 hover:bg-background shadow-sm"
                   title="Share"
                 >
                   <Share2 className="h-3.5 w-3.5" />
@@ -90,16 +94,12 @@ export function ListingCard({ listing, reasons = [] }: Props) {
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
-            <Badge variant="secondary" className="bg-background/90 text-foreground gap-1">
+            <Badge variant="secondary" className="bg-background/90 text-foreground gap-1 shadow-sm">
               {listing.mode === "Online" ? <Wifi className="h-3 w-3" /> :
                listing.mode === "Offline" ? <Building2 className="h-3 w-3" /> :
                <><Wifi className="h-3 w-3" /><Building2 className="h-3 w-3" /></>}
               {listing.mode}
             </Badge>
-          </div>
-          <div className="flex items-center gap-2 text-primary-foreground">
-            <CategoryIcon category={listing.category} className="h-5 w-5" />
-            <span className="text-sm font-medium">{listing.category}</span>
           </div>
         </div>
         <div className="p-4 space-y-2.5">
