@@ -1,8 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
 import { store, useStore } from "@/lib/store";
-import { GraduationCap, Briefcase, Sparkles, MapPin, Calendar, Users } from "lucide-react";
+import { GraduationCap, Briefcase, Sparkles, ArrowRight } from "lucide-react";
 import { useEffect } from "react";
 
 const Onboarding = () => {
@@ -20,101 +19,88 @@ const Onboarding = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-hero">
-      <div className="container py-10 sm:py-16">
-        <header className="flex items-center gap-2 font-bold text-lg mb-12">
-          <span className="h-9 w-9 rounded-lg bg-gradient-primary grid place-items-center text-primary-foreground">
+    <div className="min-h-screen relative overflow-hidden bg-background flex flex-col">
+      {/* animated gradient blobs */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute -top-32 -left-24 w-[420px] h-[420px] rounded-full bg-primary/30 blur-3xl animate-blob" />
+        <div className="absolute top-1/2 -right-32 w-[380px] h-[380px] rounded-full bg-secondary/30 blur-3xl animate-blob [animation-delay:-4s]" />
+        <div className="absolute -bottom-24 left-1/3 w-[360px] h-[360px] rounded-full bg-accent/25 blur-3xl animate-blob [animation-delay:-8s]" />
+      </div>
+
+      <div className="relative container py-6 sm:py-8 flex-1 flex flex-col">
+        <header className="flex items-center gap-2 font-bold animate-fade-in">
+          <span className="h-9 w-9 rounded-xl bg-gradient-primary grid place-items-center text-primary-foreground shadow-elegant animate-float">
             <Sparkles className="h-4 w-4" />
           </span>
-          <span>LearnLocal</span>
+          <span className="text-lg">LearnLocal</span>
         </header>
 
-        <main className="max-w-4xl mx-auto text-center space-y-4 mb-12 animate-fade-in">
-          <span className="inline-block px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-medium">
-            Tuitions • Activities • Hobbies — all in one place
+        <main className="flex-1 flex flex-col justify-center max-w-3xl mx-auto w-full text-center py-8">
+          <span className="inline-flex mx-auto items-center gap-1.5 px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-medium mb-4 animate-fade-in">
+            <span className="h-1.5 w-1.5 rounded-full bg-primary animate-pulse" />
+            Tuitions • Activities • Hobbies
           </span>
-          <h1 className="text-4xl sm:text-5xl font-bold leading-tight">
-            Discover and offer learning <br className="hidden sm:block" />
-            <span className="bg-gradient-primary bg-clip-text text-transparent">in your neighbourhood</span>
+
+          <h1 className="text-3xl sm:text-5xl font-bold leading-[1.05] animate-slide-up">
+            Local learning,{" "}
+            <span className="bg-gradient-primary bg-clip-text text-transparent">made simple.</span>
           </h1>
-          <p className="text-muted-foreground max-w-2xl mx-auto">
-            From maths tutors to dance studios, yoga to coding clubs — bring local teachers and learners together.
-            Tell us how you'd like to start.
+          <p className="text-sm sm:text-base text-muted-foreground max-w-lg mx-auto mt-3 animate-slide-up [animation-delay:80ms] opacity-0 [animation-fill-mode:forwards]">
+            Discover tutors and activities near you, or list your own classes.
+          </p>
+
+          <div className="grid gap-3 sm:grid-cols-2 mt-7 animate-slide-up [animation-delay:160ms] opacity-0 [animation-fill-mode:forwards]">
+            <RoleCard
+              title="I'm a Learner"
+              subtitle="Find classes for me or my kids"
+              icon={<GraduationCap className="h-5 w-5" />}
+              tone="primary"
+              onClick={() => pick("learner")}
+            />
+            <RoleCard
+              title="I'm a Provider"
+              subtitle="List my classes & studio"
+              icon={<Briefcase className="h-5 w-5" />}
+              tone="cool"
+              onClick={() => pick("provider")}
+            />
+          </div>
+
+          <p className="text-xs text-muted-foreground mt-5 animate-fade-in [animation-delay:300ms] opacity-0 [animation-fill-mode:forwards]">
+            Switch between Learner and Provider anytime.
           </p>
         </main>
-
-        <div className="grid gap-5 md:grid-cols-2 max-w-4xl mx-auto">
-          <RoleCard
-            title="I'm a Learner"
-            description="Find tuitions, classes and activities for yourself or your kids — matched to your area and free time."
-            icon={<GraduationCap className="h-6 w-6" />}
-            tone="primary"
-            features={["Discover by city & interest", "Add free-time slots", "Create kid profiles"]}
-            onClick={() => pick("learner")}
-            cta="Find classes"
-          />
-          <RoleCard
-            title="I'm a Service Provider"
-            description="Tutors, coaches, studios — list your classes and let learners in your area find and request to join."
-            icon={<Briefcase className="h-6 w-6" />}
-            tone="secondary"
-            features={["Publish unlimited classes", "Set your weekly schedule", "Accept join requests"]}
-            onClick={() => pick("provider")}
-            cta="List my services"
-          />
-        </div>
-
-        <p className="text-center text-xs text-muted-foreground mt-8">
-          You can switch between Learner and Provider anytime from the top bar.
-        </p>
-
-        <div className="mt-16 grid gap-6 sm:grid-cols-3 max-w-4xl mx-auto text-center">
-          <Stat icon={<MapPin className="h-5 w-5" />} title="Local-first" body="Suggestions ranked by your city and area." />
-          <Stat icon={<Calendar className="h-5 w-5" />} title="Schedule-aware" body="Match classes to when you're actually free." />
-          <Stat icon={<Users className="h-5 w-5" />} title="For all ages" body="Adults, teens, kids — one account, multiple profiles." />
-        </div>
       </div>
     </div>
   );
 };
 
 function RoleCard({
-  title, description, icon, features, onClick, cta, tone,
+  title, subtitle, icon, onClick, tone,
 }: {
-  title: string; description: string; icon: React.ReactNode; features: string[];
-  onClick: () => void; cta: string; tone: "primary" | "secondary";
+  title: string; subtitle: string; icon: React.ReactNode;
+  onClick: () => void; tone: "primary" | "cool";
 }) {
   return (
-    <Card className="p-6 sm:p-8 text-left hover:shadow-float transition-all cursor-pointer group" onClick={onClick}>
-      <div className={`h-12 w-12 rounded-xl grid place-items-center text-primary-foreground mb-4
+    <button
+      onClick={onClick}
+      className="group relative text-left p-5 rounded-2xl bg-card border border-border/60 backdrop-blur-sm
+                 transition-all duration-300 hover:-translate-y-1 hover:shadow-float hover:border-primary/40
+                 focus:outline-none focus:ring-2 focus:ring-primary/40"
+    >
+      <div className={`h-11 w-11 rounded-xl grid place-items-center text-primary-foreground mb-3
+        transition-transform duration-300 group-hover:scale-110 group-hover:rotate-3
         ${tone === "primary" ? "bg-gradient-primary" : "bg-gradient-cool"}`}>
         {icon}
       </div>
-      <h2 className="text-xl font-semibold mb-1.5">{title}</h2>
-      <p className="text-sm text-muted-foreground mb-4">{description}</p>
-      <ul className="space-y-1.5 text-sm mb-6">
-        {features.map((f) => (
-          <li key={f} className="flex items-center gap-2">
-            <span className="h-1.5 w-1.5 rounded-full bg-primary" /> {f}
-          </li>
-        ))}
-      </ul>
-      <Button className="w-full group-hover:translate-x-0.5 transition-transform" onClick={onClick}>
-        {cta}
-      </Button>
-    </Card>
-  );
-}
-
-function Stat({ icon, title, body }: { icon: React.ReactNode; title: string; body: string }) {
-  return (
-    <div className="p-4">
-      <div className="h-10 w-10 mx-auto rounded-lg bg-primary/10 text-primary grid place-items-center mb-2">
-        {icon}
+      <div className="flex items-center justify-between gap-2">
+        <div>
+          <h2 className="font-semibold">{title}</h2>
+          <p className="text-xs text-muted-foreground">{subtitle}</p>
+        </div>
+        <ArrowRight className="h-4 w-4 text-muted-foreground transition-all duration-300 group-hover:text-primary group-hover:translate-x-1" />
       </div>
-      <h3 className="font-semibold text-sm">{title}</h3>
-      <p className="text-xs text-muted-foreground">{body}</p>
-    </div>
+    </button>
   );
 }
 
