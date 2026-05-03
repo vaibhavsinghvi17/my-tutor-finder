@@ -199,11 +199,11 @@ export const store = {
   removeListing(id: string) {
     set((s) => ({ ...s, listings: s.listings.filter((l) => l.id !== id) }));
   },
-  addRequest(req: Omit<JoinRequest, "id" | "createdAt" | "status">) {
+  addRequest(req: Omit<JoinRequest, "id" | "createdAt" | "status"> & { status?: JoinRequest["status"] }) {
     set((s) => ({
       ...s,
       requests: [
-        { ...req, id: crypto.randomUUID(), createdAt: Date.now(), status: "Pending" },
+        { ...req, id: crypto.randomUUID(), createdAt: Date.now(), status: req.status ?? "Pending" },
         ...s.requests,
       ],
     }));
