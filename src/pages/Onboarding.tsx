@@ -116,13 +116,19 @@ const Onboarding = () => {
                 placeholder="e.g. priya.sharma"
                 value={username}
                 onChange={(e) => setUsername(e.target.value.slice(0, 24))}
-                onKeyDown={(e) => { if (e.key === "Enter") confirmUsername(); }}
-                className="pl-9"
+                onKeyDown={(e) => { if (e.key === "Enter" && !usernameError) confirmUsername(); }}
+                className={`pl-9 ${usernameError ? "border-destructive focus-visible:ring-destructive" : ""}`}
+                aria-invalid={!!usernameError}
               />
             </div>
+            {usernameError ? (
+              <p className="text-xs text-destructive">{usernameError}</p>
+            ) : slug.length >= 3 ? (
+              <p className="text-xs text-primary">@{slug} is available</p>
+            ) : null}
             <div className="flex gap-2 justify-end pt-1">
               <Button variant="ghost" onClick={() => setPendingRole(null)}>Back</Button>
-              <Button onClick={confirmUsername}>Continue</Button>
+              <Button onClick={confirmUsername} disabled={!!usernameError || slug.length < 3}>Continue</Button>
             </div>
           </div>
         ) : (
