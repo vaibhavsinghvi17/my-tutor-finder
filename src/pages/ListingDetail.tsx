@@ -267,71 +267,71 @@ const ListingDetail = () => {
           </div>
         </Card>
 
-        <Card className="p-6 space-y-4">
-          <div className="flex items-center justify-between gap-3 flex-wrap">
-            <div>
-              <h2 className="font-semibold text-lg">Ratings & reviews</h2>
-              <p className="text-sm text-muted-foreground">
-                {ratings.length === 0 ? "Be the first to review." : `${ratings.length} review${ratings.length > 1 ? "s" : ""}`}
-              </p>
-            </div>
-            {ratings.length > 0 && (
+        {ratings.length > 0 && (
+          <Card className="p-6 space-y-4">
+            <div className="flex items-center justify-between gap-3 flex-wrap">
+              <div>
+                <h2 className="font-semibold text-lg">Ratings & reviews</h2>
+                <p className="text-sm text-muted-foreground">
+                  {ratings.length} review{ratings.length > 1 ? "s" : ""}
+                </p>
+              </div>
               <div className="flex items-center gap-2">
                 <span className="text-2xl font-bold">
                   {(ratings.reduce((a, r) => a + r.stars, 0) / ratings.length).toFixed(1)}
                 </span>
                 <StarRating value={ratings.reduce((a, r) => a + r.stars, 0) / ratings.length} />
               </div>
-            )}
-          </div>
+            </div>
 
-          <div className="space-y-3">
-            {ratings.map((r) => (
-              <div key={r.id} className="rounded-lg border p-3 space-y-1.5 bg-muted/30">
-                <div className="flex items-center justify-between gap-2">
-                  <div className="text-sm font-medium">{r.byName}</div>
-                  <StarRating value={r.stars} size="sm" />
+            <div className="space-y-3">
+              {ratings.map((r) => (
+                <div key={r.id} className="rounded-lg border p-3 space-y-1.5 bg-muted/30">
+                  <div className="flex items-center justify-between gap-2">
+                    <div className="text-sm font-medium">{r.byName}</div>
+                    <StarRating value={r.stars} size="sm" />
+                  </div>
+                  {r.comment && <p className="text-sm text-muted-foreground">{r.comment}</p>}
                 </div>
-                {r.comment && <p className="text-sm text-muted-foreground">{r.comment}</p>}
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
 
-          <div className="rounded-lg border p-4 space-y-3 bg-card">
-            <div className="text-sm font-medium">Leave a review</div>
-            <div className="flex items-center gap-3">
-              <StarRating value={reviewStars} size="lg" onChange={setReviewStars} />
-              <span className="text-xs text-muted-foreground">
-                {reviewStars > 0 ? `${reviewStars} / 5` : "Tap stars"}
-              </span>
+            <div className="rounded-lg border p-4 space-y-3 bg-card">
+              <div className="text-sm font-medium">Leave a review</div>
+              <div className="flex items-center gap-3">
+                <StarRating value={reviewStars} size="lg" onChange={setReviewStars} />
+                <span className="text-xs text-muted-foreground">
+                  {reviewStars > 0 ? `${reviewStars} / 5` : "Tap stars"}
+                </span>
+              </div>
+              <Textarea
+                placeholder="Share your experience (optional)"
+                value={reviewText}
+                onChange={(e) => setReviewText(e.target.value.slice(0, 500))}
+                rows={2}
+              />
+              <div className="flex justify-end">
+                <Button
+                  size="sm"
+                  disabled={reviewStars === 0}
+                  onClick={() => {
+                    store.addRating({
+                      listingId: listing!.id,
+                      byName: learner.name || "Anonymous",
+                      stars: reviewStars,
+                      comment: reviewText.trim(),
+                    });
+                    setReviewStars(0);
+                    setReviewText("");
+                    toast.success("Thanks for your review!");
+                  }}
+                >
+                  Submit review
+                </Button>
+              </div>
             </div>
-            <Textarea
-              placeholder="Share your experience (optional)"
-              value={reviewText}
-              onChange={(e) => setReviewText(e.target.value.slice(0, 500))}
-              rows={2}
-            />
-            <div className="flex justify-end">
-              <Button
-                size="sm"
-                disabled={reviewStars === 0}
-                onClick={() => {
-                  store.addRating({
-                    listingId: listing!.id,
-                    byName: learner.name || "Anonymous",
-                    stars: reviewStars,
-                    comment: reviewText.trim(),
-                  });
-                  setReviewStars(0);
-                  setReviewText("");
-                  toast.success("Thanks for your review!");
-                }}
-              >
-                Submit review
-              </Button>
-            </div>
-          </div>
-        </Card>
+          </Card>
+        )}
       </main>
     </div>
   );
