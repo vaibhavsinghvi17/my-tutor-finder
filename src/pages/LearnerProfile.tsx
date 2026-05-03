@@ -9,6 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { FreeTimeEditor } from "@/components/FreeTimeEditor";
 import { CATEGORIES, Category, FreeTimeBlock, Mode } from "@/lib/types";
 import { LocationFields } from "@/components/LocationFields";
+import { AddressFields } from "@/components/AddressFields";
 import { store, useStore } from "@/lib/store";
 import { ageFromDob } from "@/lib/timeUtils";
 import { Plus, Trash2, Baby, UserCircle2, Clock, MapPin } from "lucide-react";
