@@ -7,6 +7,8 @@ interface Props {
   highlightSlots?: SlotKey[]; // shown but with different style (e.g. learner free time on listing)
   readOnly?: boolean;
   compact?: boolean;
+  /** Number of hours each bracket spans (1-5). Defaults to 1. */
+  slotHours?: number;
 }
 
 function fmtHour(h: number) {
