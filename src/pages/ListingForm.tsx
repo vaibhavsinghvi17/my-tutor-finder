@@ -41,6 +41,8 @@ const ListingForm = () => {
   const [priceUnit, setPriceUnit] = useState<PriceUnit>(existing?.priceUnit ?? "session");
   const [intlPriceAmount, setIntlPriceAmount] = useState<string>(existing?.intlPriceAmount?.toString() ?? "");
   const [intlPriceCurrency, setIntlPriceCurrency] = useState<string>(existing?.intlPriceCurrency ?? "USD");
+  const [onlinePriceAmount, setOnlinePriceAmount] = useState<string>(existing?.onlinePriceAmount?.toString() ?? "");
+  const [onlineIntlPriceAmount, setOnlineIntlPriceAmount] = useState<string>(existing?.onlineIntlPriceAmount?.toString() ?? "");
   const [durationMins, setDurationMins] = useState<string>(existing?.durationMins?.toString() ?? "60");
   const [trial, setTrial] = useState(existing?.trial ?? true);
   const [slots, setSlots] = useState<SlotKey[]>(existing?.slots ?? []);
@@ -80,9 +82,11 @@ const ListingForm = () => {
       pinCode: pinCode.trim() || undefined,
       venue: mode === "Online" ? undefined : venue.trim() || undefined,
       priceAmount: priceAmount ? Number(priceAmount) : undefined,
-      priceUnit: priceAmount ? priceUnit : undefined,
+      priceUnit: (priceAmount || onlinePriceAmount) ? priceUnit : undefined,
       intlPriceAmount: intlPriceAmount ? Number(intlPriceAmount) : undefined,
-      intlPriceCurrency: intlPriceAmount ? intlPriceCurrency : undefined,
+      intlPriceCurrency: (intlPriceAmount || onlineIntlPriceAmount) ? intlPriceCurrency : undefined,
+      onlinePriceAmount: onlinePriceAmount ? Number(onlinePriceAmount) : undefined,
+      onlineIntlPriceAmount: onlineIntlPriceAmount ? Number(onlineIntlPriceAmount) : undefined,
       durationMins: durationMins ? Number(durationMins) : undefined,
       trial,
       slots,
