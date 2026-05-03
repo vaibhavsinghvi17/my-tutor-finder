@@ -264,5 +264,6 @@ export function useStore<T>(selector: (s: AppState) => T): T {
 }
 
 export function getAllListings(): Listing[] {
-  return [...store.get().listings, ...SEED_LISTINGS];
+  // Public/learner-facing list — exclude tutor drafts.
+  return [...store.get().listings.filter((l) => !l.draft), ...SEED_LISTINGS];
 }
