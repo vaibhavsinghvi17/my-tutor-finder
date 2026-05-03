@@ -87,11 +87,23 @@
   * {
     @apply border-border;
   }
+  html, body {
+    /* Prevent any rogue child from causing horizontal page scroll on small screens */
+    overflow-x: hidden;
+    max-width: 100vw;
+  }
   body {
     @apply bg-background text-foreground;
     font-feature-settings: "cv11", "ss01";
   }
   h1, h2, h3, h4 { @apply tracking-tight; }
+
+  /* Long unbroken strings (URLs, emails, IDs) shouldn't blow out layout,
+     but normal words must not break mid-word. */
+  p, a, li, td, th, dd, dt {
+    overflow-wrap: break-word;
+    word-break: normal;
+  }
 }
 
 @layer utilities {
