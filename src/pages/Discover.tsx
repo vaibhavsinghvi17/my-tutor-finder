@@ -4,6 +4,7 @@ import { ListingCard } from "@/components/ListingCard";
 import { getAllListings, store, useStore } from "@/lib/store";
 import { scoreListings } from "@/lib/suggest";
 import { CATEGORIES, CITIES, Category, Mode } from "@/lib/types";
+import { ageFromDob } from "@/lib/timeUtils";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";

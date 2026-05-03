@@ -12,6 +12,7 @@ import { CategoryIcon, categoryGradient } from "@/components/CategoryIcon";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { ArrowLeft, Building2, MapPin, Wifi, Users, Sparkles } from "lucide-react";
 import { SlotKey } from "@/lib/types";
+import { ageFromDob, blocksToSlots } from "@/lib/timeUtils";
 import { toast } from "sonner";
 
 const ListingDetail = () => {
