@@ -18,6 +18,7 @@ import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { PinCodeInput } from "@/components/PinCodeInput";
 import { LanguagesEditor } from "@/components/LanguagesEditor";
+import { VerifyContact } from "@/components/VerifyContact";
 
 const SOCIAL_FIELDS: { key: keyof SocialLinks; icon: React.ComponentType<{ className?: string }>; label: string; placeholder: string }[] = [
   { key: "instagram", icon: Instagram, label: "Instagram", placeholder: "@yourhandle or full URL" },
@@ -79,13 +80,31 @@ const ProviderProfilePage = () => {
               />
             </div>
             <div className="space-y-1.5">
-              <Label>Contact (email or phone)</Label>
+              <div className="flex items-center justify-between gap-2">
+                <Label>Email</Label>
+                <VerifyContact
+                  kind="email"
+                  value={provider.email ?? ""}
+                  verifiedValue={provider.verifiedEmail}
+                  onVerified={() => store.updateProvider({ verifiedEmail: (provider.email ?? "").trim() })}
+                />
+              </div>
               <Input
-                value={provider.contact}
-                onChange={(e) => store.updateProvider({ contact: e.target.value.slice(0, 80) })}
+                type="email"
+                value={provider.email ?? ""}
+                onChange={(e) => store.updateProvider({ email: e.target.value.slice(0, 120) })}
                 placeholder="hello@example.com"
               />
             </div>
+          </div>
+
+          <div className="space-y-1.5">
+            <Label>Contact (phone or alt email)</Label>
+            <Input
+              value={provider.contact}
+              onChange={(e) => store.updateProvider({ contact: e.target.value.slice(0, 80) })}
+              placeholder="+91 9XXXXXXXXX"
+            />
           </div>
 
           <LocationFields
