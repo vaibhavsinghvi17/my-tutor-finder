@@ -5,7 +5,7 @@ import { useAuth } from "@/lib/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { allKnownCities } from "@/lib/locations";
 import { Combobox } from "@/components/Combobox";
-import { GraduationCap, Briefcase, MapPin, User, Sparkles, X, LogIn, LogOut, LayoutDashboard } from "lucide-react";
+import { GraduationCap, Briefcase, MapPin, User, Sparkles, X, LogIn, LogOut, LayoutDashboard, ArrowLeft } from "lucide-react";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 
@@ -114,7 +114,49 @@ export function TopBar() {
           )}
         </div>
       </div>
+      <SubNav isProvider={isProvider} pathname={location.pathname} />
     </header>
+  );
+}
+
+/**
+ * Smart breadcrumb-style sub nav.
+ * - Hidden on top-level pages (dashboards, discover, requests, profile root, auth, onboarding).
+ * - Shows "Back" if URL is a sub-sub page (3+ segments) so the user can step back one level.
+ * - Otherwise shows "Go to dashboard" so users can return to their home in one tap.
+ */
+function SubNav({ isProvider, pathname }: { isProvider: boolean; pathname: string }) {
+  const navigate = useNavigate();
+  const dashHref = isProvider ? "/provider" : "/dashboard";
+
+  // Top-level routes — no sub nav needed
+  const topLevel = new Set([
+    "/", "/auth", "/onboarding", "/dashboard", "/discover", "/requests",
+    "/profile", "/profile/provider", "/provider", "/provider/requests",
+  ]);
+  if (topLevel.has(pathname)) return null;
+
+  const segments = pathname.split("/").filter(Boolean);
+  const isDeep = segments.length >= 3; // e.g. /provider/listing/new => 3 segments
+
+  return (
+    <div className="border-t bg-muted/30">
+      <div className="container h-10 flex items-center">
+        {isDeep ? (
+          <Button variant="ghost" size="sm" className="gap-1.5 -ml-2 h-8" onClick={() => navigate(-1)}>
+            <ArrowLeft className="h-3.5 w-3.5" />
+            <span className="text-xs font-medium">Back</span>
+          </Button>
+        ) : (
+          <Button asChild variant="ghost" size="sm" className="gap-1.5 -ml-2 h-8">
+            <Link to={dashHref}>
+              <LayoutDashboard className="h-3.5 w-3.5" />
+              <span className="text-xs font-medium">Go to dashboard</span>
+            </Link>
+          </Button>
+        )}
+      </div>
+    </div>
   );
 }
 
