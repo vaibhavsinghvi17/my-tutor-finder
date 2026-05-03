@@ -1,26 +1,39 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { TopBar } from "@/components/TopBar";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { store, useStore } from "@/lib/store";
 import { slotsToText } from "@/components/ScheduleGrid";
 import { LearnerProfileDialog } from "@/components/LearnerProfileDialog";
-import { JoinRequest } from "@/lib/types";
-import { ArrowLeft, Check, X, Inbox, CheckCircle2 } from "lucide-react";
+import { JoinRequest, SlotKey } from "@/lib/types";
+import { findProfileByUsername } from "@/lib/usernames";
+import { ArrowLeft, Check, X, Inbox, CheckCircle2, Sparkles, UserPlus, AtSign, Repeat } from "lucide-react";
 import { toast } from "sonner";
+import { cn } from "@/lib/utils";
 
 const ProviderRequests = () => {
   const navigate = useNavigate();
   const listings = useStore((s) => s.listings);
   const requests = useStore((s) => s.requests);
   const [viewing, setViewing] = useState<JoinRequest | null>(null);
+  const [addOpen, setAddOpen] = useState(false);
 
   const myListingIds = new Set(listings.map((l) => l.id));
   const incoming = requests.filter((r) => myListingIds.has(r.listingId));
-  const pending = incoming.filter((r) => r.status === "Pending");
+
+  // Trial requests appear on top of pending list
+  const pending = useMemo(
+    () => incoming.filter((r) => r.status === "Pending")
+      .sort((a, b) => Number(!!b.isTrial) - Number(!!a.isTrial) || b.createdAt - a.createdAt),
+    [incoming],
+  );
   const approved = incoming.filter((r) => r.status === "Approved");
 
   return (
@@ -34,9 +47,14 @@ const ProviderRequests = () => {
           <ArrowLeft className="h-3.5 w-3.5" /> Back
         </button>
 
-        <div>
-          <h1 className="text-2xl font-bold">Join requests</h1>
-          <p className="text-sm text-muted-foreground">Approve or decline learners interested in your classes.</p>
+        <div className="flex items-start justify-between gap-3 flex-wrap">
+          <div>
+            <h1 className="text-2xl font-bold">Join requests</h1>
+            <p className="text-sm text-muted-foreground">Approve or decline learners interested in your classes.</p>
+          </div>
+          <Button size="sm" className="gap-1.5 rounded-full" onClick={() => setAddOpen(true)}>
+            <UserPlus className="h-4 w-4" /> Add student
+          </Button>
         </div>
 
         <Tabs defaultValue="pending">
@@ -106,7 +124,28 @@ const ProviderRequests = () => {
                   className={listings.find((l) => l.id === r.listingId)?.title ?? "Class"}
                   onView={() => setViewing(r)}
                   actions={
-                    <Badge className="bg-success text-success-foreground border-0">Approved</Badge>
+                    <div className="flex items-center gap-1.5">
+                      {r.isTrial && !r.converted && (
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          className="h-8 gap-1 rounded-full"
+                          onClick={() => { store.updateRequest(r.id, { converted: true, isTrial: false }); toast.success("Marked as converted"); }}
+                          title="Mark as converted"
+                        >
+                          <Repeat className="h-3.5 w-3.5" /> Converted
+                        </Button>
+                      )}
+                      {r.converted && (
+                        <Badge variant="outline" className="border-success text-success">Converted</Badge>
+                      )}
+                      {r.isTrial && !r.converted && (
+                        <Badge variant="outline" className="border-primary/40 text-primary">Trial</Badge>
+                      )}
+                      {!r.isTrial && !r.converted && (
+                        <Badge className="bg-success text-success-foreground border-0">Approved</Badge>
+                      )}
+                    </div>
                   }
                 />
               ))
@@ -114,7 +153,9 @@ const ProviderRequests = () => {
           </TabsContent>
         </Tabs>
       </main>
+
       <LearnerProfileDialog request={viewing} onOpenChange={(o) => !o && setViewing(null)} />
+      <AddStudentDialog open={addOpen} onOpenChange={setAddOpen} />
     </div>
   );
 };
@@ -126,7 +167,7 @@ function RequestRow({
   const dateStr = date.toLocaleDateString(undefined, { month: "short", day: "numeric" });
   const timeStr = date.toLocaleTimeString(undefined, { hour: "numeric", minute: "2-digit" });
   return (
-    <Card className="p-3 flex items-center gap-3">
+    <Card className={cn("p-3 flex items-center gap-3", r.isTrial && r.status === "Pending" && "ring-1 ring-primary/40")}>
       <div className="flex-1 min-w-0">
         <Link to={`/listing/${r.listingId}`} className="text-sm font-semibold truncate block hover:text-primary">
           {className}
@@ -137,13 +178,134 @@ function RequestRow({
           className="text-xs text-muted-foreground hover:text-primary hover:underline truncate block text-left max-w-full"
         >
           {r.forKidName ?? r.learnerName}
+          {r.learnerUsername && <span className="text-muted-foreground"> · @{r.learnerUsername}</span>}
         </button>
-        <div className="text-[11px] text-muted-foreground mt-0.5 truncate">
-          {dateStr} • {timeStr} • slot {slotsToText([r.slot])}
+        <div className="text-[11px] text-muted-foreground mt-0.5 truncate flex items-center gap-1.5">
+          {r.isTrial && r.status === "Pending" && (
+            <span className="inline-flex items-center gap-0.5 text-primary font-medium">
+              <Sparkles className="h-3 w-3" /> Trial
+            </span>
+          )}
+          <span>{dateStr} • {timeStr} • slot {slotsToText([r.slot])}</span>
         </div>
+        {(r.startDate || r.endDate) && (
+          <div className="text-[11px] text-muted-foreground mt-0.5">
+            {r.startDate ? `Starts ${r.startDate}` : ""}{r.endDate ? ` · Ends ${r.endDate}` : ""}
+          </div>
+        )}
       </div>
       <div className="flex items-center gap-1.5 shrink-0">{actions}</div>
     </Card>
+  );
+}
+
+function AddStudentDialog({ open, onOpenChange }: { open: boolean; onOpenChange: (v: boolean) => void }) {
+  const listings = useStore((s) => s.listings);
+  const state = useStore((s) => s);
+  const [username, setUsername] = useState("");
+  const [listingId, setListingId] = useState<string>("");
+  const [slot, setSlot] = useState<string>("");
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
+
+  const listing = listings.find((l) => l.id === listingId);
+
+  function reset() {
+    setUsername(""); setListingId(""); setSlot(""); setStartDate(""); setEndDate("");
+  }
+
+  function submit() {
+    const profile = findProfileByUsername(state, username);
+    if (!profile) { toast.error("No profile found with that username"); return; }
+    if (!listingId) { toast.error("Pick a class"); return; }
+    if (!slot) { toast.error("Pick a slot"); return; }
+    if (!startDate) { toast.error("Pick a class joining date"); return; }
+
+    store.addRequestRaw({
+      listingId,
+      learnerName: profile.kind === "kid" || profile.kind === "adult" ? profile.name : profile.name,
+      learnerUsername: profile.username,
+      forKidName: profile.kind === "kid" ? profile.name : undefined,
+      slot: slot as SlotKey,
+      note: "Added by tutor",
+      isTrial: false,
+      status: "Approved",
+      startDate,
+      endDate: endDate || undefined,
+      addedByTutor: true,
+    } as any);
+    toast.success(`Added ${profile.name} to the class`);
+    reset();
+    onOpenChange(false);
+  }
+
+  return (
+    <Dialog open={open} onOpenChange={(v) => { onOpenChange(v); if (!v) reset(); }}>
+      <DialogContent className="max-w-md">
+        <DialogHeader><DialogTitle>Add student to a class</DialogTitle></DialogHeader>
+        <div className="space-y-3">
+          <div className="space-y-1.5">
+            <Label className="text-sm">Student username</Label>
+            <div className="relative">
+              <AtSign className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Input
+                value={username}
+                onChange={(e) => setUsername(e.target.value.slice(0, 24))}
+                placeholder="e.g. priya.sharma"
+                className="pl-9"
+              />
+            </div>
+            {username && (() => {
+              const p = findProfileByUsername(state, username);
+              return p ? (
+                <p className="text-xs text-success">Found: {p.name} ({p.kind})</p>
+              ) : (
+                <p className="text-xs text-muted-foreground">No matching profile yet.</p>
+              );
+            })()}
+          </div>
+
+          <div className="space-y-1.5">
+            <Label className="text-sm">Class</Label>
+            <Select value={listingId} onValueChange={(v) => { setListingId(v); setSlot(""); }}>
+              <SelectTrigger><SelectValue placeholder={listings.length ? "Pick a class" : "Create a class first"} /></SelectTrigger>
+              <SelectContent>
+                {listings.map((l) => <SelectItem key={l.id} value={l.id}>{l.title}</SelectItem>)}
+              </SelectContent>
+            </Select>
+          </div>
+
+          {listing && (
+            <div className="space-y-1.5">
+              <Label className="text-sm">Slot</Label>
+              <Select value={slot} onValueChange={setSlot}>
+                <SelectTrigger><SelectValue placeholder="Pick a slot" /></SelectTrigger>
+                <SelectContent>
+                  {listing.slots.map((s) => (
+                    <SelectItem key={s} value={s}>{slotsToText([s])}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          )}
+
+          <div className="grid grid-cols-2 gap-3">
+            <div className="space-y-1.5">
+              <Label className="text-sm">Joining date</Label>
+              <Input type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)} />
+            </div>
+            <div className="space-y-1.5">
+              <Label className="text-sm">End date (optional)</Label>
+              <Input type="date" value={endDate} onChange={(e) => setEndDate(e.target.value)} />
+            </div>
+          </div>
+        </div>
+        <DialogFooter>
+          <Button variant="outline" onClick={() => onOpenChange(false)}>Cancel</Button>
+          <Button onClick={submit}>Add student</Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   );
 }
 
