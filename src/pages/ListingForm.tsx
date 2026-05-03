@@ -94,6 +94,7 @@ const ListingForm = () => {
       onlinePriceAmount: onlinePriceAmount ? Number(onlinePriceAmount) : undefined,
       onlineIntlPriceAmount: onlineIntlPriceAmount ? Number(onlineIntlPriceAmount) : undefined,
       durationMins: durationMins ? Number(durationMins) : undefined,
+      sessionsPerMonth: priceUnit === "month" && sessionsPerMonth ? Number(sessionsPerMonth) : undefined,
       trial,
       slots,
       seatsBySlot: Object.keys(seatsBySlot).length ? seatsBySlot : undefined,
