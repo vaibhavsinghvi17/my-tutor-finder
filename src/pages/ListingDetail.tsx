@@ -233,42 +233,29 @@ const ListingDetail = () => {
             <div>
               <h3 className="font-semibold mb-2">Class schedule</h3>
               {listing.mode === "Both" ? (
-                <div className="space-y-4">
-                  <div>
-                    <div className="text-xs font-medium mb-1.5 text-muted-foreground">Offline batches</div>
-                    <ScheduleGrid value={listing.slots} highlightSlots={freeSlots} readOnly compact />
-                  </div>
+                <div className="space-y-3">
+                  {listing.slots.length > 0 && (
+                    <SlotList title="Offline batches" slots={listing.slots} freeSlots={freeSlots} seats={listing.seatsBySlot} />
+                  )}
                   {(listing.onlineSlots?.length ?? 0) > 0 && (
-                    <div>
-                      <div className="text-xs font-medium mb-1.5 text-muted-foreground">Online batches</div>
-                      <ScheduleGrid value={listing.onlineSlots ?? []} highlightSlots={freeSlots} readOnly compact />
-                    </div>
+                    <SlotList title="Online batches" slots={listing.onlineSlots ?? []} freeSlots={freeSlots} seats={listing.onlineSeatsBySlot} />
                   )}
                 </div>
               ) : (
-                <ScheduleGrid value={listing.slots} highlightSlots={freeSlots} readOnly compact />
+                <SlotList slots={listing.slots} freeSlots={freeSlots} seats={listing.seatsBySlot} />
               )}
               {matching.length > 0 && (
-                <p className="text-xs text-success mt-2">
-                  ✓ {matching.length} slot{matching.length > 1 ? "s" : ""} match your free time.
-                </p>
-              )}
-              {listing.seatsBySlot && Object.keys(listing.seatsBySlot).length > 0 && (
-                <div className="mt-3 grid gap-1.5 sm:grid-cols-2">
-                  {listing.slots.map((s) => {
-                    const info = listing.seatsBySlot?.[s];
-                    if (!info || info.total === 0) return null;
-                    const left = Math.max(0, info.total - info.occupied);
-                    const full = left === 0;
-                    return (
-                      <div key={s} className="flex items-center justify-between text-xs rounded-md border px-2.5 py-1.5">
-                        <span className="font-medium">{s.replace("-", " · ")}:00</span>
-                        <span className={full ? "text-destructive font-semibold" : "text-success font-semibold"}>
-                          {full ? "Full" : `${left}/${info.total} seats left`}
-                        </span>
-                      </div>
-                    );
-                  })}
+                <div className="mt-3 rounded-md border border-success/40 bg-success/10 p-2.5">
+                  <p className="text-xs font-semibold text-success mb-1.5">
+                    ✓ {matching.length} slot{matching.length > 1 ? "s" : ""} match your free time
+                  </p>
+                  <div className="flex flex-wrap gap-1.5">
+                    {matching.map((s) => (
+                      <span key={s} className="text-[11px] px-2 py-0.5 rounded-full bg-success text-success-foreground font-medium">
+                        {slotsToText([s])}
+                      </span>
+                    ))}
+                  </div>
                 </div>
               )}
             </div>
