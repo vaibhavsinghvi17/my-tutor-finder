@@ -26,6 +26,7 @@ const ListingDetail = () => {
   const navigate = useNavigate();
   const learner = useStore((s) => s.learner);
   const provider = useStore((s) => s.provider);
+  const fxRates = useFxRates();
   const allRatings = useStore((s) => s.ratings);
   const allRequests = useStore((s) => s.requests);
   const ratings = id ? allRatings.filter((r) => r.listingId === id) : [];
