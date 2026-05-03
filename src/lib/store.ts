@@ -180,7 +180,7 @@ export const store = {
       learner: { ...s.learner, adults: s.learner.adults.filter((a) => a.id !== id) },
     }));
   },
-  addListing(listing: Omit<Listing, "id" | "createdAt" | "providerId" | "providerName">) {
+  addListing(listing: Omit<Listing, "id" | "createdAt" | "providerId" | "providerName">, providerUserId?: string) {
     set((s) => ({
       ...s,
       listings: [
@@ -189,6 +189,7 @@ export const store = {
           id: crypto.randomUUID(),
           providerId: "self",
           providerName: s.provider.businessName || "My Studio",
+          providerUserId: providerUserId ?? listing.providerUserId,
           createdAt: Date.now(),
         },
         ...s.listings,

@@ -18,6 +18,7 @@ import { LanguagesEditor } from "@/components/LanguagesEditor";
 import { Combobox } from "@/components/Combobox";
 import { AGE_GROUPS, AgeGroup, Category, Mode, PriceUnit, SeatInfo, SlotKey } from "@/lib/types";
 import { useCategories } from "@/lib/useCategories";
+import { useAuth } from "@/lib/useAuth";
 import { Plus, Globe2, Users, Wifi, MapPin, Locate } from "lucide-react";
 import { store, useStore } from "@/lib/store";
 import { toast } from "sonner";
@@ -26,6 +27,7 @@ const ListingForm = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const provider = useStore((s) => s.provider);
+  const { user } = useAuth();
   const existing = useStore((s) => id ? s.listings.find((l) => l.id === id) : undefined);
   const { names: categoryNames, addCategory } = useCategories();
   const [newCat, setNewCat] = useState("");
@@ -145,10 +147,10 @@ const ListingForm = () => {
     };
 
     if (id && existing) {
-      store.updateListing(id, data);
+      store.updateListing(id, { ...data, providerUserId: user?.id ?? existing.providerUserId });
       toast.success(asDraft ? "Draft saved" : (existing.draft ? "Class published" : "Class updated"));
     } else {
-      store.addListing(data);
+      store.addListing(data, user?.id);
       toast.success(asDraft ? "Saved to drafts" : "Class published");
     }
     navigate("/provider");

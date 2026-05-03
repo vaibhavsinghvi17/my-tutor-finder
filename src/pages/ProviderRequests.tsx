@@ -12,6 +12,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "
 import { store, useStore } from "@/lib/store";
 import { slotsToText } from "@/components/ScheduleGrid";
 import { LearnerProfileDialog } from "@/components/LearnerProfileDialog";
+import { ClassChat } from "@/components/ClassChat";
 import { DatePicker } from "@/components/DatePicker";
 import { JoinRequest, SlotKey } from "@/lib/types";
 import { findProfileByUsername } from "@/lib/usernames";
@@ -195,7 +196,19 @@ function RequestRow({
           </div>
         )}
       </div>
-      <div className="flex items-center gap-1.5 shrink-0">{actions}</div>
+      <div className="flex items-center gap-1.5 shrink-0">
+        {r.learnerUserId && (
+          <ClassChat
+            listingId={r.listingId}
+            listingTitle={className}
+            learnerUserId={r.learnerUserId}
+            otherPartyName={r.forKidName ?? r.learnerName}
+            triggerVariant="ghost"
+            triggerLabel=""
+          />
+        )}
+        {actions}
+      </div>
     </Card>
   );
 }

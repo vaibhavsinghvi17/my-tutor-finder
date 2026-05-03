@@ -14,12 +14,14 @@ import { CategoryIcon, categoryGradient } from "@/components/CategoryIcon";
 import { StarRating } from "@/components/StarRating";
 import { SocialLinksRow } from "@/components/SocialLinksRow";
 import { ContactActions } from "@/components/ContactActions";
+import { ClassChat } from "@/components/ClassChat";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { ArrowLeft, Building2, MapPin, Wifi, Users, Sparkles, Clock, Award, UsersRound, Globe2, Languages } from "lucide-react";
 import { SlotKey } from "@/lib/types";
 import { ageFromDob, blocksToSlots } from "@/lib/timeUtils";
 import { formatDuration, formatPrice } from "@/lib/listingUtils";
 import { useFxRates } from "@/lib/useFxRates";
+import { useAuth } from "@/lib/useAuth";
 import { toast } from "sonner";
 
 const ListingDetail = () => {
@@ -27,6 +29,7 @@ const ListingDetail = () => {
   const navigate = useNavigate();
   const learner = useStore((s) => s.learner);
   const provider = useStore((s) => s.provider);
+  const { user } = useAuth();
   const fxRates = useFxRates();
   const allRatings = useStore((s) => s.ratings);
   const allRequests = useStore((s) => s.requests);
@@ -75,6 +78,7 @@ const ListingDetail = () => {
       listingId: listing!.id,
       learnerName,
       learnerUsername: learner.username,
+      learnerUserId: user?.id,
       forKidName: activeKid?.name,
       slot,
       note: finalNote,
@@ -113,8 +117,28 @@ const ListingDetail = () => {
             </div>
           </div>
           {hasContact && (
-            <div className="rounded-lg bg-background/95 backdrop-blur-sm p-1.5 shadow-sm">
+            <div className="rounded-lg bg-background/95 backdrop-blur-sm p-1.5 shadow-sm flex items-center gap-1.5 flex-wrap">
               <ContactActions contact={contact} fallbackAddress={contactFallback} size="sm" />
+              <ClassChat
+                listingId={listing.id}
+                listingTitle={listing.title}
+                providerUserId={listing.providerUserId}
+                otherPartyName={listing.providerName}
+                triggerVariant="default"
+                triggerLabel="Chat"
+              />
+            </div>
+          )}
+          {!hasContact && (
+            <div className="rounded-lg bg-background/95 backdrop-blur-sm p-1.5 shadow-sm">
+              <ClassChat
+                listingId={listing.id}
+                listingTitle={listing.title}
+                providerUserId={listing.providerUserId}
+                otherPartyName={listing.providerName}
+                triggerVariant="default"
+                triggerLabel={`Chat with ${listing.providerName}`}
+              />
             </div>
           )}
         </div>
