@@ -15,7 +15,7 @@ export function CategoryIcon({ category, className }: { category: Category; clas
     Languages,
     Other: Sparkles,
   };
-  const Icon = map[category];
+  const Icon = map[category] ?? Sparkles;
   return <Icon className={className} />;
 }
 
