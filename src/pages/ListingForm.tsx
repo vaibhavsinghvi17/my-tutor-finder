@@ -433,11 +433,27 @@ const ListingForm = () => {
 
         <Card className="p-5 space-y-3">
           <div>
-            <h2 className="font-semibold">Class timings</h2>
-            <p className="text-sm text-muted-foreground">Tap the weekly slots when this class runs.</p>
+            <h2 className="font-semibold">{mode === "Both" ? "Offline batch timings" : "Class timings"}</h2>
+            <p className="text-sm text-muted-foreground">
+              {mode === "Both"
+                ? "Tap weekly slots when the in-person batches run."
+                : "Tap the weekly slots when this class runs."}
+            </p>
           </div>
           <ScheduleGrid value={slots} onChange={setSlots} />
         </Card>
+
+        {mode === "Both" && (
+          <Card className="p-5 space-y-3">
+            <div>
+              <h2 className="font-semibold flex items-center gap-1.5"><Wifi className="h-4 w-4" /> Online batch timings</h2>
+              <p className="text-sm text-muted-foreground">
+                Tap weekly slots when the online batches run. These show up separately for learners searching for online classes.
+              </p>
+            </div>
+            <ScheduleGrid value={onlineSlots} onChange={setOnlineSlots} />
+          </Card>
+        )}
 
         {slots.length > 0 && (
           <Card className="p-5 space-y-3">
