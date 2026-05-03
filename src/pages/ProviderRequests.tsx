@@ -12,6 +12,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "
 import { store, useStore } from "@/lib/store";
 import { slotsToText } from "@/components/ScheduleGrid";
 import { LearnerProfileDialog } from "@/components/LearnerProfileDialog";
+import { ClassChat } from "@/components/ClassChat";
 import { DatePicker } from "@/components/DatePicker";
 import { JoinRequest, SlotKey } from "@/lib/types";
 import { findProfileByUsername } from "@/lib/usernames";
