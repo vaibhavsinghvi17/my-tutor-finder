@@ -315,17 +315,29 @@ const ListingForm = () => {
           />
 
           {mode !== "Online" && (
-            <div className="grid sm:grid-cols-[1fr_180px] gap-3">
+            <div className="space-y-3">
               <div className="space-y-1.5">
-                <Label>Venue address <span className="text-destructive">*</span></Label>
-                <Input
-                  value={venue}
-                  onChange={(e) => setVenue(e.target.value.slice(0, 160))}
-                  placeholder="100 Ft Road, near metro"
-                  required
-                />
+                <Label>Class address <span className="text-destructive">*</span></Label>
+                <div className="space-y-2">
+                  <Input
+                    value={venueLine1}
+                    onChange={(e) => setVenueLine1(e.target.value.slice(0, 80))}
+                    placeholder="Address line 1 (building, street)"
+                    required
+                  />
+                  <Input
+                    value={venueLine2}
+                    onChange={(e) => setVenueLine2(e.target.value.slice(0, 80))}
+                    placeholder="Address line 2 (landmark, area)"
+                  />
+                  <Input
+                    value={venueLine3}
+                    onChange={(e) => setVenueLine3(e.target.value.slice(0, 80))}
+                    placeholder="Address line 3 (optional)"
+                  />
+                </div>
               </div>
-              <div className="space-y-1.5">
+              <div className="space-y-1.5 sm:max-w-xs">
                 <Label>Pin / Postal code</Label>
                 <PinCodeInput value={pinCode} onChange={setPinCode} country={country} />
               </div>
