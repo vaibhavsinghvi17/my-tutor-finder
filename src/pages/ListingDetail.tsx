@@ -155,13 +155,11 @@ const ListingDetail = () => {
                     {listing.providerName}
                   </Link>
                   <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-muted-foreground">
-                    {ratings.length > 0 ? (
+                    {ratings.length > 0 && (
                       <span className="inline-flex items-center gap-1">
                         <StarRating value={avgRating} size="sm" />
                         <span>{avgRating.toFixed(1)} ({ratings.length})</span>
                       </span>
-                    ) : (
-                      <span className="text-xs italic">No reviews yet</span>
                     )}
                     {yearsExp != null && yearsExp > 0 && (
                       <span className="inline-flex items-center gap-1 text-primary font-medium">
