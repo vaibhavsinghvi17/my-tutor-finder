@@ -201,7 +201,7 @@ const LearnerProfilePage = () => {
         </div>
 
         {/* Saved classes */}
-        <Section title="Saved classes" icon={Bookmark} count={savedClasses.length}>
+        <Section id="saved" title="Saved classes" icon={Bookmark} count={savedClasses.length}>
           {savedClasses.length === 0 ? (
             <Empty text="Tap the bookmark on any class to save it." />
           ) : (
@@ -248,7 +248,7 @@ const LearnerProfilePage = () => {
         </Section>
 
         {/* Your ratings */}
-        <Section title="Ratings you've given" icon={Star} count={myRatings.length}>
+        <Section id="ratings" title="Ratings you've given" icon={Star} count={myRatings.length}>
           {myRatings.length === 0 ? (
             <Empty text="No reviews yet." />
           ) : (
@@ -398,10 +398,10 @@ const LearnerProfilePage = () => {
 };
 
 function Section({
-  title, icon: Icon, count, children,
-}: { title: string; icon: React.ElementType; count: number; children: React.ReactNode }) {
+  title, icon: Icon, count, children, id,
+}: { title: string; icon: React.ElementType; count: number; children: React.ReactNode; id?: string }) {
   return (
-    <div className="rounded-xl border border-border/60 bg-card/40 backdrop-blur-sm p-3 space-y-2">
+    <div id={id} className="rounded-xl border border-border/60 bg-card/40 backdrop-blur-sm p-3 space-y-2 scroll-mt-20">
       <div className="flex items-center gap-2">
         <Icon className="h-4 w-4 text-primary" />
         <h2 className="text-sm font-semibold">{title}</h2>
