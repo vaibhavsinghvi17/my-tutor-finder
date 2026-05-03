@@ -241,7 +241,15 @@ const ProviderProfilePage = () => {
               />
             </div>
             <div className="space-y-1.5">
-              <Label className="text-xs flex items-center gap-1.5"><MessageCircle className="h-3.5 w-3.5 text-[#25D366]" /> WhatsApp number</Label>
+              <div className="flex items-center justify-between gap-2">
+                <Label className="text-xs flex items-center gap-1.5"><MessageCircle className="h-3.5 w-3.5 text-[#25D366]" /> WhatsApp number</Label>
+                <VerifyContact
+                  kind="whatsapp"
+                  value={contactInfo.whatsapp ?? ""}
+                  verifiedValue={provider.verifiedWhatsapp}
+                  onVerified={() => store.updateProvider({ verifiedWhatsapp: (contactInfo.whatsapp ?? "").trim() })}
+                />
+              </div>
               <Input
                 value={contactInfo.whatsapp ?? ""}
                 onChange={(e) => setContact({ whatsapp: e.target.value.slice(0, 20) })}
