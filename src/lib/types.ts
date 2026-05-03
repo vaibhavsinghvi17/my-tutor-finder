@@ -91,6 +91,7 @@ export interface ContactInfo {
 }
 
 export interface ProviderProfile {
+  username?: string;
   businessName: string;
   bio: string;
   country: string;
