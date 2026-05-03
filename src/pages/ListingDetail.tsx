@@ -29,6 +29,7 @@ const ListingDetail = () => {
   const navigate = useNavigate();
   const learner = useStore((s) => s.learner);
   const provider = useStore((s) => s.provider);
+  const mode = useStore((s) => s.mode);
   const { user } = useAuth();
   const fxRates = useFxRates();
   const allRatings = useStore((s) => s.ratings);
@@ -55,6 +56,33 @@ const ListingDetail = () => {
         <div className="container py-20 text-center">
           <h1 className="text-xl font-semibold mb-2">Class not found</h1>
           <Button asChild><Link to="/discover">Back to Discover</Link></Button>
+        </div>
+      </div>
+    );
+  }
+
+  const profileComplete = mode === "provider"
+    ? !!(provider.businessName?.trim() && provider.city?.trim())
+    : !!(learner.name?.trim() && learner.city?.trim());
+
+  if (!profileComplete) {
+    const dest = mode === "provider" ? "/profile/provider" : "/profile/learner";
+    return (
+      <div className="min-h-screen">
+        <TopBar />
+        <div className="container py-16 max-w-md mx-auto text-center space-y-4">
+          <div className="h-14 w-14 mx-auto rounded-2xl bg-gradient-primary grid place-items-center text-primary-foreground shadow-elegant">
+            <Sparkles className="h-6 w-6" />
+          </div>
+          <h1 className="text-xl font-semibold">Finish your profile to continue</h1>
+          <p className="text-sm text-muted-foreground">
+            Add a few quick details so providers know who's reaching out and we can tailor classes for you.
+            You can keep browsing listings, but opening a class needs a complete profile.
+          </p>
+          <div className="flex gap-2 justify-center pt-2">
+            <Button variant="outline" onClick={() => navigate(-1)}>Back</Button>
+            <Button onClick={() => navigate(dest)}>Complete profile</Button>
+          </div>
         </div>
       </div>
     );
