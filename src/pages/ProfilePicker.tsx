@@ -122,11 +122,13 @@ const ProfilePicker = () => {
           </button>
         </div>
 
-        <div className="mt-10 flex justify-center">
-          <Button variant="outline" size="sm" onClick={() => navigate("/profile/provider")} className="gap-2">
-            <UserCog className="h-4 w-4" /> Manage provider profile
-          </Button>
-        </div>
+        {hasBothProfiles && (
+          <div className="mt-10 flex justify-center">
+            <Button variant="outline" size="sm" onClick={() => navigate("/profile/provider")} className="gap-2">
+              <UserCog className="h-4 w-4" /> Manage provider profile
+            </Button>
+          </div>
+        )}
       </main>
     </div>
   );
