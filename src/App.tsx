@@ -40,6 +40,7 @@ const App = () => (
           <Route path="/profile/kid/:id" element={<KidProfileEditor />} />
           <Route path="/profile/provider" element={<ProviderProfile />} />
           <Route path="/provider" element={<ProviderDashboard />} />
+          <Route path="/provider/requests" element={<ProviderRequests />} />
           <Route path="/provider/listing/new" element={<ListingForm />} />
           <Route path="/provider/listing/:id" element={<ListingForm />} />
           <Route path="*" element={<NotFound />} />
