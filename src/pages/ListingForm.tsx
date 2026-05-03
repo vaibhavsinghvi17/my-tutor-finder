@@ -19,8 +19,9 @@ import { Combobox } from "@/components/Combobox";
 import { AGE_GROUPS, AgeGroup, Category, Mode, PriceUnit, SeatInfo, SlotKey } from "@/lib/types";
 import { useCategories } from "@/lib/useCategories";
 import { useAuth } from "@/lib/useAuth";
-import { Plus, Globe2, Users, Wifi, MapPin, Locate } from "lucide-react";
+import { Plus, Globe2, Users, Wifi, MapPin, Locate, ShieldCheck } from "lucide-react";
 import { store, useStore } from "@/lib/store";
+import { Link } from "react-router-dom";
 import { toast } from "sonner";
 
 const ListingForm = () => {
@@ -154,6 +155,42 @@ const ListingForm = () => {
       toast.success(asDraft ? "Saved to drafts" : "Class published");
     }
     navigate("/provider");
+  }
+
+  // Guard: provider must complete profile + verify a contact channel before creating/editing a listing.
+  const profileComplete = !!(provider.businessName?.trim() && provider.city?.trim());
+  const emailVerified = !!(provider.email && provider.verifiedEmail === provider.email);
+  const whatsappVerified = !!(provider.contactInfo?.whatsapp && provider.verifiedWhatsapp === provider.contactInfo.whatsapp);
+  const contactVerified = emailVerified || whatsappVerified;
+  if (!profileComplete || !contactVerified) {
+    return (
+      <div className="min-h-screen">
+        <TopBar />
+        <main className="container py-16 max-w-md mx-auto text-center space-y-4">
+          <div className="h-14 w-14 mx-auto rounded-2xl bg-gradient-primary grid place-items-center text-primary-foreground shadow-elegant">
+            <ShieldCheck className="h-6 w-6" />
+          </div>
+          <h1 className="text-xl font-semibold">Finish your studio profile first</h1>
+          <p className="text-sm text-muted-foreground">
+            Before publishing a class, please complete your profile and verify either your{" "}
+            <span className="font-medium">email</span> or{" "}
+            <span className="font-medium">WhatsApp number</span>. This helps learners trust and reach you.
+          </p>
+          <ul className="text-xs text-muted-foreground space-y-1 text-left mx-auto max-w-xs">
+            <li className={profileComplete ? "text-success" : ""}>
+              {profileComplete ? "✓" : "•"} Business name &amp; city
+            </li>
+            <li className={contactVerified ? "text-success" : ""}>
+              {contactVerified ? "✓" : "•"} Verified email or WhatsApp
+            </li>
+          </ul>
+          <div className="flex gap-2 justify-center pt-2">
+            <Button variant="outline" onClick={() => navigate("/provider")}>Back</Button>
+            <Button asChild><Link to="/profile/provider">Complete profile</Link></Button>
+          </div>
+        </main>
+      </div>
+    );
   }
 
   return (
