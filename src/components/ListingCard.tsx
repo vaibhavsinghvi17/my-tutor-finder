@@ -21,9 +21,18 @@ interface Props {
 
 export function ListingCard({ listing, reasons = [] }: Props) {
   const allRatings = useStore((s) => s.ratings);
+  const allRequests = useStore((s) => s.requests);
+  const provider = useStore((s) => s.provider);
   const savedListings = useStore((s) => s.learner.savedListings);
   const ratings = allRatings.filter((r) => r.listingId === listing.id);
   const avg = ratings.length ? ratings.reduce((a, r) => a + r.stars, 0) / ratings.length : 0;
+  const requestCount = allRequests.filter((r) => r.listingId === listing.id).length;
+  // Unique-ish interaction count: requests + reviews + a deterministic seed for demo listings
+  const seedInteractions = listing.providerId.startsWith("seed-")
+    ? ((listing.id.charCodeAt(listing.id.length - 1) * 7) % 40) + 5
+    : 0;
+  const interactions = requestCount + ratings.length + seedInteractions;
+  const yearsExp = listing.providerId === "self" ? provider.yearsExperience : undefined;
   const priceText = formatPrice(listing);
   const durationText = formatDuration(listing.durationMins);
   const isSaved = (savedListings || []).includes(listing.id);
