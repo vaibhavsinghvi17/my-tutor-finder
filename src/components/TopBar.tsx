@@ -80,8 +80,7 @@ export function TopBar() {
 
           <Button variant="outline" size="sm" onClick={switchMode} className="gap-1.5">
             {isProvider ? <GraduationCap className="h-4 w-4" /> : <Briefcase className="h-4 w-4" />}
-            <span className="hidden sm:inline">Switch to {isProvider ? "Learner" : "Provider"}</span>
-            <span className="sm:hidden">Switch</span>
+            <span className="text-xs font-medium">Switch to {isProvider ? "Learner" : "Provider"}</span>
           </Button>
 
           <Button
