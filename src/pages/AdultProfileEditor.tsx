@@ -63,7 +63,7 @@ const AdultProfileEditor = () => {
         </button>
 
         <div>
-          <h1 className="text-2xl font-bold">{isNew ? "Add adult profile" : "Edit profile"}</h1>
+          <h1 className="text-lg font-semibold">{isNew ? "Add adult profile" : "Edit profile"}</h1>
           <p className="text-sm text-muted-foreground">For another adult learner like a spouse or parent.</p>
         </div>
 
