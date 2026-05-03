@@ -130,10 +130,12 @@ export interface Listing {
   mode: Mode;
   venue?: string;
   price?: string;            // legacy free-form (kept for backward compat)
-  priceAmount?: number;      // numeric amount (home country)
+  priceAmount?: number;      // numeric amount (home country) — offline / default
   priceUnit?: PriceUnit;     // per session or per month
-  intlPriceAmount?: number;  // price shown to learners outside provider's country
+  intlPriceAmount?: number;  // international price (offline / default)
   intlPriceCurrency?: string; // ISO code, default "USD"
+  onlinePriceAmount?: number;     // home-country price for online sessions
+  onlineIntlPriceAmount?: number; // international price for online sessions
   durationMins?: number;     // class duration in minutes
   trial: boolean;
   slots: SlotKey[];
