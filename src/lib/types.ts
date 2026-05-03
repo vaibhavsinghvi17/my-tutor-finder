@@ -77,6 +77,16 @@ export interface LearnerProfile {
   avatarColor?: string;
 }
 
+export interface SocialLinks {
+  instagram?: string;
+  facebook?: string;
+  youtube?: string;
+  twitter?: string;
+  linkedin?: string;
+  whatsapp?: string;
+  website?: string;
+}
+
 export interface ProviderProfile {
   businessName: string;
   bio: string;
@@ -87,7 +97,10 @@ export interface ProviderProfile {
   address: string;
   contact: string;
   categories: Category[];
+  socials?: SocialLinks;
 }
+
+export type PriceUnit = "session" | "month";
 
 export interface Listing {
   id: string;
@@ -103,10 +116,14 @@ export interface Listing {
   ageGroup: AgeGroup;
   mode: Mode;
   venue?: string;
-  price?: string;
+  price?: string;            // legacy free-form (kept for backward compat)
+  priceAmount?: number;      // numeric amount
+  priceUnit?: PriceUnit;     // per session or per month
+  durationMins?: number;     // class duration in minutes
   trial: boolean;
   slots: SlotKey[];
   createdAt: number;
+  socials?: SocialLinks;     // optional override / for seed providers
 }
 
 export type RequestStatus = "Pending" | "Approved" | "Declined";
@@ -122,6 +139,15 @@ export interface JoinRequest {
   createdAt: number;
 }
 
+export interface Rating {
+  id: string;
+  listingId: string;
+  byName: string;
+  stars: number;     // 1-5
+  comment: string;
+  createdAt: number;
+}
+
 export type AppMode = "learner" | "provider";
 
 export interface AppState {
@@ -132,4 +158,5 @@ export interface AppState {
   provider: ProviderProfile;
   listings: Listing[]; // user-created
   requests: JoinRequest[];
+  ratings: Rating[];
 }

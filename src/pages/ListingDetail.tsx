@@ -1,29 +1,37 @@
 import { useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { TopBar } from "@/components/TopBar";
-import { getAllListings, store, useStore } from "@/lib/store";
+import { store, useStore } from "@/lib/store";
 import { SEED_LISTINGS } from "@/lib/seed";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { ScheduleGrid, slotsToText } from "@/components/ScheduleGrid";
 import { CategoryIcon, categoryGradient } from "@/components/CategoryIcon";
+import { StarRating } from "@/components/StarRating";
+import { SocialLinksRow } from "@/components/SocialLinksRow";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { ArrowLeft, Building2, MapPin, Wifi, Users, Sparkles } from "lucide-react";
+import { ArrowLeft, Building2, MapPin, Wifi, Users, Sparkles, Clock } from "lucide-react";
 import { SlotKey } from "@/lib/types";
 import { ageFromDob, blocksToSlots } from "@/lib/timeUtils";
+import { formatDuration, formatPrice } from "@/lib/listingUtils";
 import { toast } from "sonner";
 
 const ListingDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const learner = useStore((s) => s.learner);
+  const provider = useStore((s) => s.provider);
+  const ratings = useStore((s) => id ? s.ratings.filter((r) => r.listingId === id) : []);
   const all = [...store.get().listings, ...SEED_LISTINGS];
   const listing = all.find((l) => l.id === id);
 
   const [slot, setSlot] = useState<SlotKey | "">("");
   const [note, setNote] = useState("");
+  const [reviewStars, setReviewStars] = useState(0);
+  const [reviewText, setReviewText] = useState("");
 
   if (!listing) {
     return (
@@ -86,13 +94,27 @@ const ListingDetail = () => {
                 {listing.mode}
               </Badge>
               <Badge variant="outline" className="gap-1"><Users className="h-3 w-3" /> {listing.ageGroup}</Badge>
-              {listing.price && <Badge variant="outline">{listing.price}</Badge>}
+              {formatDuration(listing.durationMins) && (
+                <Badge variant="outline" className="gap-1">
+                  <Clock className="h-3 w-3" /> {formatDuration(listing.durationMins)}
+                </Badge>
+              )}
+              {formatPrice(listing) && <Badge variant="outline">{formatPrice(listing)}</Badge>}
               {listing.trial && (
                 <Badge className="bg-success text-success-foreground border-0 gap-1">
                   <Sparkles className="h-3 w-3" /> Free trial available
                 </Badge>
               )}
             </div>
+
+            {ratings.length > 0 && (
+              <div className="flex items-center gap-2">
+                <StarRating value={ratings.reduce((a, r) => a + r.stars, 0) / ratings.length} size="md" />
+                <span className="text-sm text-muted-foreground">
+                  {(ratings.reduce((a, r) => a + r.stars, 0) / ratings.length).toFixed(1)} • {ratings.length} review{ratings.length > 1 ? "s" : ""}
+                </span>
+              </div>
+            )}
 
             <p className="text-sm leading-relaxed">{listing.description}</p>
 
@@ -105,6 +127,13 @@ const ListingDetail = () => {
                 </div>
               </div>
             </div>
+
+            {(listing.socials || (listing.providerId === "self" && provider.socials)) && (
+              <div className="space-y-2">
+                <h3 className="text-sm font-semibold">Follow {listing.providerName}</h3>
+                <SocialLinksRow socials={listing.socials ?? (listing.providerId === "self" ? provider.socials : undefined)} />
+              </div>
+            )}
 
             <div>
               <h3 className="font-semibold mb-2">Class schedule</h3>
@@ -162,6 +191,72 @@ const ListingDetail = () => {
 
           <div className="flex justify-end">
             <Button onClick={submit}>Send request</Button>
+          </div>
+        </Card>
+
+        <Card className="p-6 space-y-4">
+          <div className="flex items-center justify-between gap-3 flex-wrap">
+            <div>
+              <h2 className="font-semibold text-lg">Ratings & reviews</h2>
+              <p className="text-sm text-muted-foreground">
+                {ratings.length === 0 ? "Be the first to review." : `${ratings.length} review${ratings.length > 1 ? "s" : ""}`}
+              </p>
+            </div>
+            {ratings.length > 0 && (
+              <div className="flex items-center gap-2">
+                <span className="text-2xl font-bold">
+                  {(ratings.reduce((a, r) => a + r.stars, 0) / ratings.length).toFixed(1)}
+                </span>
+                <StarRating value={ratings.reduce((a, r) => a + r.stars, 0) / ratings.length} />
+              </div>
+            )}
+          </div>
+
+          <div className="space-y-3">
+            {ratings.map((r) => (
+              <div key={r.id} className="rounded-lg border p-3 space-y-1.5 bg-muted/30">
+                <div className="flex items-center justify-between gap-2">
+                  <div className="text-sm font-medium">{r.byName}</div>
+                  <StarRating value={r.stars} size="sm" />
+                </div>
+                {r.comment && <p className="text-sm text-muted-foreground">{r.comment}</p>}
+              </div>
+            ))}
+          </div>
+
+          <div className="rounded-lg border p-4 space-y-3 bg-card">
+            <div className="text-sm font-medium">Leave a review</div>
+            <div className="flex items-center gap-3">
+              <StarRating value={reviewStars} size="lg" onChange={setReviewStars} />
+              <span className="text-xs text-muted-foreground">
+                {reviewStars > 0 ? `${reviewStars} / 5` : "Tap stars"}
+              </span>
+            </div>
+            <Textarea
+              placeholder="Share your experience (optional)"
+              value={reviewText}
+              onChange={(e) => setReviewText(e.target.value.slice(0, 500))}
+              rows={2}
+            />
+            <div className="flex justify-end">
+              <Button
+                size="sm"
+                disabled={reviewStars === 0}
+                onClick={() => {
+                  store.addRating({
+                    listingId: listing!.id,
+                    byName: learner.name || "Anonymous",
+                    stars: reviewStars,
+                    comment: reviewText.trim(),
+                  });
+                  setReviewStars(0);
+                  setReviewText("");
+                  toast.success("Thanks for your review!");
+                }}
+              >
+                Submit review
+              </Button>
+            </div>
           </div>
         </Card>
       </main>

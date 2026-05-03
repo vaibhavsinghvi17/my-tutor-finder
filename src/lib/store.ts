@@ -1,5 +1,5 @@
 import { useSyncExternalStore } from "react";
-import { AppMode, AppState, JoinRequest, Listing, KidProfile, AdultProfile } from "./types";
+import { AppMode, AppState, JoinRequest, Listing, KidProfile, AdultProfile, Rating } from "./types";
 import { SEED_LISTINGS } from "./seed";
 
 const STORAGE_KEY = "learnlocal-state-v1";
@@ -38,6 +38,7 @@ const initialState: AppState = {
   },
   listings: [],
   requests: [],
+  ratings: [],
 };
 
 function load(): AppState {
@@ -81,6 +82,7 @@ function load(): AppState {
       provider: { ...initialState.provider, ...(parsed.provider ?? {}) },
       listings: Array.isArray(parsed.listings) ? parsed.listings : [],
       requests: Array.isArray(parsed.requests) ? parsed.requests : [],
+      ratings: Array.isArray(parsed.ratings) ? parsed.ratings : [],
     };
   } catch {
     return initialState;
@@ -204,6 +206,15 @@ export const store = {
   },
   setRequestStatus(id: string, status: JoinRequest["status"]) {
     set((s) => ({ ...s, requests: s.requests.map((r) => (r.id === id ? { ...r, status } : r)) }));
+  },
+  addRating(rating: Omit<Rating, "id" | "createdAt">) {
+    set((s) => ({
+      ...s,
+      ratings: [
+        { ...rating, id: crypto.randomUUID(), createdAt: Date.now() },
+        ...s.ratings,
+      ],
+    }));
   },
   reset() {
     state = initialState;
