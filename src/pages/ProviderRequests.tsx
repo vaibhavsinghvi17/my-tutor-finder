@@ -12,6 +12,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "
 import { store, useStore } from "@/lib/store";
 import { slotsToText } from "@/components/ScheduleGrid";
 import { LearnerProfileDialog } from "@/components/LearnerProfileDialog";
+import { DatePicker } from "@/components/DatePicker";
 import { JoinRequest, SlotKey } from "@/lib/types";
 import { findProfileByUsername } from "@/lib/usernames";
 import { ArrowLeft, Check, X, Inbox, CheckCircle2, Sparkles, UserPlus, AtSign, Repeat } from "lucide-react";
