@@ -211,6 +211,18 @@ export const store = {
   setRequestStatus(id: string, status: JoinRequest["status"]) {
     set((s) => ({ ...s, requests: s.requests.map((r) => (r.id === id ? { ...r, status } : r)) }));
   },
+  updateRequest(id: string, patch: Partial<JoinRequest>) {
+    set((s) => ({ ...s, requests: s.requests.map((r) => (r.id === id ? { ...r, ...patch } : r)) }));
+  },
+  addRequestRaw(req: Omit<JoinRequest, "id" | "createdAt">) {
+    set((s) => ({
+      ...s,
+      requests: [
+        { ...req, id: crypto.randomUUID(), createdAt: Date.now() },
+        ...s.requests,
+      ],
+    }));
+  },
   addRating(rating: Omit<Rating, "id" | "createdAt">) {
     set((s) => ({
       ...s,
