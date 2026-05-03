@@ -60,17 +60,46 @@ const ProviderDashboard = () => {
         </div>
 
         {/* At-a-glance stats */}
-        <section className="grid gap-3 grid-cols-2 lg:grid-cols-4">
+        <section className="grid gap-3 grid-cols-2 lg:grid-cols-3">
           <StatTile icon={BookOpen} label="Total classes" value={listings.length} tint="primary" />
-          <StatTile icon={Inbox} label="Total requests" value={incoming.length} tint="accent"
-            sub={`${incoming.filter((r) => r.status === "Pending").length} pending`} />
-          <StatTile icon={CheckCircle2} label="Approved" value={incoming.filter((r) => r.status === "Approved").length} tint="secondary" />
+          <Link to="/provider/requests" className="block group">
+            <Card className="p-4 space-y-2 group-hover:shadow-elegant transition-shadow relative">
+              <div className="h-9 w-9 rounded-lg grid place-items-center bg-accent/15 text-accent-foreground">
+                <Inbox className="h-4 w-4" />
+              </div>
+              <div>
+                <div className="text-2xl font-bold leading-none">{incoming.length}</div>
+                <div className="text-xs text-muted-foreground mt-1">Requests & approvals</div>
+                <div className="text-[10px] text-muted-foreground mt-0.5">
+                  {incoming.filter((r) => r.status === "Pending").length} pending • {incoming.filter((r) => r.status === "Approved").length} approved
+                </div>
+              </div>
+              {incoming.filter((r) => r.status === "Pending").length > 0 && (
+                <Badge className="absolute top-3 right-3 bg-warning text-warning-foreground border-0 animate-pulse">
+                  {incoming.filter((r) => r.status === "Pending").length} new
+                </Badge>
+              )}
+            </Card>
+          </Link>
           <StatTile icon={Users} label="Students enrolled" value={new Set(incoming.filter((r) => r.status === "Approved").map((r) => r.forKidName ?? r.learnerName)).size} tint="muted" />
         </section>
 
-        <section className="grid gap-6 lg:grid-cols-3">
-          <div className="lg:col-span-2 space-y-3">
-            <h2 className="font-semibold">Your classes</h2>
+        <div>
+          <Button asChild size="sm" className="gap-1.5 rounded-full">
+            <Link to="/provider/requests">
+              <Inbox className="h-4 w-4" />
+              Go to requests
+              {incoming.filter((r) => r.status === "Pending").length > 0 && (
+                <Badge variant="outline" className="ml-1 h-5 px-1.5 text-[10px] bg-background/60">
+                  {incoming.filter((r) => r.status === "Pending").length}
+                </Badge>
+              )}
+            </Link>
+          </Button>
+        </div>
+
+        <section className="space-y-3">
+          <h2 className="font-semibold">Your classes</h2>
             {listings.length === 0 ? (
               <Card className="p-8 text-center">
                 <p className="text-muted-foreground mb-4">You haven't published any classes yet.</p>
@@ -136,71 +165,6 @@ const ProviderDashboard = () => {
                 </Card>
               ))
             )}
-          </div>
-
-          <div className="space-y-3">
-            <h2 className="font-semibold flex items-center gap-2">
-              <Inbox className="h-4 w-4" /> Join requests
-              {incoming.length > 0 && (
-                <Badge className="bg-accent text-accent-foreground border-0">{incoming.length}</Badge>
-              )}
-            </h2>
-            {incoming.length === 0 ? (
-              <Card className="p-6 text-sm text-muted-foreground text-center">
-                No requests yet. Once you publish classes, learner requests will appear here.
-              </Card>
-            ) : (
-              incoming.map((r) => {
-                const listing = listings.find((l) => l.id === r.listingId);
-                return (
-                  <Card key={r.id} className="p-4 space-y-2">
-                    <div className="text-sm">
-                      <button
-                        type="button"
-                        onClick={() => setViewing(r)}
-                        className="font-medium text-left hover:text-primary hover:underline transition-colors"
-                      >
-                        {r.forKidName ?? r.learnerName}
-                      </button>
-                      <div className="text-xs text-muted-foreground">
-                        {listing?.title} • {slotsToText([r.slot])}
-                      </div>
-                      {r.note && <p className="text-xs mt-1 italic text-muted-foreground">"{r.note}"</p>}
-                    </div>
-                    {r.status === "Pending" ? (
-                      <div className="flex gap-2">
-                        <Button
-                          size="sm"
-                          className="flex-1 bg-success text-success-foreground hover:bg-success/90"
-                          onClick={() => { store.setRequestStatus(r.id, "Approved"); toast.success("Approved"); }}
-                        >
-                          Approve
-                        </Button>
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          className="flex-1"
-                          onClick={() => { store.setRequestStatus(r.id, "Declined"); toast.success("Declined"); }}
-                        >
-                          Decline
-                        </Button>
-                      </div>
-                    ) : (
-                      <Badge
-                        className={
-                          r.status === "Approved"
-                            ? "bg-success text-success-foreground border-0"
-                            : "bg-destructive text-destructive-foreground border-0"
-                        }
-                      >
-                        {r.status}
-                      </Badge>
-                    )}
-                  </Card>
-                );
-              })
-            )}
-          </div>
         </section>
       </main>
       <LearnerProfileDialog request={viewing} onOpenChange={(o) => !o && setViewing(null)} />

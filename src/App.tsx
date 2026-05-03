@@ -13,6 +13,7 @@ import ProfilePicker from "./pages/ProfilePicker";
 import AdultProfileEditor from "./pages/AdultProfileEditor";
 import KidProfileEditor from "./pages/KidProfileEditor";
 import ProviderDashboard from "./pages/ProviderDashboard";
+import ProviderRequests from "./pages/ProviderRequests";
 import LearnerDashboard from "./pages/LearnerDashboard";
 import ListingForm from "./pages/ListingForm";
 import Auth from "./pages/Auth";
@@ -39,6 +40,7 @@ const App = () => (
           <Route path="/profile/kid/:id" element={<KidProfileEditor />} />
           <Route path="/profile/provider" element={<ProviderProfile />} />
           <Route path="/provider" element={<ProviderDashboard />} />
+          <Route path="/provider/requests" element={<ProviderRequests />} />
           <Route path="/provider/listing/new" element={<ListingForm />} />
           <Route path="/provider/listing/:id" element={<ListingForm />} />
           <Route path="*" element={<NotFound />} />
