@@ -21,7 +21,7 @@ import { store, useStore, getAllListings } from "@/lib/store";
 import { ageFromDob, blockSummary } from "@/lib/timeUtils";
 import {
   ArrowLeft, UserCircle2, MapPin, Clock, Pencil, Plus, Camera,
-  ChevronDown, Bookmark, Hourglass, Star, GraduationCap, Search,
+  ChevronDown, Bookmark, Hourglass, Star, GraduationCap, Search, Locate,
 } from "lucide-react";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
