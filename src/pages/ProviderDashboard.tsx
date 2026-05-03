@@ -5,7 +5,7 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { store, useStore } from "@/lib/store";
-import { Plus, Pencil, Trash2, Inbox, Building2, Wifi } from "lucide-react";
+import { Plus, Pencil, Trash2, Inbox, Building2, Wifi, MapPin, Clock } from "lucide-react";
 import { slotsToText } from "@/components/ScheduleGrid";
 import { LearnerProfileDialog } from "@/components/LearnerProfileDialog";
 import { JoinRequest } from "@/lib/types";
@@ -49,24 +49,45 @@ const ProviderDashboard = () => {
               </Card>
             ) : (
               listings.map((l) => (
-                <Card key={l.id} className="p-4">
-                  <div className="flex items-start gap-3 flex-wrap">
-                    <div className="flex-1 min-w-[200px]">
-                      <div className="flex items-center gap-2 flex-wrap">
-                        <h3 className="font-semibold">{l.title}</h3>
-                        <Badge variant="outline" className="gap-1">
-                          {l.mode === "Online" ? <Wifi className="h-3 w-3" /> : <Building2 className="h-3 w-3" />}
-                          {l.mode}
-                        </Badge>
-                        <Badge variant="outline">{l.category}</Badge>
-                        <Badge variant="outline">{l.ageGroup}</Badge>
+                <Card key={l.id} className="p-4 hover:shadow-elegant transition-shadow">
+                  <div className="flex items-start justify-between gap-3 flex-wrap">
+                    <div className="flex-1 min-w-[220px] space-y-3">
+                      {/* Title row */}
+                      <div className="space-y-1.5">
+                        <h3 className="font-semibold text-base leading-tight">{l.title}</h3>
+                        <div className="flex items-center gap-1.5 flex-wrap">
+                          <Badge variant="outline" className="gap-1 text-[11px]">
+                            {l.mode === "Online" ? <Wifi className="h-3 w-3" /> : <Building2 className="h-3 w-3" />}
+                            {l.mode}
+                          </Badge>
+                          <Badge variant="outline" className="text-[11px]">{l.category}</Badge>
+                          <Badge variant="outline" className="text-[11px]">{l.ageGroup}</Badge>
+                        </div>
                       </div>
-                      <p className="text-xs text-muted-foreground mt-1">
-                        {l.area}, {l.city} • ⏰ {slotsToText(l.slots)}
-                      </p>
-                      <p className="text-sm mt-2 line-clamp-2">{l.description}</p>
+
+                      {/* Description */}
+                      {l.description && (
+                        <p className="text-sm text-foreground/80 leading-relaxed line-clamp-3">
+                          {l.description}
+                        </p>
+                      )}
+
+                      {/* Location & timings */}
+                      <div className="space-y-1.5 pt-1 border-t border-border/60">
+                        <div className="flex items-start gap-2 text-xs text-muted-foreground">
+                          <MapPin className="h-3.5 w-3.5 mt-0.5 shrink-0 text-primary/70" />
+                          <span className="leading-snug">
+                            {[l.area, l.city, l.pinCode].filter(Boolean).join(", ") || (l.mode === "Online" ? "Online" : "—")}
+                          </span>
+                        </div>
+                        <div className="flex items-start gap-2 text-xs text-muted-foreground">
+                          <Clock className="h-3.5 w-3.5 mt-0.5 shrink-0 text-primary/70" />
+                          <span className="leading-snug">{slotsToText(l.slots) || "No timings set"}</span>
+                        </div>
+                      </div>
                     </div>
-                    <div className="flex gap-1.5">
+
+                    <div className="flex gap-1.5 shrink-0">
                       <Button asChild size="sm" variant="outline">
                         <Link to={`/listing/${l.id}`}>View</Link>
                       </Button>
