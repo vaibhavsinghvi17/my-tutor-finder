@@ -10,10 +10,14 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
-import { Search, UserCircle2, Baby, Plus, MapPin, Home, Globe2 } from "lucide-react";
+import { Search, UserCircle2, Baby, Plus, MapPin, Home, Globe2, Clock, SlidersHorizontal, Check } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Card } from "@/components/ui/card";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel,
+  DropdownMenuSeparator, DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 type SortOption = "recommended" | "price-asc" | "price-desc" | "popularity" | "newest";
 type TimeOfDay = "all" | "morning" | "afternoon" | "evening";
@@ -200,35 +204,78 @@ const Discover = () => {
               <SelectItem value="Offline">Offline</SelectItem>
             </SelectContent>
           </Select>
-          <div className="relative">
-            <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-            <Input
-              placeholder="Pin / Postal code"
-              value={pinFilter}
-              onChange={(e) => setPinFilter(e.target.value.slice(0, 12))}
-              className="pl-9"
-            />
-          </div>
-          <Select value={timeOfDay} onValueChange={(v) => setTimeOfDay(v as TimeOfDay)}>
-            <SelectTrigger><SelectValue placeholder="Any time" /></SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">Any time of day</SelectItem>
-              <SelectItem value="morning">Morning (5am–12pm)</SelectItem>
-              <SelectItem value="afternoon">Afternoon (12–5pm)</SelectItem>
-              <SelectItem value="evening">Evening (5–11pm)</SelectItem>
-            </SelectContent>
-          </Select>
-          <Select value={sortBy} onValueChange={(v) => setSortBy(v as SortOption)}>
-            <SelectTrigger><SelectValue placeholder="Sort" /></SelectTrigger>
-            <SelectContent>
-              <SelectItem value="recommended">Recommended</SelectItem>
-              <SelectItem value="popularity">Most popular</SelectItem>
-              <SelectItem value="price-asc">Price: low to high</SelectItem>
-              <SelectItem value="price-desc">Price: high to low</SelectItem>
-              <SelectItem value="newest">Newest first</SelectItem>
-            </SelectContent>
-          </Select>
+          {scope === "local" && (
+            <div className="relative">
+              <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Input
+                placeholder="Pin / Postal code"
+                value={pinFilter}
+                onChange={(e) => setPinFilter(e.target.value.slice(0, 12))}
+                className="pl-9"
+              />
+            </div>
+          )}
         </section>
+
+        <div className="flex flex-wrap items-center gap-2">
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" size="sm" className="gap-1.5 rounded-full">
+                <Clock className="h-3.5 w-3.5" />
+                <span className="text-xs">
+                  {timeOfDay === "all" ? "Any time" :
+                   timeOfDay === "morning" ? "Morning" :
+                   timeOfDay === "afternoon" ? "Afternoon" : "Evening"}
+                </span>
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="start" className="bg-popover">
+              <DropdownMenuLabel className="text-xs">Time of day</DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              {([
+                ["all", "Any time of day"],
+                ["morning", "Morning (5am–12pm)"],
+                ["afternoon", "Afternoon (12–5pm)"],
+                ["evening", "Evening (5–11pm)"],
+              ] as const).map(([v, label]) => (
+                <DropdownMenuItem key={v} onClick={() => setTimeOfDay(v)}>
+                  {timeOfDay === v && <Check className="h-3.5 w-3.5 mr-2" />}
+                  <span className={timeOfDay === v ? "" : "ml-[22px]"}>{label}</span>
+                </DropdownMenuItem>
+              ))}
+            </DropdownMenuContent>
+          </DropdownMenu>
+
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" size="sm" className="gap-1.5 rounded-full">
+                <SlidersHorizontal className="h-3.5 w-3.5" />
+                <span className="text-xs">
+                  {sortBy === "recommended" ? "Recommended" :
+                   sortBy === "popularity" ? "Most popular" :
+                   sortBy === "price-asc" ? "Price ↑" :
+                   sortBy === "price-desc" ? "Price ↓" : "Newest"}
+                </span>
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="start" className="bg-popover">
+              <DropdownMenuLabel className="text-xs">Sort by</DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              {([
+                ["recommended", "Recommended"],
+                ["popularity", "Most popular"],
+                ["price-asc", "Price: low to high"],
+                ["price-desc", "Price: high to low"],
+                ["newest", "Newest first"],
+              ] as const).map(([v, label]) => (
+                <DropdownMenuItem key={v} onClick={() => setSortBy(v)}>
+                  {sortBy === v && <Check className="h-3.5 w-3.5 mr-2" />}
+                  <span className={sortBy === v ? "" : "ml-[22px]"}>{label}</span>
+                </DropdownMenuItem>
+              ))}
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
 
         {scored.length === 0 ? (
           <div className="text-center py-16 text-muted-foreground">
