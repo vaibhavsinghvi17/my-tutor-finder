@@ -293,11 +293,11 @@ function AddStudentDialog({ open, onOpenChange }: { open: boolean; onOpenChange:
           <div className="grid grid-cols-2 gap-3">
             <div className="space-y-1.5">
               <Label className="text-sm">Joining date</Label>
-              <Input type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)} />
+              <DatePicker value={startDate} onChange={setStartDate} placeholder="Pick joining date" />
             </div>
             <div className="space-y-1.5">
               <Label className="text-sm">End date (optional)</Label>
-              <Input type="date" value={endDate} onChange={(e) => setEndDate(e.target.value)} />
+              <DatePicker value={endDate} min={startDate || undefined} onChange={setEndDate} placeholder="Pick end date" />
             </div>
           </div>
         </div>
