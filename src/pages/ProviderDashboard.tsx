@@ -16,28 +16,59 @@ const ProviderDashboard = () => {
   const listings = useStore((s) => s.listings);
   const requests = useStore((s) => s.requests);
   const provider = useStore((s) => s.provider);
+  const navigate = useNavigate();
 
   // requests targeting this provider's listings
   const myListingIds = new Set(listings.map((l) => l.id));
   const incoming = requests.filter((r) => myListingIds.has(r.listingId));
 
+  function switchToLearner() {
+    store.setMode("learner");
+    navigate("/discover");
+  }
+
   return (
     <div className="min-h-screen">
       <TopBar />
-      <main className="container py-6 space-y-6">
-        <div className="flex items-end justify-between flex-wrap gap-3">
-          <div>
-            <h1 className="text-2xl sm:text-3xl font-bold">
-              {provider.businessName || "Your studio"}
-            </h1>
-            <p className="text-sm text-muted-foreground">
-              Manage your classes and respond to join requests.
-            </p>
-          </div>
-          <Button asChild className="gap-1">
-            <Link to="/provider/listing/new"><Plus className="h-4 w-4" /> New class</Link>
+      <main className="container py-4 sm:py-6 space-y-5">
+        {/* Icon tray below logo bar */}
+        <div className="flex items-center gap-2 overflow-x-auto -mx-1 px-1 py-1 scrollbar-none">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={switchToLearner}
+            className="gap-1.5 rounded-full shrink-0"
+          >
+            <Repeat className="h-3.5 w-3.5" />
+            <GraduationCap className="h-4 w-4" />
+            <span className="text-xs font-medium">Switch to Learner</span>
+          </Button>
+          <Button asChild variant="secondary" size="sm" className="gap-1.5 rounded-full shrink-0">
+            <Link to="/provider">
+              <BookOpen className="h-4 w-4" />
+              <span className="text-xs font-medium">Classes</span>
+              <Badge variant="outline" className="ml-0.5 h-5 px-1.5 text-[10px] bg-background/60">
+                {listings.length}
+              </Badge>
+            </Link>
+          </Button>
+          <Button asChild size="sm" className="gap-1.5 rounded-full shrink-0 ml-auto">
+            <Link to="/provider/listing/new">
+              <Plus className="h-4 w-4" />
+              <span className="text-xs font-medium">New class</span>
+            </Link>
           </Button>
         </div>
+
+        <div>
+          <h1 className="text-2xl sm:text-3xl font-bold">
+            {provider.businessName || "Your studio"}
+          </h1>
+          <p className="text-sm text-muted-foreground">
+            Manage your classes and respond to join requests.
+          </p>
+        </div>
+
 
         <section className="grid gap-6 lg:grid-cols-3">
           <div className="lg:col-span-2 space-y-3">
