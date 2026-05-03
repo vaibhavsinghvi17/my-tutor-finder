@@ -147,10 +147,10 @@ const ListingForm = () => {
     };
 
     if (id && existing) {
-      store.updateListing(id, data);
+      store.updateListing(id, { ...data, providerUserId: user?.id ?? existing.providerUserId });
       toast.success(asDraft ? "Draft saved" : (existing.draft ? "Class published" : "Class updated"));
     } else {
-      store.addListing(data);
+      store.addListing(data, user?.id);
       toast.success(asDraft ? "Saved to drafts" : "Class published");
     }
     navigate("/provider");
