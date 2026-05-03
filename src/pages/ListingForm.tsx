@@ -60,6 +60,28 @@ const ListingForm = () => {
   const [onlineSeatsBySlot, setOnlineSeatsBySlot] = useState<Record<string, SeatInfo>>(existing?.onlineSeatsBySlot ?? {});
   const [languages, setLanguages] = useState<string[]>(existing?.languages ?? provider.languages ?? []);
   const [teachesInternationally, setTeachesInternationally] = useState<boolean>(existing?.teachesInternationally ?? false);
+  const [locationPin, setLocationPin] = useState<string>(existing?.locationPin ?? "");
+  const [continuous, setContinuous] = useState<boolean>(existing?.continuous ?? !existing?.endDate);
+  const [startDate, setStartDate] = useState<string>(existing?.startDate ?? "");
+  const [endDate, setEndDate] = useState<string>(existing?.endDate ?? "");
+
+  // Bracket span = full hours of duration (1-5). For 30/45/75/90, round to nearest hour, min 1.
+  const slotHours = Math.max(1, Math.min(5, Math.round((Number(durationMins) || 60) / 60)));
+
+  function fillCurrentLocation() {
+    if (!navigator.geolocation) return toast.error("Geolocation not supported");
+    toast.info("Getting your current location…");
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        const { latitude, longitude } = pos.coords;
+        const url = `https://www.google.com/maps?q=${latitude},${longitude}`;
+        setLocationPin(url);
+        toast.success("Location pin saved");
+      },
+      (err) => toast.error(err.message || "Could not get location"),
+      { enableHighAccuracy: true, timeout: 10000 },
+    );
+  }
 
   useEffect(() => {
     if (id && !existing) {
