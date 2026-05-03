@@ -81,6 +81,12 @@ export interface SocialLinks {
   website?: string;
 }
 
+export interface ContactInfo {
+  phone?: string;       // raw, used for tel:
+  whatsapp?: string;    // raw, used for wa.me (digits only)
+  mapsUrl?: string;     // pre-built Google Maps directions URL OR full address
+}
+
 export interface ProviderProfile {
   businessName: string;
   bio: string;
@@ -92,6 +98,7 @@ export interface ProviderProfile {
   contact: string;
   categories: Category[];
   socials?: SocialLinks;
+  contactInfo?: ContactInfo;
 }
 
 export type PriceUnit = "session" | "month";
@@ -118,6 +125,7 @@ export interface Listing {
   slots: SlotKey[];
   createdAt: number;
   socials?: SocialLinks;     // optional override / for seed providers
+  contactInfo?: ContactInfo; // optional override; falls back to provider's
 }
 
 export type RequestStatus = "Pending" | "Approved" | "Declined";
