@@ -153,6 +153,7 @@ const ProviderDashboard = () => {
           </div>
         </section>
       </main>
+      <LearnerProfileDialog request={viewing} onOpenChange={(o) => !o && setViewing(null)} />
     </div>
   );
 };
