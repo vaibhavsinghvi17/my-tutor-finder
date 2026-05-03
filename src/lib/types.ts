@@ -152,6 +152,10 @@ export interface Listing {
   onlineSeatsBySlot?: Record<string, SeatInfo>; // seats per online slot (Both mode)
   languages?: string[];
   teachesInternationally?: boolean; // for online/both classes
+  locationPin?: string;       // Google Maps URL or "lat,lng" used for Directions button
+  startDate?: string;         // YYYY-MM-DD — class start
+  endDate?: string;           // YYYY-MM-DD — class end (omit when continuous)
+  continuous?: boolean;       // runs continuously until stopped
   createdAt: number;
   socials?: SocialLinks;     // optional override / for seed providers
   contactInfo?: ContactInfo; // optional override; falls back to provider's
