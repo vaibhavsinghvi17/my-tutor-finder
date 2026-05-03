@@ -26,9 +26,15 @@ const ListingDetail = () => {
   const learner = useStore((s) => s.learner);
   const provider = useStore((s) => s.provider);
   const allRatings = useStore((s) => s.ratings);
+  const allRequests = useStore((s) => s.requests);
   const ratings = id ? allRatings.filter((r) => r.listingId === id) : [];
   const all = [...store.get().listings, ...SEED_LISTINGS];
   const listing = all.find((l) => l.id === id);
+  const requestCount = id ? allRequests.filter((r) => r.listingId === id).length : 0;
+  const seedInteractions = listing && listing.providerId.startsWith("seed-")
+    ? ((listing.id.charCodeAt(listing.id.length - 1) * 7) % 40) + 5
+    : 0;
+  const interactions = requestCount + ratings.length + seedInteractions;
 
   const [slot, setSlot] = useState<SlotKey | "">("");
   const [note, setNote] = useState("");
