@@ -171,6 +171,7 @@ export interface JoinRequest {
   listingId: string;
   learnerName: string;
   learnerUsername?: string;
+  learnerUserId?: string; // Supabase auth user id of the learner — needed for chat
   forKidName?: string;
   slot: SlotKey;
   note: string;
