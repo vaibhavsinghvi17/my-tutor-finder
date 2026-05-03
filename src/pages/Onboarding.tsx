@@ -96,22 +96,46 @@ const Onboarding = () => {
           Discover tutors and activities near you, or list your own classes.
         </p>
 
-        <div className="grid gap-3 sm:grid-cols-2 mt-7 w-full animate-slide-up [animation-delay:160ms] opacity-0 [animation-fill-mode:forwards]">
-          <RoleCard
-            title="I'm a Learner"
-            subtitle="Find classes for me or my kids"
-            icon={<GraduationCap className="h-5 w-5" />}
-            tone="primary"
-            onClick={() => pick("learner")}
-          />
-          <RoleCard
-            title="I'm a Provider"
-            subtitle="List my classes & studio"
-            icon={<Briefcase className="h-5 w-5" />}
-            tone="cool"
-            onClick={() => pick("provider")}
-          />
-        </div>
+        {pendingRole ? (
+          <div className="mt-7 w-full max-w-md animate-fade-in space-y-3 text-left">
+            <Label className="text-sm">Pick your username</Label>
+            <p className="text-xs text-muted-foreground">
+              Tutors and learners can find each other by username. You can change it later.
+            </p>
+            <div className="relative">
+              <AtSign className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Input
+                autoFocus
+                placeholder="e.g. priya.sharma"
+                value={username}
+                onChange={(e) => setUsername(e.target.value.slice(0, 24))}
+                onKeyDown={(e) => { if (e.key === "Enter") confirmUsername(); }}
+                className="pl-9"
+              />
+            </div>
+            <div className="flex gap-2 justify-end pt-1">
+              <Button variant="ghost" onClick={() => setPendingRole(null)}>Back</Button>
+              <Button onClick={confirmUsername}>Continue</Button>
+            </div>
+          </div>
+        ) : (
+          <div className="grid gap-3 sm:grid-cols-2 mt-7 w-full animate-slide-up [animation-delay:160ms] opacity-0 [animation-fill-mode:forwards]">
+            <RoleCard
+              title="I'm a Learner"
+              subtitle="Find classes for me or my kids"
+              icon={<GraduationCap className="h-5 w-5" />}
+              tone="primary"
+              onClick={() => pick("learner")}
+            />
+            <RoleCard
+              title="I'm a Provider"
+              subtitle="List my classes & studio"
+              icon={<Briefcase className="h-5 w-5" />}
+              tone="cool"
+              onClick={() => pick("provider")}
+            />
+          </div>
+        )}
 
         <p className="text-xs text-muted-foreground mt-5 animate-fade-in [animation-delay:300ms] opacity-0 [animation-fill-mode:forwards]">
           Switch between Learner and Provider anytime.
