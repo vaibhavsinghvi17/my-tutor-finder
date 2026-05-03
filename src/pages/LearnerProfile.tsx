@@ -48,19 +48,35 @@ const LearnerProfilePage = () => {
         </div>
 
         <Tabs defaultValue="about" className="space-y-3">
-          <TabsList className="grid grid-cols-4 w-full h-9">
-            <TabsTrigger value="about" className="text-xs gap-1">
-              <UserCircle2 className="h-3.5 w-3.5" /> <span className="hidden sm:inline">About</span>
-            </TabsTrigger>
-            <TabsTrigger value="address" className="text-xs gap-1">
-              <MapPin className="h-3.5 w-3.5" /> <span className="hidden sm:inline">Address</span>
-            </TabsTrigger>
-            <TabsTrigger value="interests" className="text-xs gap-1">
-              <Sparkles className="h-3.5 w-3.5" /> <span className="hidden sm:inline">Interests</span>
-            </TabsTrigger>
-            <TabsTrigger value="time" className="text-xs gap-1">
-              <Clock className="h-3.5 w-3.5" /> <span className="hidden sm:inline">Time</span>
-            </TabsTrigger>
+          <TabsList className="grid grid-cols-4 w-full h-auto gap-2 bg-transparent p-0">
+            {[
+              { v: "about", icon: UserCircle2, label: "About", grad: "from-sky-400 to-blue-600" },
+              { v: "address", icon: MapPin, label: "Address", grad: "from-emerald-400 to-teal-600" },
+              { v: "interests", icon: Sparkles, label: "Interests", grad: "from-amber-400 to-orange-600" },
+              { v: "time", icon: Clock, label: "Time", grad: "from-fuchsia-400 to-pink-600" },
+            ].map(({ v, icon: Icon, label, grad }) => (
+              <TabsTrigger
+                key={v}
+                value={v}
+                className={cn(
+                  "group flex flex-col items-center justify-center gap-1.5 aspect-square h-auto p-2 rounded-xl border bg-card",
+                  "shadow-sm hover:shadow-md transition-all hover:-translate-y-0.5",
+                  "data-[state=active]:border-primary data-[state=active]:shadow-md data-[state=active]:-translate-y-0.5",
+                )}
+              >
+                <span
+                  className={cn(
+                    "h-9 w-9 rounded-lg bg-gradient-to-br grid place-items-center text-white shadow-md",
+                    "ring-1 ring-white/30 transition-transform group-hover:scale-110 group-data-[state=active]:scale-110",
+                    grad,
+                  )}
+                  style={{ boxShadow: "0 4px 10px -2px rgba(0,0,0,0.25), inset 0 1px 0 rgba(255,255,255,0.4)" }}
+                >
+                  <Icon className="h-4.5 w-4.5" strokeWidth={2.5} />
+                </span>
+                <span className="text-[11px] font-medium leading-none">{label}</span>
+              </TabsTrigger>
+            ))}
           </TabsList>
 
           <TabsContent value="about" className="mt-0">
