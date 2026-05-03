@@ -10,8 +10,8 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
-import { Search, UserCircle2, Baby, Plus, MapPin, Home, Globe2, Clock, SlidersHorizontal, Check } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Search, UserCircle2, Baby, Plus, MapPin, Home, Globe2, Clock, SlidersHorizontal, Check, ArrowLeft } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
 import { Card } from "@/components/ui/card";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
@@ -44,6 +44,7 @@ function listingHasTimeOfDay(slots: string[], tod: TimeOfDay): boolean {
 }
 
 const Discover = () => {
+  const navigate = useNavigate();
   const state = useStore((s) => s);
   const ratings = useStore((s) => s.ratings);
   const requests = useStore((s) => s.requests);
@@ -142,6 +143,12 @@ const Discover = () => {
     <div className="min-h-screen">
       <TopBar />
       <main className="container py-6 space-y-6">
+        <button
+          onClick={() => navigate(-1)}
+          className="text-xs text-muted-foreground flex items-center gap-1 hover:text-foreground"
+        >
+          <ArrowLeft className="h-3.5 w-3.5" /> Back
+        </button>
         <section className="space-y-3">
           <div className="flex items-end justify-between gap-3 flex-wrap">
             <div>
