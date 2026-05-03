@@ -12,8 +12,6 @@ const Onboarding = () => {
   const navigate = useNavigate();
   const onboarded = useStore((s) => s.onboarded);
   const mode = useStore((s) => s.mode);
-  const learner = useStore((s) => s.learner);
-  const provider = useStore((s) => s.provider);
   const [showSplash, setShowSplash] = useState(true);
   const [pendingRole, setPendingRole] = useState<"learner" | "provider" | null>(null);
   const [username, setUsername] = useState("");
