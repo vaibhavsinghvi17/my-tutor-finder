@@ -3,8 +3,10 @@ import { TopBar } from "@/components/TopBar";
 import { ListingCard } from "@/components/ListingCard";
 import { getAllListings, store, useStore } from "@/lib/store";
 import { scoreListings } from "@/lib/suggest";
-import { CATEGORIES, CITIES, Category, Mode } from "@/lib/types";
+import { CATEGORIES, Category, Mode } from "@/lib/types";
+import { allKnownCities } from "@/lib/locations";
 import { ageFromDob } from "@/lib/timeUtils";
+import { Combobox } from "@/components/Combobox";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -106,13 +108,12 @@ const Discover = () => {
               <SelectItem value="Offline">Offline</SelectItem>
             </SelectContent>
           </Select>
-          <Select value={cityFilter} onValueChange={setCityFilter}>
-            <SelectTrigger><SelectValue placeholder="City" /></SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All cities</SelectItem>
-              {CITIES.map((c) => <SelectItem key={c} value={c}>{c}</SelectItem>)}
-            </SelectContent>
-          </Select>
+          <Combobox
+            value={cityFilter === "all" ? "" : cityFilter}
+            onChange={(v) => setCityFilter(v || "all")}
+            options={allKnownCities()}
+            placeholder="All cities"
+          />
         </section>
 
         {scored.length === 0 ? (
