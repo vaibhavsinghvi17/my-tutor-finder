@@ -278,18 +278,38 @@ const ListingDetail = () => {
               <Select value={slot} onValueChange={(v) => setSlot(v as SlotKey)}>
                 <SelectTrigger><SelectValue placeholder="Select a class time" /></SelectTrigger>
                 <SelectContent>
+                  {listing.mode === "Both" && listing.slots.length > 0 && (
+                    <div className="px-2 py-1 text-[10px] uppercase tracking-wide text-muted-foreground">Offline batches</div>
+                  )}
                   {listing.slots.map((s) => {
                     const info = listing.seatsBySlot?.[s];
                     const left = info && info.total > 0 ? Math.max(0, info.total - info.occupied) : null;
                     const full = left === 0;
                     return (
-                      <SelectItem key={s} value={s} disabled={full}>
+                      <SelectItem key={`off-${s}`} value={s} disabled={full}>
                         {slotsToText([s])}
                         {freeSlots.includes(s) ? "  ✓ free" : ""}
                         {left !== null ? (full ? "  · Full" : `  · ${left} seats left`) : ""}
                       </SelectItem>
                     );
                   })}
+                  {listing.mode === "Both" && (listing.onlineSlots?.length ?? 0) > 0 && (
+                    <>
+                      <div className="px-2 py-1 mt-1 text-[10px] uppercase tracking-wide text-muted-foreground">Online batches</div>
+                      {(listing.onlineSlots ?? []).map((s) => {
+                        const info = listing.onlineSeatsBySlot?.[s];
+                        const left = info && info.total > 0 ? Math.max(0, info.total - info.occupied) : null;
+                        const full = left === 0;
+                        return (
+                          <SelectItem key={`on-${s}`} value={s} disabled={full}>
+                            {slotsToText([s])} · Online
+                            {freeSlots.includes(s) ? "  ✓ free" : ""}
+                            {left !== null ? (full ? "  · Full" : `  · ${left} seats left`) : ""}
+                          </SelectItem>
+                        );
+                      })}
+                    </>
+                  )}
                 </SelectContent>
               </Select>
             </div>
