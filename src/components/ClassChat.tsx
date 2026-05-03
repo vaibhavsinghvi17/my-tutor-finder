@@ -26,6 +26,8 @@ interface Props {
   /** Visual variant for the trigger button */
   triggerVariant?: "default" | "outline" | "secondary" | "ghost";
   triggerLabel?: string;
+  /** Render the trigger as a floating bubble pinned to the bottom-right of the viewport. */
+  floating?: boolean;
 }
 
 /**
