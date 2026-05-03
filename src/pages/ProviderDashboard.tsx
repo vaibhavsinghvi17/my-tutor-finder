@@ -61,7 +61,6 @@ const ProviderDashboard = () => {
 
         {/* At-a-glance stats */}
         <section className="grid gap-3 grid-cols-2 lg:grid-cols-3">
-        <section className="grid gap-3 grid-cols-2 lg:grid-cols-3">
           <button
             type="button"
             onClick={() => document.getElementById("classes")?.scrollIntoView({ behavior: "smooth" })}
