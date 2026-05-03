@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { TopBar } from "@/components/TopBar";
 import { store, useStore } from "@/lib/store";
+import { distanceKmBetween, formatDistance } from "@/lib/distance";
 import { SEED_LISTINGS } from "@/lib/seed";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
