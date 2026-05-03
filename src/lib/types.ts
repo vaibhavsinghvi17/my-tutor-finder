@@ -32,21 +32,34 @@ export const TIME_SLOTS = Array.from({ length: 16 }, (_, i) => i + 6); // 6..21 
 
 export type SlotKey = `${Day}-${number}`; // e.g. "Mon-18"
 
+export interface FreeTimeBlock {
+  id: string;
+  days: Day[];
+  fromHour: number; // 0-23
+  toHour: number;   // 1-24 (exclusive end)
+}
+
 export interface KidProfile {
   id: string;
   name: string;
-  age: number;
+  dob: string; // YYYY-MM-DD
+  school: string;
+  schoolClass: string;
   interests: Category[];
-  freeSlots: SlotKey[];
+  freeBlocks: FreeTimeBlock[];
 }
 
 export interface LearnerProfile {
   name: string;
+  email: string;
+  dob: string; // YYYY-MM-DD
+  occupation: string;
   city: City | "";
   area: string;
+  address: string;
   interests: Category[];
   preferredMode: Mode | "Any";
-  freeSlots: SlotKey[];
+  freeBlocks: FreeTimeBlock[];
   kids: KidProfile[];
   activeKidId: string | null; // null = self
 }
@@ -56,6 +69,7 @@ export interface ProviderProfile {
   bio: string;
   city: City | "";
   area: string;
+  address: string;
   contact: string;
   categories: Category[];
 }
