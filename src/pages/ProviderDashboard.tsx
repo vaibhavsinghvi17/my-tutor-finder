@@ -61,7 +61,14 @@ const ProviderDashboard = () => {
 
         {/* At-a-glance stats */}
         <section className="grid gap-3 grid-cols-2 lg:grid-cols-3">
-          <StatTile icon={BookOpen} label="Total classes" value={listings.length} tint="primary" />
+        <section className="grid gap-3 grid-cols-2 lg:grid-cols-3">
+          <button
+            type="button"
+            onClick={() => document.getElementById("classes")?.scrollIntoView({ behavior: "smooth" })}
+            className="text-left block group"
+          >
+            <StatTile icon={BookOpen} label="Total classes" value={listings.length} tint="primary" />
+          </button>
           <Link to="/provider/requests" className="block group">
             <Card className="p-4 space-y-2 group-hover:shadow-elegant transition-shadow relative">
               <div className="h-9 w-9 rounded-lg grid place-items-center bg-accent/15 text-accent-foreground">
@@ -81,22 +88,10 @@ const ProviderDashboard = () => {
               )}
             </Card>
           </Link>
-          <StatTile icon={Users} label="Students enrolled" value={new Set(incoming.filter((r) => r.status === "Approved").map((r) => r.forKidName ?? r.learnerName)).size} tint="muted" />
+          <Link to="/provider/requests" className="block group">
+            <StatTile icon={Users} label="Students enrolled" value={new Set(incoming.filter((r) => r.status === "Approved").map((r) => r.forKidName ?? r.learnerName)).size} tint="muted" />
+          </Link>
         </section>
-
-        <div>
-          <Button asChild size="sm" className="gap-1.5 rounded-full">
-            <Link to="/provider/requests">
-              <Inbox className="h-4 w-4" />
-              Go to requests
-              {incoming.filter((r) => r.status === "Pending").length > 0 && (
-                <Badge variant="outline" className="ml-1 h-5 px-1.5 text-[10px] bg-background/60">
-                  {incoming.filter((r) => r.status === "Pending").length}
-                </Badge>
-              )}
-            </Link>
-          </Button>
-        </div>
 
         <section className="space-y-3">
           <h2 className="font-semibold">Your classes</h2>
