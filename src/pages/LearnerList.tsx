@@ -45,8 +45,19 @@ const LearnerList = () => {
           const l = allListings.find((x) => x.id === r.listingId);
           return (
             <Row key={r.id} to={`/listing/${r.listingId}`} title={l?.title || "Class"}
-              subtitle={`${l?.providerName || ""} • slot ${r.slot}`}
-              right={<Badge className="bg-success text-success-foreground border-0">Joined</Badge>} />
+              subtitle={`${l?.providerName || ""} • slot ${r.slot}${r.startDate ? ` • starts ${r.startDate}` : ""}`}
+              right={
+                <div className="flex items-center gap-1.5">
+                  {r.isTrial ? (
+                    <Badge variant="outline" className="border-primary/40 text-primary">Trial</Badge>
+                  ) : (
+                    <Badge className="bg-success text-success-foreground border-0">Joined</Badge>
+                  )}
+                  {r.converted && (
+                    <Badge variant="outline" className="border-success text-success">Converted</Badge>
+                  )}
+                </div>
+              } />
           );
         })}
       </div>
