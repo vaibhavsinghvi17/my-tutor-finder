@@ -91,19 +91,21 @@ const ListingForm = () => {
     }
   }, [id, existing, navigate]);
 
-  function save() {
+  function save(asDraft = false) {
     if (!title.trim()) return toast.error("Add a title");
-    if (!description.trim()) return toast.error("Add a description");
-    if (mode !== "Online") {
-      if (!country) return toast.error("Pick a country");
-      if (!city) return toast.error("Pick a city");
-      if (!area.trim()) return toast.error("Pick a locality");
-      if (!venue.trim()) return toast.error("Class address is required for offline classes");
-    } else {
-      if (!country) return toast.error("Pick a country");
+    if (!asDraft) {
+      if (!description.trim()) return toast.error("Add a description");
+      if (mode !== "Online") {
+        if (!country) return toast.error("Pick a country");
+        if (!city) return toast.error("Pick a city");
+        if (!area.trim()) return toast.error("Pick a locality");
+        if (!venue.trim()) return toast.error("Class address is required for offline classes");
+      } else {
+        if (!country) return toast.error("Pick a country");
+      }
+      if (slots.length === 0) return toast.error(mode === "Both" ? "Pick at least one offline class time" : "Pick at least one class time");
+      if (mode === "Both" && onlineSlots.length === 0) return toast.error("Pick at least one online batch time");
     }
-    if (slots.length === 0) return toast.error(mode === "Both" ? "Pick at least one offline class time" : "Pick at least one class time");
-    if (mode === "Both" && onlineSlots.length === 0) return toast.error("Pick at least one online batch time");
 
     const data = {
       title: title.trim(),
@@ -138,14 +140,15 @@ const ListingForm = () => {
       startDate: startDate || undefined,
       endDate: continuous ? undefined : (endDate || undefined),
       continuous,
+      draft: asDraft || undefined,
     };
 
     if (id && existing) {
       store.updateListing(id, data);
-      toast.success("Class updated");
+      toast.success(asDraft ? "Draft saved" : (existing.draft ? "Class published" : "Class updated"));
     } else {
       store.addListing(data);
-      toast.success("Class published");
+      toast.success(asDraft ? "Saved to drafts" : "Class published");
     }
     navigate("/provider");
   }
@@ -574,9 +577,14 @@ const ListingForm = () => {
             )}
           </Accordion>
         </Card>
-        <div className="flex justify-end gap-2">
+        <div className="flex flex-wrap justify-end gap-2">
           <Button variant="outline" onClick={() => navigate("/provider")}>Cancel</Button>
-          <Button onClick={save}>{id ? "Save changes" : "Publish class"}</Button>
+          <Button variant="secondary" onClick={() => save(true)}>
+            {existing?.draft || !id ? "Save as draft" : "Move to drafts"}
+          </Button>
+          <Button onClick={() => save(false)}>
+            {id ? (existing?.draft ? "Publish class" : "Save changes") : "Publish class"}
+          </Button>
         </div>
       </main>
     </div>

@@ -98,6 +98,9 @@ const ProviderDashboard = () => {
                       <div className="space-y-1.5">
                         <h3 className="font-semibold text-base leading-tight">{l.title}</h3>
                         <div className="flex items-center gap-1.5 flex-wrap">
+                          {l.draft && (
+                            <Badge className="text-[11px] bg-warning/15 text-warning border border-warning/30">Draft</Badge>
+                          )}
                           <Badge variant="outline" className="gap-1 text-[11px]">
                             {l.mode === "Online" ? <Wifi className="h-3 w-3" /> : <Building2 className="h-3 w-3" />}
                             {l.mode}
