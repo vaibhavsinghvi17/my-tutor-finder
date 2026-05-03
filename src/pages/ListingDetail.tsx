@@ -6,13 +6,17 @@ import { SEED_LISTINGS } from "@/lib/seed";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { ScheduleGrid, slotsToText } from "@/components/ScheduleGrid";
 import { CategoryIcon, categoryGradient } from "@/components/CategoryIcon";
+import { StarRating } from "@/components/StarRating";
+import { SocialLinksRow } from "@/components/SocialLinksRow";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { ArrowLeft, Building2, MapPin, Wifi, Users, Sparkles } from "lucide-react";
+import { ArrowLeft, Building2, MapPin, Wifi, Users, Sparkles, Clock } from "lucide-react";
 import { SlotKey } from "@/lib/types";
 import { ageFromDob, blocksToSlots } from "@/lib/timeUtils";
+import { formatDuration, formatPrice } from "@/lib/listingUtils";
 import { toast } from "sonner";
 
 const ListingDetail = () => {
