@@ -15,7 +15,8 @@ interface Props {
 }
 
 export function ListingCard({ listing, reasons = [] }: Props) {
-  const ratings = useStore((s) => s.ratings.filter((r) => r.listingId === listing.id));
+  const allRatings = useStore((s) => s.ratings);
+  const ratings = allRatings.filter((r) => r.listingId === listing.id);
   const avg = ratings.length ? ratings.reduce((a, r) => a + r.stars, 0) / ratings.length : 0;
   const priceText = formatPrice(listing);
   const durationText = formatDuration(listing.durationMins);
