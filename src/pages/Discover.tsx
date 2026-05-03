@@ -18,12 +18,14 @@ import { Card } from "@/components/ui/card";
 
 const Discover = () => {
   const state = useStore((s) => s);
+  const { names: categoryNames } = useCategories();
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState<Category | "all">("all");
   const [mode, setMode] = useState<Mode | "all">("all");
   const [cityFilter, setCityFilter] = useState<string>(state.city || "all");
 
   const allListings = getAllListings();
+  const allCategories = Array.from(new Set([...categoryNames, ...CATEGORIES])).sort();
 
   const scored = useMemo(() => {
     let scoredList = scoreListings(state, allListings);
