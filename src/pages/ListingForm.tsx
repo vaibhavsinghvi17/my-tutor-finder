@@ -77,7 +77,8 @@ const ListingForm = () => {
     } else {
       if (!country) return toast.error("Pick a country");
     }
-    if (slots.length === 0) return toast.error("Pick at least one class time");
+    if (slots.length === 0) return toast.error(mode === "Both" ? "Pick at least one offline class time" : "Pick at least one class time");
+    if (mode === "Both" && onlineSlots.length === 0) return toast.error("Pick at least one online batch time");
 
     const data = {
       title: title.trim(),
@@ -97,11 +98,15 @@ const ListingForm = () => {
       intlPriceCurrency: (intlPriceAmount || onlineIntlPriceAmount) ? intlPriceCurrency : undefined,
       onlinePriceAmount: onlinePriceAmount ? Number(onlinePriceAmount) : undefined,
       onlineIntlPriceAmount: onlineIntlPriceAmount ? Number(onlineIntlPriceAmount) : undefined,
+      onlinePriceUnit: (mode === "Both" && onlinePriceAmount) ? onlinePriceUnit : undefined,
+      onlineSessionsPerMonth: (mode === "Both" && onlinePriceUnit === "month" && onlineSessionsPerMonth) ? Number(onlineSessionsPerMonth) : undefined,
       durationMins: durationMins ? Number(durationMins) : undefined,
       sessionsPerMonth: priceUnit === "month" && sessionsPerMonth ? Number(sessionsPerMonth) : undefined,
       trial,
       slots,
+      onlineSlots: mode === "Both" ? onlineSlots : undefined,
       seatsBySlot: Object.keys(seatsBySlot).length ? seatsBySlot : undefined,
+      onlineSeatsBySlot: mode === "Both" && Object.keys(onlineSeatsBySlot).length ? onlineSeatsBySlot : undefined,
       languages: languages.length ? languages : undefined,
       teachesInternationally: mode !== "Offline" ? teachesInternationally : undefined,
     };
