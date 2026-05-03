@@ -21,6 +21,7 @@ import { SlotKey } from "@/lib/types";
 import { ageFromDob, blocksToSlots } from "@/lib/timeUtils";
 import { formatDuration, formatPrice } from "@/lib/listingUtils";
 import { useFxRates } from "@/lib/useFxRates";
+import { useAuth } from "@/lib/useAuth";
 import { toast } from "sonner";
 
 const ListingDetail = () => {
