@@ -117,12 +117,12 @@ export function ClassChat({
           <button
             type="button"
             aria-label="Chat instantly"
-            className="fixed bottom-5 right-5 z-50 flex items-center gap-2 rounded-full bg-primary text-primary-foreground pl-4 pr-5 py-3 shadow-elegant hover:bg-primary/90 transition-all hover:scale-105 active:scale-95"
+            className="fixed bottom-4 right-4 z-50 flex items-center gap-1.5 rounded-full bg-primary text-primary-foreground pl-2 pr-3 py-1.5 shadow-elegant hover:bg-primary/90 transition-all hover:scale-105 active:scale-95"
           >
-            <span className="grid place-items-center h-8 w-8 rounded-full bg-primary-foreground/20">
-              <MessageCircle className="h-5 w-5" />
+            <span className="grid place-items-center h-6 w-6 rounded-full bg-primary-foreground/20">
+              <MessageCircle className="h-3.5 w-3.5" />
             </span>
-            <span className="text-sm font-semibold whitespace-nowrap">Chat instantly</span>
+            <span className="text-xs font-semibold whitespace-nowrap">Chat instantly</span>
           </button>
         ) : (
           <Button variant={triggerVariant} size="sm" className="gap-1.5">
