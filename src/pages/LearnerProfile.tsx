@@ -65,33 +65,11 @@ const LearnerProfilePage = () => {
           </div>
         </div>
 
-        {/* Edit tiles */}
-        <div className="grid grid-cols-4 gap-2">
-          {TILES.map(({ v, icon: Icon, label, grad }) => (
-            <button
-              key={v}
-              type="button"
-              onClick={() => setOpen(v)}
-              className="group flex flex-col items-center justify-center gap-1.5 aspect-square p-2 rounded-xl border bg-card shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all"
-            >
-              <span
-                className={cn(
-                  "h-9 w-9 rounded-lg bg-gradient-to-br grid place-items-center text-white ring-1 ring-white/30 transition-transform group-hover:scale-110",
-                  grad,
-                )}
-                style={{ boxShadow: "0 4px 10px -2px rgba(0,0,0,0.25), inset 0 1px 0 rgba(255,255,255,0.4)" }}
-              >
-                <Icon className="h-4 w-4" strokeWidth={2.5} />
-              </span>
-              <span className="text-[11px] font-medium leading-none">{label}</span>
-            </button>
-          ))}
-        </div>
-
         {/* Summary cards */}
-        <Card className="divide-y">
+        <div className="rounded-xl border border-border/60 bg-card/40 backdrop-blur-sm divide-y divide-border/50 overflow-hidden">
           <SummaryRow
             icon={UserCircle2}
+            grad="from-sky-400 to-blue-600"
             title="About"
             empty={!learner.name && !learner.email && !learner.dob && !learner.occupation}
             onEdit={() => setOpen("about")}
@@ -105,6 +83,7 @@ const LearnerProfilePage = () => {
 
           <SummaryRow
             icon={MapPin}
+            grad="from-emerald-400 to-teal-600"
             title="Address"
             empty={!fullLocation && addressLines.length === 0}
             onEdit={() => setOpen("address")}
@@ -117,6 +96,7 @@ const LearnerProfilePage = () => {
 
           <SummaryRow
             icon={Sparkles}
+            grad="from-amber-400 to-orange-600"
             title="Interests"
             empty={learner.interests.length === 0}
             onEdit={() => setOpen("interests")}
@@ -132,6 +112,7 @@ const LearnerProfilePage = () => {
 
           <SummaryRow
             icon={Clock}
+            grad="from-fuchsia-400 to-pink-600"
             title="Free time"
             empty={learner.freeBlocks.length === 0}
             onEdit={() => setOpen("time")}
@@ -145,7 +126,7 @@ const LearnerProfilePage = () => {
               ))}
             </div>
           </SummaryRow>
-        </Card>
+        </div>
       </main>
 
       {/* Edit dialogs */}
@@ -251,19 +232,28 @@ const LearnerProfilePage = () => {
 };
 
 function SummaryRow({
-  icon: Icon, title, empty, onEdit, children,
+  icon: Icon, grad, title, empty, onEdit, children,
 }: {
-  icon: React.ComponentType<{ className?: string }>;
+  icon: React.ElementType;
+  grad: string;
   title: string;
   empty: boolean;
   onEdit: () => void;
   children: React.ReactNode;
 }) {
   return (
-    <div className="p-3 flex items-start gap-3">
-      <Icon className="h-4 w-4 text-muted-foreground mt-0.5 shrink-0" />
-      <div className="flex-1 min-w-0 space-y-1.5">
-        <div className="text-xs font-medium text-muted-foreground uppercase tracking-wide">{title}</div>
+    <div className="p-3 flex items-start gap-3 hover:bg-muted/30 transition-colors">
+      <span
+        className={cn(
+          "h-9 w-9 rounded-lg bg-gradient-to-br grid place-items-center text-white ring-1 ring-white/30 shrink-0",
+          grad,
+        )}
+        style={{ boxShadow: "0 4px 10px -2px rgba(0,0,0,0.25), inset 0 1px 0 rgba(255,255,255,0.4)" }}
+      >
+        <Icon className="h-4 w-4" strokeWidth={2.5} />
+      </span>
+      <div className="flex-1 min-w-0 space-y-1">
+        <div className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">{title}</div>
         {empty ? (
           <button onClick={onEdit} className="text-sm text-primary flex items-center gap-1 hover:underline">
             <Plus className="h-3.5 w-3.5" /> Add {title.toLowerCase()}
@@ -272,11 +262,13 @@ function SummaryRow({
           <div className="flex flex-wrap gap-1.5 items-center">{children}</div>
         )}
       </div>
-      {!empty && (
-        <Button size="icon" variant="ghost" className="h-7 w-7 shrink-0" onClick={onEdit} title="Edit">
-          <Pencil className="h-3.5 w-3.5" />
-        </Button>
-      )}
+      <button
+        onClick={onEdit}
+        title={empty ? "Add" : "Edit"}
+        className="h-7 w-7 shrink-0 rounded-full grid place-items-center text-muted-foreground hover:text-primary hover:bg-primary/10 transition-colors"
+      >
+        <Pencil className="h-3.5 w-3.5" />
+      </button>
     </div>
   );
 }
