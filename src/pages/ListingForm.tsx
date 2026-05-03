@@ -492,12 +492,12 @@ const ListingForm = () => {
             <div className="grid grid-cols-2 gap-2 pt-1">
               <div className="space-y-1">
                 <Label className="text-xs text-muted-foreground">Start date {continuous ? "(optional)" : ""}</Label>
-                <Input type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)} />
+                <DatePicker value={startDate} onChange={setStartDate} placeholder="Pick start date" />
               </div>
               {!continuous && (
                 <div className="space-y-1">
                   <Label className="text-xs text-muted-foreground">End date</Label>
-                  <Input type="date" value={endDate} min={startDate || undefined} onChange={(e) => setEndDate(e.target.value)} />
+                  <DatePicker value={endDate} min={startDate || undefined} onChange={setEndDate} placeholder="Pick end date" />
                 </div>
               )}
             </div>
