@@ -99,14 +99,30 @@ const ProviderProfilePage = () => {
             />
           </div>
 
-          <div className="space-y-1.5">
-            <Label>About</Label>
-            <Textarea
-              value={provider.bio}
-              onChange={(e) => store.updateProvider({ bio: e.target.value.slice(0, 600) })}
-              rows={4}
-              placeholder="Briefly describe your experience, teaching style, what makes you unique..."
-            />
+          <div className="grid sm:grid-cols-[1fr_auto] gap-4 items-end">
+            <div className="space-y-1.5">
+              <Label>About</Label>
+              <Textarea
+                value={provider.bio}
+                onChange={(e) => store.updateProvider({ bio: e.target.value.slice(0, 600) })}
+                rows={4}
+                placeholder="Briefly describe your experience, teaching style, what makes you unique..."
+              />
+            </div>
+            <div className="space-y-1.5 sm:w-36">
+              <Label>Years of experience</Label>
+              <Input
+                type="number"
+                min={0}
+                max={80}
+                value={provider.yearsExperience ?? ""}
+                onChange={(e) => {
+                  const v = e.target.value;
+                  store.updateProvider({ yearsExperience: v === "" ? undefined : Math.max(0, Math.min(80, Number(v))) });
+                }}
+                placeholder="e.g. 5"
+              />
+            </div>
           </div>
 
           <div className="space-y-2">
