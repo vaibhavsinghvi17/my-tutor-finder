@@ -60,13 +60,43 @@ const ProviderDashboard = () => {
         </div>
 
         {/* At-a-glance stats */}
-        <section className="grid gap-3 grid-cols-2 lg:grid-cols-4">
+        <section className="grid gap-3 grid-cols-2 lg:grid-cols-3">
           <StatTile icon={BookOpen} label="Total classes" value={listings.length} tint="primary" />
-          <StatTile icon={Inbox} label="Total requests" value={incoming.length} tint="accent"
-            sub={`${incoming.filter((r) => r.status === "Pending").length} pending`} />
-          <StatTile icon={CheckCircle2} label="Approved" value={incoming.filter((r) => r.status === "Approved").length} tint="secondary" />
+          <Link to="/provider/requests" className="block group">
+            <Card className="p-4 space-y-2 group-hover:shadow-elegant transition-shadow relative">
+              <div className="h-9 w-9 rounded-lg grid place-items-center bg-accent/15 text-accent-foreground">
+                <Inbox className="h-4 w-4" />
+              </div>
+              <div>
+                <div className="text-2xl font-bold leading-none">{incoming.length}</div>
+                <div className="text-xs text-muted-foreground mt-1">Requests & approvals</div>
+                <div className="text-[10px] text-muted-foreground mt-0.5">
+                  {incoming.filter((r) => r.status === "Pending").length} pending • {incoming.filter((r) => r.status === "Approved").length} approved
+                </div>
+              </div>
+              {incoming.filter((r) => r.status === "Pending").length > 0 && (
+                <Badge className="absolute top-3 right-3 bg-warning text-warning-foreground border-0 animate-pulse">
+                  {incoming.filter((r) => r.status === "Pending").length} new
+                </Badge>
+              )}
+            </Card>
+          </Link>
           <StatTile icon={Users} label="Students enrolled" value={new Set(incoming.filter((r) => r.status === "Approved").map((r) => r.forKidName ?? r.learnerName)).size} tint="muted" />
         </section>
+
+        <div>
+          <Button asChild size="sm" className="gap-1.5 rounded-full">
+            <Link to="/provider/requests">
+              <Inbox className="h-4 w-4" />
+              Go to requests
+              {incoming.filter((r) => r.status === "Pending").length > 0 && (
+                <Badge variant="outline" className="ml-1 h-5 px-1.5 text-[10px] bg-background/60">
+                  {incoming.filter((r) => r.status === "Pending").length}
+                </Badge>
+              )}
+            </Link>
+          </Button>
+        </div>
 
         <section className="grid gap-6 lg:grid-cols-3">
           <div className="lg:col-span-2 space-y-3">
