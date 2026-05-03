@@ -54,7 +54,8 @@ const LearnerDashboard = () => {
 
         <section className="grid gap-3 grid-cols-2 lg:grid-cols-4">
           <Link to="/dashboard/joined" className="block group">
-            <StatCard icon={GraduationCap} label="Classes joined" value={approved} tint="primary" />
+            <StatCard icon={GraduationCap} label="Classes joined" value={approved} tint="primary"
+              sub={`${trialJoined} trial · ${classJoined} joined`} />
           </Link>
           <Link to="/dashboard/requests" className="block group">
             <StatCard icon={Hourglass} label="Interest / requests" value={myRequests.length} tint="accent"
