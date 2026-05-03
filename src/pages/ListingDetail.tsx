@@ -14,7 +14,7 @@ import { StarRating } from "@/components/StarRating";
 import { SocialLinksRow } from "@/components/SocialLinksRow";
 import { ContactActions } from "@/components/ContactActions";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { ArrowLeft, Building2, MapPin, Wifi, Users, Sparkles, Clock } from "lucide-react";
+import { ArrowLeft, Building2, MapPin, Wifi, Users, Sparkles, Clock, Award } from "lucide-react";
 import { SlotKey } from "@/lib/types";
 import { ageFromDob, blocksToSlots } from "@/lib/timeUtils";
 import { formatDuration, formatPrice } from "@/lib/listingUtils";
