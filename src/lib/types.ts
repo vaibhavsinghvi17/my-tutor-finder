@@ -123,6 +123,7 @@ export type PriceUnit = "session" | "month";
 export interface Listing {
   id: string;
   providerId: string; // "self" for current user, or seed id
+  providerUserId?: string; // Supabase auth user id of the provider — required for chat
   providerName: string;
   country: string;
   state: string;
