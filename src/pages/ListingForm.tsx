@@ -216,7 +216,7 @@ const ListingForm = () => {
 
           <div className="grid sm:grid-cols-3 gap-3">
             <div className="space-y-1.5 sm:col-span-2">
-              <Label>Price (optional)</Label>
+              <Label>{mode === "Both" ? "Offline price (optional)" : "Price (optional)"}</Label>
               <div className="flex gap-2">
                 <div className="relative flex-1">
                   <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground">₹</span>
@@ -240,35 +240,64 @@ const ListingForm = () => {
             </div>
           </div>
 
+          {mode === "Both" && (
+            <div className="space-y-1.5">
+              <Label>Online price (optional)</Label>
+              <p className="text-xs text-muted-foreground">Set a different price for online sessions. Leave blank to use the offline price.</p>
+              <div className="relative">
+                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground">₹</span>
+                <Input
+                  type="number"
+                  min="0"
+                  value={onlinePriceAmount}
+                  onChange={(e) => setOnlinePriceAmount(e.target.value)}
+                  placeholder="2000"
+                  className="pl-7"
+                />
+              </div>
+            </div>
+          )}
+
           {mode !== "Offline" && (
-            <div className="rounded-lg border p-3 space-y-2 bg-muted/30">
+            <div className="rounded-lg border p-3 space-y-3 bg-muted/30">
               <div className="flex items-start gap-2">
                 <Globe2 className="h-4 w-4 mt-0.5 text-primary" />
                 <div className="flex-1">
                   <Label className="text-sm">International price (optional)</Label>
                   <p className="text-xs text-muted-foreground">Shown to learners outside your country. Leave blank to use your home price.</p>
                 </div>
-              </div>
-              <div className="flex gap-2">
                 <Select value={intlPriceCurrency} onValueChange={setIntlPriceCurrency}>
-                  <SelectTrigger className="w-[110px]"><SelectValue /></SelectTrigger>
+                  <SelectTrigger className="w-[100px] h-8"><SelectValue /></SelectTrigger>
                   <SelectContent>
                     {["USD","EUR","GBP","AUD","CAD","SGD","AED","JPY"].map((c) => (
                       <SelectItem key={c} value={c}>{c}</SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
-                <Input
-                  type="number"
-                  min="0"
-                  value={intlPriceAmount}
-                  onChange={(e) => setIntlPriceAmount(e.target.value)}
-                  placeholder="50"
-                  className="flex-1"
-                />
-                <div className="flex items-center text-xs text-muted-foreground px-2">
-                  {priceUnit === "month" ? "/ month" : "/ session"}
+              </div>
+              <div className="grid sm:grid-cols-2 gap-2">
+                <div className="space-y-1">
+                  <Label className="text-xs text-muted-foreground">{mode === "Both" ? "Offline" : mode === "Online" ? "Online" : ""} ({intlPriceCurrency})</Label>
+                  <Input
+                    type="number"
+                    min="0"
+                    value={intlPriceAmount}
+                    onChange={(e) => setIntlPriceAmount(e.target.value)}
+                    placeholder="50"
+                  />
                 </div>
+                {mode === "Both" && (
+                  <div className="space-y-1">
+                    <Label className="text-xs text-muted-foreground">Online ({intlPriceCurrency})</Label>
+                    <Input
+                      type="number"
+                      min="0"
+                      value={onlineIntlPriceAmount}
+                      onChange={(e) => setOnlineIntlPriceAmount(e.target.value)}
+                      placeholder="35"
+                    />
+                  </div>
+                )}
               </div>
             </div>
           )}
