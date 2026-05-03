@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { TopBar } from "@/components/TopBar";
-import { getAllListings, store, useStore } from "@/lib/store";
+import { store, useStore } from "@/lib/store";
 import { SEED_LISTINGS } from "@/lib/seed";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
