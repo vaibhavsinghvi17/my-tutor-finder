@@ -16,16 +16,51 @@ import { Search, UserCircle2, Baby, Plus } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Card } from "@/components/ui/card";
 
+type SortOption = "recommended" | "price-asc" | "price-desc" | "popularity" | "newest";
+type TimeOfDay = "all" | "morning" | "afternoon" | "evening";
+
+function listingPrice(l: any): number | null {
+  if (typeof l.priceAmount === "number") return l.priceAmount;
+  if (typeof l.price === "string") {
+    const m = l.price.replace(/[, ]/g, "").match(/(\d+(?:\.\d+)?)/);
+    if (m) return parseFloat(m[1]);
+  }
+  return null;
+}
+
+function listingHasTimeOfDay(slots: string[], tod: TimeOfDay): boolean {
+  if (tod === "all") return true;
+  return slots.some((s) => {
+    const h = parseInt(s.split("-")[1] ?? "", 10);
+    if (Number.isNaN(h)) return false;
+    if (tod === "morning") return h >= 5 && h < 12;
+    if (tod === "afternoon") return h >= 12 && h < 17;
+    if (tod === "evening") return h >= 17 && h <= 23;
+    return false;
+  });
+}
+
 const Discover = () => {
   const state = useStore((s) => s);
+  const ratings = useStore((s) => s.ratings);
+  const requests = useStore((s) => s.requests);
   const { names: categoryNames } = useCategories();
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState<Category | "all">("all");
   const [mode, setMode] = useState<Mode | "all">("all");
   const [cityFilter, setCityFilter] = useState<string>(state.city || "all");
+  const [sortBy, setSortBy] = useState<SortOption>("recommended");
+  const [timeOfDay, setTimeOfDay] = useState<TimeOfDay>("all");
 
   const allListings = getAllListings();
   const allCategories = Array.from(new Set([...categoryNames, ...CATEGORIES])).sort();
+
+  const popularityFor = (id: string) => {
+    const r = requests.filter((x) => x.listingId === id).length;
+    const v = ratings.filter((x) => x.listingId === id).length;
+    const seed = id.startsWith("seed-") ? ((id.charCodeAt(id.length - 1) * 7) % 40) + 5 : 0;
+    return r + v + seed;
+  };
 
   const scored = useMemo(() => {
     let scoredList = scoreListings(state, allListings);
@@ -41,9 +76,25 @@ const Discover = () => {
     if (category !== "all") scoredList = scoredList.filter((s) => s.listing.category === category);
     if (mode !== "all") scoredList = scoredList.filter((s) => s.listing.mode === mode || s.listing.mode === "Both");
     if (cityFilter !== "all") scoredList = scoredList.filter((s) => s.listing.city === cityFilter);
+    if (timeOfDay !== "all") scoredList = scoredList.filter((s) => listingHasTimeOfDay(s.listing.slots as any, timeOfDay));
+
+    if (sortBy === "price-asc" || sortBy === "price-desc") {
+      scoredList = [...scoredList].sort((a, b) => {
+        const pa = listingPrice(a.listing);
+        const pb = listingPrice(b.listing);
+        if (pa == null && pb == null) return 0;
+        if (pa == null) return 1;
+        if (pb == null) return -1;
+        return sortBy === "price-asc" ? pa - pb : pb - pa;
+      });
+    } else if (sortBy === "popularity") {
+      scoredList = [...scoredList].sort((a, b) => popularityFor(b.listing.id) - popularityFor(a.listing.id));
+    } else if (sortBy === "newest") {
+      scoredList = [...scoredList].sort((a, b) => (b.listing.createdAt ?? 0) - (a.listing.createdAt ?? 0));
+    }
     return scoredList;
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [state, query, category, mode, cityFilter]);
+  }, [state, query, category, mode, cityFilter, sortBy, timeOfDay, ratings, requests]);
 
   const activeKid = state.learner.activeKidId
     ? state.learner.kids.find((k) => k.id === state.learner.activeKidId)
