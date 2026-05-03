@@ -83,7 +83,10 @@ const ListingDetail = () => {
     navigate("/requests");
   }
 
-  const contact = listing.contactInfo ?? (listing.providerId === "self" ? provider.contactInfo : undefined);
+  const baseContact = listing.contactInfo ?? (listing.providerId === "self" ? provider.contactInfo : undefined);
+  const contact = listing.locationPin
+    ? { ...(baseContact ?? {}), mapsUrl: listing.locationPin }
+    : baseContact;
   const contactFallback = [listing.venue, listing.area, listing.city].filter(Boolean).join(", ");
   const hasContact = !!(contact?.phone || contact?.whatsapp || contact?.mapsUrl || contactFallback);
 
