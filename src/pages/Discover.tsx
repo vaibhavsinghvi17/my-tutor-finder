@@ -5,14 +5,12 @@ import { getAllListings, store, useStore } from "@/lib/store";
 import { scoreListings } from "@/lib/suggest";
 import { CATEGORIES, Category, Mode } from "@/lib/types";
 import { useCategories } from "@/lib/useCategories";
-import { allKnownCities } from "@/lib/locations";
 import { ageFromDob } from "@/lib/timeUtils";
-import { Combobox } from "@/components/Combobox";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
-import { Search, UserCircle2, Baby, Plus } from "lucide-react";
+import { Search, UserCircle2, Baby, Plus, MapPin } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Card } from "@/components/ui/card";
 
@@ -48,7 +46,8 @@ const Discover = () => {
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState<Category | "all">("all");
   const [mode, setMode] = useState<Mode | "all">("all");
-  const [cityFilter, setCityFilter] = useState<string>(state.city || "all");
+  // city filter removed — using pin code instead
+  const [pinFilter, setPinFilter] = useState<string>("");
   const [sortBy, setSortBy] = useState<SortOption>("recommended");
   const [timeOfDay, setTimeOfDay] = useState<TimeOfDay>("all");
 
@@ -75,7 +74,16 @@ const Discover = () => {
     }
     if (category !== "all") scoredList = scoredList.filter((s) => s.listing.category === category);
     if (mode !== "all") scoredList = scoredList.filter((s) => s.listing.mode === mode || s.listing.mode === "Both");
-    if (cityFilter !== "all") scoredList = scoredList.filter((s) => s.listing.city === cityFilter);
+    // city filter removed — using pin code prefix matching instead
+    if (pinFilter.trim()) {
+      const pin = pinFilter.trim();
+      const prefix = pin.slice(0, Math.min(3, pin.length));
+      scoredList = scoredList.filter((s) => {
+        const lp = (s.listing as any).pinCode as string | undefined;
+        if (!lp) return s.listing.teachesInternationally === true || s.listing.mode === "Online";
+        return lp === pin || lp.startsWith(prefix);
+      });
+    }
     if (timeOfDay !== "all") scoredList = scoredList.filter((s) => listingHasTimeOfDay(s.listing.slots as any, timeOfDay));
 
     if (sortBy === "price-asc" || sortBy === "price-desc") {
@@ -94,7 +102,7 @@ const Discover = () => {
     }
     return scoredList;
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [state, query, category, mode, cityFilter, sortBy, timeOfDay, ratings, requests]);
+  }, [state, query, category, mode, pinFilter, sortBy, timeOfDay, ratings, requests]);
 
   const activeKid = state.learner.activeKidId
     ? state.learner.kids.find((k) => k.id === state.learner.activeKidId)
@@ -162,12 +170,15 @@ const Discover = () => {
               <SelectItem value="Offline">Offline</SelectItem>
             </SelectContent>
           </Select>
-          <Combobox
-            value={cityFilter === "all" ? "" : cityFilter}
-            onChange={(v) => setCityFilter(v || "all")}
-            options={state.learner.city ? [state.learner.city] : allKnownCities()}
-            placeholder={state.learner.city || "All cities"}
-          />
+          <div className="relative">
+            <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <Input
+              placeholder="Pin / Postal code"
+              value={pinFilter}
+              onChange={(e) => setPinFilter(e.target.value.slice(0, 12))}
+              className="pl-9"
+            />
+          </div>
           <Select value={timeOfDay} onValueChange={(v) => setTimeOfDay(v as TimeOfDay)}>
             <SelectTrigger><SelectValue placeholder="Any time" /></SelectTrigger>
             <SelectContent>

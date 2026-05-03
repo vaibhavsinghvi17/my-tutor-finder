@@ -10,9 +10,11 @@ import { Switch } from "@/components/ui/switch";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { ScheduleGrid } from "@/components/ScheduleGrid";
 import { LocationFields } from "@/components/LocationFields";
-import { AGE_GROUPS, AgeGroup, Category, Mode, PriceUnit, SlotKey } from "@/lib/types";
+import { PinCodeInput } from "@/components/PinCodeInput";
+import { LanguagesEditor } from "@/components/LanguagesEditor";
+import { AGE_GROUPS, AgeGroup, Category, Mode, PriceUnit, SeatInfo, SlotKey } from "@/lib/types";
 import { useCategories } from "@/lib/useCategories";
-import { Plus } from "lucide-react";
+import { Plus, Globe2, Users } from "lucide-react";
 import { store, useStore } from "@/lib/store";
 import { toast } from "sonner";
 
@@ -33,12 +35,16 @@ const ListingForm = () => {
   const [stateName, setStateName] = useState<string>(existing?.state ?? provider.state ?? "");
   const [city, setCity] = useState<string>(existing?.city ?? provider.city ?? "");
   const [area, setArea] = useState<string>(existing?.area ?? provider.area ?? "");
+  const [pinCode, setPinCode] = useState<string>(existing?.pinCode ?? provider.pinCode ?? "");
   const [venue, setVenue] = useState(existing?.venue ?? "");
   const [priceAmount, setPriceAmount] = useState<string>(existing?.priceAmount?.toString() ?? "");
   const [priceUnit, setPriceUnit] = useState<PriceUnit>(existing?.priceUnit ?? "session");
   const [durationMins, setDurationMins] = useState<string>(existing?.durationMins?.toString() ?? "60");
   const [trial, setTrial] = useState(existing?.trial ?? true);
   const [slots, setSlots] = useState<SlotKey[]>(existing?.slots ?? []);
+  const [seatsBySlot, setSeatsBySlot] = useState<Record<string, SeatInfo>>(existing?.seatsBySlot ?? {});
+  const [languages, setLanguages] = useState<string[]>(existing?.languages ?? provider.languages ?? []);
+  const [teachesInternationally, setTeachesInternationally] = useState<boolean>(existing?.teachesInternationally ?? false);
 
   useEffect(() => {
     if (id && !existing) {
@@ -69,12 +75,16 @@ const ListingForm = () => {
       state: stateName,
       city: city || (mode === "Online" ? "Online" : ""),
       area: area.trim(),
+      pinCode: pinCode.trim() || undefined,
       venue: mode === "Online" ? undefined : venue.trim() || undefined,
       priceAmount: priceAmount ? Number(priceAmount) : undefined,
       priceUnit: priceAmount ? priceUnit : undefined,
       durationMins: durationMins ? Number(durationMins) : undefined,
       trial,
       slots,
+      seatsBySlot: Object.keys(seatsBySlot).length ? seatsBySlot : undefined,
+      languages: languages.length ? languages : undefined,
+      teachesInternationally: mode !== "Offline" ? teachesInternationally : undefined,
     };
 
     if (id && existing) {
@@ -230,15 +240,43 @@ const ListingForm = () => {
           />
 
           {mode !== "Online" && (
-            <div className="space-y-1.5">
-              <Label>Venue address (optional)</Label>
-              <Input
-                value={venue}
-                onChange={(e) => setVenue(e.target.value.slice(0, 160))}
-                placeholder="100 Ft Road, near metro"
-              />
+            <div className="grid sm:grid-cols-[1fr_180px] gap-3">
+              <div className="space-y-1.5">
+                <Label>Venue address (optional)</Label>
+                <Input
+                  value={venue}
+                  onChange={(e) => setVenue(e.target.value.slice(0, 160))}
+                  placeholder="100 Ft Road, near metro"
+                />
+              </div>
+              <div className="space-y-1.5">
+                <Label>Pin / Postal code</Label>
+                <PinCodeInput value={pinCode} onChange={setPinCode} country={country} />
+              </div>
             </div>
           )}
+
+          {mode === "Online" && (
+            <div className="space-y-1.5 sm:max-w-xs">
+              <Label>Pin / Postal code (optional)</Label>
+              <PinCodeInput value={pinCode} onChange={setPinCode} country={country} />
+            </div>
+          )}
+
+          {mode !== "Offline" && (
+            <div className="flex items-center justify-between rounded-lg border p-3">
+              <div className="flex items-start gap-2">
+                <Globe2 className="h-4 w-4 mt-0.5 text-primary" />
+                <div>
+                  <Label className="text-sm">Open to teach internationally</Label>
+                  <p className="text-xs text-muted-foreground">Show this online class to learners worldwide.</p>
+                </div>
+              </div>
+              <Switch checked={teachesInternationally} onCheckedChange={setTeachesInternationally} />
+            </div>
+          )}
+
+          <LanguagesEditor value={languages} onChange={setLanguages} />
 
           <div className="flex items-center justify-between rounded-lg border p-3">
             <div>
@@ -257,6 +295,52 @@ const ListingForm = () => {
           <ScheduleGrid value={slots} onChange={setSlots} />
         </Card>
 
+        {slots.length > 0 && (
+          <Card className="p-5 space-y-3">
+            <div>
+              <h2 className="font-semibold flex items-center gap-1.5"><Users className="h-4 w-4" /> Seats per slot</h2>
+              <p className="text-sm text-muted-foreground">Set total seats and how many are already filled. Learners see seats remaining.</p>
+            </div>
+            <div className="space-y-2">
+              {slots.map((s) => {
+                const info = seatsBySlot[s] ?? { total: 0, occupied: 0 };
+                const left = Math.max(0, info.total - info.occupied);
+                return (
+                  <div key={s} className="grid grid-cols-[1fr_auto_auto_auto] items-center gap-2 rounded-lg border p-2.5">
+                    <div className="text-sm font-medium">{s.replace("-", " · ")}:00</div>
+                    <div className="flex items-center gap-1.5">
+                      <Label className="text-xs text-muted-foreground">Total</Label>
+                      <Input
+                        type="number" min={0} max={999}
+                        value={info.total || ""}
+                        onChange={(e) => {
+                          const total = Math.max(0, Number(e.target.value || 0));
+                          setSeatsBySlot({ ...seatsBySlot, [s]: { total, occupied: Math.min(info.occupied, total) } });
+                        }}
+                        className="h-8 w-20"
+                      />
+                    </div>
+                    <div className="flex items-center gap-1.5">
+                      <Label className="text-xs text-muted-foreground">Filled</Label>
+                      <Input
+                        type="number" min={0} max={info.total || 999}
+                        value={info.occupied || ""}
+                        onChange={(e) => {
+                          const occupied = Math.max(0, Math.min(info.total, Number(e.target.value || 0)));
+                          setSeatsBySlot({ ...seatsBySlot, [s]: { total: info.total, occupied } });
+                        }}
+                        className="h-8 w-20"
+                      />
+                    </div>
+                    <div className={`text-xs font-medium px-2 py-1 rounded ${left > 0 ? "bg-success/10 text-success" : info.total > 0 ? "bg-destructive/10 text-destructive" : "bg-muted text-muted-foreground"}`}>
+                      {info.total > 0 ? `${left} left` : "no limit"}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </Card>
+        )}
         <div className="flex justify-end gap-2">
           <Button variant="outline" onClick={() => navigate("/provider")}>Cancel</Button>
           <Button onClick={save}>{id ? "Save changes" : "Publish class"}</Button>

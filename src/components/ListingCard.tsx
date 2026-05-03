@@ -4,7 +4,7 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { CategoryIcon, categoryGradient } from "./CategoryIcon";
 import { StarRating } from "./StarRating";
-import { MapPin, Wifi, Building2, Users, Sparkles, Clock, Bookmark, Share2, MessageCircle, Link as LinkIcon, Award, UsersRound } from "lucide-react";
+import { MapPin, Wifi, Building2, Users, Sparkles, Clock, Bookmark, Share2, MessageCircle, Link as LinkIcon, Award, UsersRound, Globe2, Armchair } from "lucide-react";
 import { slotsToText } from "./ScheduleGrid";
 import { formatDuration, formatPrice } from "@/lib/listingUtils";
 import { store, useStore } from "@/lib/store";
@@ -155,10 +155,30 @@ export function ListingCard({ listing, reasons = [] }: Props) {
                 <Sparkles className="h-3 w-3" /> Free trial
               </Badge>
             )}
+            {listing.teachesInternationally && (
+              <Badge variant="outline" className="gap-1 border-primary/40 text-primary">
+                <Globe2 className="h-3 w-3" /> International
+              </Badge>
+            )}
+            {(() => {
+              if (!listing.seatsBySlot) return null;
+              const totals = Object.values(listing.seatsBySlot).filter((s) => s.total > 0);
+              if (!totals.length) return null;
+              const left = totals.reduce((a, s) => a + Math.max(0, s.total - s.occupied), 0);
+              const total = totals.reduce((a, s) => a + s.total, 0);
+              const full = left === 0;
+              return (
+                <Badge variant={full ? "destructive" : "outline"} className="gap-1">
+                  <Armchair className="h-3 w-3" /> {full ? "Full" : `${left}/${total} seats`}
+                </Badge>
+              );
+            })()}
           </div>
           <p className="text-xs text-muted-foreground flex items-start gap-1">
             <MapPin className="h-3 w-3 mt-0.5 shrink-0" />
-            <span className="line-clamp-1">{listing.area}, {listing.city}</span>
+            <span className="line-clamp-1">
+              {listing.area}, {listing.city}{listing.pinCode ? ` · ${listing.pinCode}` : ""}
+            </span>
           </p>
           <p className="text-xs text-muted-foreground line-clamp-1">⏰ {slotsToText(listing.slots)}</p>
           {reasons.length > 0 && (

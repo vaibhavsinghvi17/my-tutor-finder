@@ -12,9 +12,11 @@ import { SocialLinksRow } from "@/components/SocialLinksRow";
 import { ContactActions } from "@/components/ContactActions";
 import { useCategories } from "@/lib/useCategories";
 import { store, useStore } from "@/lib/store";
-import { Instagram, Facebook, Youtube, Twitter, Linkedin, Globe, MessageCircle, Phone, MapPin, Plus } from "lucide-react";
+import { Instagram, Facebook, Youtube, Twitter, Linkedin, Globe, MessageCircle, Phone, MapPin, Plus, X, Languages } from "lucide-react";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
+import { PinCodeInput } from "@/components/PinCodeInput";
+import { LanguagesEditor } from "@/components/LanguagesEditor";
 
 const SOCIAL_FIELDS: { key: keyof SocialLinks; icon: React.ComponentType<{ className?: string }>; label: string; placeholder: string }[] = [
   { key: "instagram", icon: Instagram, label: "Instagram", placeholder: "@yourhandle or full URL" },
@@ -91,13 +93,28 @@ const ProviderProfilePage = () => {
             hint="Where is your studio? For online-only, just pick country & state."
           />
 
-          <div className="space-y-1.5">
-            <Label>Studio / venue address</Label>
-            <AddressFields
-              value={provider.address}
-              onChange={(v) => store.updateProvider({ address: v })}
-            />
+          <div className="grid sm:grid-cols-[1fr_180px] gap-3">
+            <div className="space-y-1.5">
+              <Label>Studio / venue address</Label>
+              <AddressFields
+                value={provider.address}
+                onChange={(v) => store.updateProvider({ address: v })}
+              />
+            </div>
+            <div className="space-y-1.5">
+              <Label>Pin / Postal code</Label>
+              <PinCodeInput
+                value={provider.pinCode ?? ""}
+                onChange={(v) => store.updateProvider({ pinCode: v })}
+                country={provider.country}
+              />
+            </div>
           </div>
+
+          <LanguagesEditor
+            value={provider.languages ?? []}
+            onChange={(v) => store.updateProvider({ languages: v })}
+          />
 
           <div className="grid sm:grid-cols-[1fr_auto] gap-4 items-end">
             <div className="space-y-1.5">
