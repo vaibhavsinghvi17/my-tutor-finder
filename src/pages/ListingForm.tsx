@@ -15,6 +15,7 @@ import { DatePicker } from "@/components/DatePicker";
 import { LocationFields } from "@/components/LocationFields";
 import { PinCodeInput } from "@/components/PinCodeInput";
 import { LanguagesEditor } from "@/components/LanguagesEditor";
+import { Combobox } from "@/components/Combobox";
 import { AGE_GROUPS, AgeGroup, Category, Mode, PriceUnit, SeatInfo, SlotKey } from "@/lib/types";
 import { useCategories } from "@/lib/useCategories";
 import { Plus, Globe2, Users, Wifi, MapPin, Locate } from "lucide-react";
