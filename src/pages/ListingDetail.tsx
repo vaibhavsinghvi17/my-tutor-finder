@@ -201,6 +201,19 @@ const ListingDetail = () => {
               </div>
             )}
 
+            {(listing.languages?.length ?? 0) > 0 && (
+              <div className="space-y-1.5">
+                <h3 className="text-sm font-semibold flex items-center gap-1.5">
+                  <Languages className="h-3.5 w-3.5" /> Languages of teaching
+                </h3>
+                <div className="flex flex-wrap gap-1.5">
+                  {listing.languages!.map((l) => (
+                    <Badge key={l} variant="secondary">{l}</Badge>
+                  ))}
+                </div>
+              </div>
+            )}
+
             <div>
               <h3 className="font-semibold mb-2">Class schedule</h3>
               <ScheduleGrid value={listing.slots} highlightSlots={freeSlots} readOnly compact />
@@ -208,6 +221,24 @@ const ListingDetail = () => {
                 <p className="text-xs text-success mt-2">
                   ✓ {matching.length} slot{matching.length > 1 ? "s" : ""} match your free time.
                 </p>
+              )}
+              {listing.seatsBySlot && Object.keys(listing.seatsBySlot).length > 0 && (
+                <div className="mt-3 grid gap-1.5 sm:grid-cols-2">
+                  {listing.slots.map((s) => {
+                    const info = listing.seatsBySlot?.[s];
+                    if (!info || info.total === 0) return null;
+                    const left = Math.max(0, info.total - info.occupied);
+                    const full = left === 0;
+                    return (
+                      <div key={s} className="flex items-center justify-between text-xs rounded-md border px-2.5 py-1.5">
+                        <span className="font-medium">{s.replace("-", " · ")}:00</span>
+                        <span className={full ? "text-destructive font-semibold" : "text-success font-semibold"}>
+                          {full ? "Full" : `${left}/${info.total} seats left`}
+                        </span>
+                      </div>
+                    );
+                  })}
+                </div>
               )}
             </div>
           </div>
@@ -227,11 +258,18 @@ const ListingDetail = () => {
               <Select value={slot} onValueChange={(v) => setSlot(v as SlotKey)}>
                 <SelectTrigger><SelectValue placeholder="Select a class time" /></SelectTrigger>
                 <SelectContent>
-                  {listing.slots.map((s) => (
-                    <SelectItem key={s} value={s}>
-                      {slotsToText([s])} {freeSlots.includes(s) ? "  ✓ free" : ""}
-                    </SelectItem>
-                  ))}
+                  {listing.slots.map((s) => {
+                    const info = listing.seatsBySlot?.[s];
+                    const left = info && info.total > 0 ? Math.max(0, info.total - info.occupied) : null;
+                    const full = left === 0;
+                    return (
+                      <SelectItem key={s} value={s} disabled={full}>
+                        {slotsToText([s])}
+                        {freeSlots.includes(s) ? "  ✓ free" : ""}
+                        {left !== null ? (full ? "  · Full" : `  · ${left} seats left`) : ""}
+                      </SelectItem>
+                    );
+                  })}
                 </SelectContent>
               </Select>
             </div>
