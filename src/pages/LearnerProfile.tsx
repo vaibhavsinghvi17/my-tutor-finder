@@ -342,6 +342,38 @@ const LearnerProfilePage = () => {
             <div className="pt-2 border-t">
               <AddressFields value={learner.address} onChange={(v) => store.updateLearner({ address: v })} />
             </div>
+            <div className="pt-2 border-t space-y-1.5">
+              <Label className="flex items-center gap-1.5"><MapPin className="h-3.5 w-3.5 text-primary" /> Home location pin (optional)</Label>
+              <Input
+                value={learner.homePin ?? ""}
+                onChange={(e) => store.updateLearner({ homePin: e.target.value.slice(0, 300) })}
+                placeholder="Paste Google Maps link or lat,lng"
+              />
+              <div className="flex flex-wrap gap-2">
+                <Button
+                  type="button" variant="outline" size="sm" className="gap-1.5"
+                  onClick={() => {
+                    if (!navigator.geolocation) return toast.error("Geolocation not supported");
+                    toast.info("Getting your current location…");
+                    navigator.geolocation.getCurrentPosition(
+                      (pos) => {
+                        const { latitude, longitude } = pos.coords;
+                        store.updateLearner({ homePin: `https://www.google.com/maps?q=${latitude},${longitude}` });
+                        toast.success("Home pin saved");
+                      },
+                      (err) => toast.error(err.message || "Could not get location"),
+                      { enableHighAccuracy: true, timeout: 10000 },
+                    );
+                  }}
+                >
+                  <Locate className="h-3.5 w-3.5" /> Use current location
+                </Button>
+                {learner.homePin && (
+                  <Button type="button" variant="ghost" size="sm" onClick={() => store.updateLearner({ homePin: "" })}>Clear pin</Button>
+                )}
+              </div>
+              <p className="text-xs text-muted-foreground">Used to show how far classes are from your home.</p>
+            </div>
           </div>
           <DialogFooter>
             <Button onClick={() => { setOpen(null); toast.success("Saved"); }}>Done</Button>
