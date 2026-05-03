@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { FreeTimeEditor } from "@/components/FreeTimeEditor";
+import { DatePicker } from "@/components/DatePicker";
 import { CATEGORIES, Category, FreeTimeBlock } from "@/lib/types";
 import { store, useStore } from "@/lib/store";
 import { ageFromDob } from "@/lib/timeUtils";
@@ -80,7 +81,7 @@ const AdultProfileEditor = () => {
               <Label>
                 Date of birth {age !== null && <span className="text-muted-foreground font-normal">• age {age}</span>}
               </Label>
-              <Input type="date" value={dob} max={new Date().toISOString().split("T")[0]} onChange={(e) => setDob(e.target.value)} />
+              <DatePicker value={dob} max={new Date().toISOString().split("T")[0]} onChange={setDob} placeholder="Pick date of birth" />
             </div>
             <div className="space-y-1.5">
               <Label>Occupation <span className="text-muted-foreground font-normal">(optional)</span></Label>

@@ -16,6 +16,7 @@ import { CATEGORIES, FreeTimeBlock, Mode } from "@/lib/types";
 import { useCategories } from "@/lib/useCategories";
 import { LocationFields } from "@/components/LocationFields";
 import { AddressFields } from "@/components/AddressFields";
+import { DatePicker } from "@/components/DatePicker";
 import { store, useStore, getAllListings } from "@/lib/store";
 import { ageFromDob, blockSummary } from "@/lib/timeUtils";
 import {
@@ -307,7 +308,7 @@ const LearnerProfilePage = () => {
               <Input type="email" value={learner.email} onChange={(e) => store.updateLearner({ email: e.target.value.slice(0, 120) })} className="h-9" />
             </Field>
             <Field label={`Date of birth${age !== null ? ` • age ${age}` : ""}`}>
-              <Input type="date" value={learner.dob} max={new Date().toISOString().split("T")[0]} onChange={(e) => store.updateLearner({ dob: e.target.value })} className="h-9" />
+              <DatePicker value={learner.dob} max={new Date().toISOString().split("T")[0]} onChange={(v) => store.updateLearner({ dob: v })} placeholder="Pick date of birth" triggerClassName="h-9" />
             </Field>
             <Field label="Occupation (optional)">
               <Input value={learner.occupation} onChange={(e) => store.updateLearner({ occupation: e.target.value.slice(0, 80) })} className="h-9" />
