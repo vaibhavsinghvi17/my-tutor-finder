@@ -151,6 +151,27 @@ export const store = {
   setActiveKid(id: string | null) {
     set((s) => ({ ...s, learner: { ...s.learner, activeKidId: id } }));
   },
+  addAdult(adult: Omit<AdultProfile, "id">) {
+    set((s) => ({
+      ...s,
+      learner: { ...s.learner, adults: [...s.learner.adults, { ...adult, id: crypto.randomUUID() }] },
+    }));
+  },
+  updateAdult(id: string, patch: Partial<AdultProfile>) {
+    set((s) => ({
+      ...s,
+      learner: {
+        ...s.learner,
+        adults: s.learner.adults.map((a) => (a.id === id ? { ...a, ...patch } : a)),
+      },
+    }));
+  },
+  removeAdult(id: string) {
+    set((s) => ({
+      ...s,
+      learner: { ...s.learner, adults: s.learner.adults.filter((a) => a.id !== id) },
+    }));
+  },
   addListing(listing: Omit<Listing, "id" | "createdAt" | "providerId" | "providerName">) {
     set((s) => ({
       ...s,
