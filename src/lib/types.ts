@@ -29,6 +29,7 @@ export interface FreeTimeBlock {
 
 export interface KidProfile {
   id: string;
+  username?: string;
   name: string;
   dob: string; // YYYY-MM-DD
   school: string;
@@ -40,6 +41,7 @@ export interface KidProfile {
 
 export interface AdultProfile {
   id: string;
+  username?: string;
   name: string;
   email: string;
   dob: string;
@@ -50,6 +52,7 @@ export interface AdultProfile {
 }
 
 export interface LearnerProfile {
+  username?: string;
   name: string;
   email: string;
   dob: string; // YYYY-MM-DD
