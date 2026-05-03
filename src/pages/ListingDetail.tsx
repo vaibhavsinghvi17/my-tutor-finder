@@ -147,7 +147,7 @@ const ListingDetail = () => {
               const yearsExp = listing.providerId === "self" ? provider.yearsExperience : undefined;
               const avgRating = ratings.length ? ratings.reduce((a, r) => a + r.stars, 0) / ratings.length : 0;
               return (
-                <div className="rounded-xl border bg-muted/30 p-4 space-y-1.5">
+                <div className="space-y-1.5">
                   <Link
                     to={listing.providerId === "self" ? "/provider" : `/listing/${listing.id}`}
                     className="text-lg sm:text-xl font-semibold hover:text-primary transition-colors"
