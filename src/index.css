@@ -98,9 +98,11 @@
   }
   h1, h2, h3, h4 { @apply tracking-tight; }
 
-  /* Long unbroken strings (URLs, emails, IDs) shouldn't blow out layout */
-  p, span, a, h1, h2, h3, h4, h5, h6, li, td, th, dd, dt {
-    overflow-wrap: anywhere;
+  /* Long unbroken strings (URLs, emails, IDs) shouldn't blow out layout,
+     but normal words must not break mid-word. */
+  p, a, li, td, th, dd, dt {
+    overflow-wrap: break-word;
+    word-break: normal;
   }
 }
 
