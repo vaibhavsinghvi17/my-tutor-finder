@@ -58,7 +58,8 @@ const ListingDetail = () => {
 
   const activeKid = learner.activeKidId ? learner.kids.find((k) => k.id === learner.activeKidId) : null;
   const freeSlots = blocksToSlots(activeKid ? activeKid.freeBlocks : learner.freeBlocks);
-  const matching = listing.slots.filter((s) => freeSlots.includes(s));
+  const allSlots = [...listing.slots, ...((listing.onlineSlots ?? []) as typeof listing.slots)];
+  const matching = allSlots.filter((s) => freeSlots.includes(s));
 
   function submit() {
     if (!slot) {
