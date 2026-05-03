@@ -94,13 +94,27 @@ const ListingDetail = () => {
                 {listing.mode}
               </Badge>
               <Badge variant="outline" className="gap-1"><Users className="h-3 w-3" /> {listing.ageGroup}</Badge>
-              {listing.price && <Badge variant="outline">{listing.price}</Badge>}
+              {formatDuration(listing.durationMins) && (
+                <Badge variant="outline" className="gap-1">
+                  <Clock className="h-3 w-3" /> {formatDuration(listing.durationMins)}
+                </Badge>
+              )}
+              {formatPrice(listing) && <Badge variant="outline">{formatPrice(listing)}</Badge>}
               {listing.trial && (
                 <Badge className="bg-success text-success-foreground border-0 gap-1">
                   <Sparkles className="h-3 w-3" /> Free trial available
                 </Badge>
               )}
             </div>
+
+            {ratings.length > 0 && (
+              <div className="flex items-center gap-2">
+                <StarRating value={ratings.reduce((a, r) => a + r.stars, 0) / ratings.length} size="md" />
+                <span className="text-sm text-muted-foreground">
+                  {(ratings.reduce((a, r) => a + r.stars, 0) / ratings.length).toFixed(1)} • {ratings.length} review{ratings.length > 1 ? "s" : ""}
+                </span>
+              </div>
+            )}
 
             <p className="text-sm leading-relaxed">{listing.description}</p>
 
@@ -113,6 +127,13 @@ const ListingDetail = () => {
                 </div>
               </div>
             </div>
+
+            {(listing.socials || (listing.providerId === "self" && provider.socials)) && (
+              <div className="space-y-2">
+                <h3 className="text-sm font-semibold">Follow {listing.providerName}</h3>
+                <SocialLinksRow socials={listing.socials ?? (listing.providerId === "self" ? provider.socials : undefined)} />
+              </div>
+            )}
 
             <div>
               <h3 className="font-semibold mb-2">Class schedule</h3>
