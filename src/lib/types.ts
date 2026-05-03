@@ -44,6 +44,18 @@ export interface KidProfile {
   schoolClass: string;
   interests: Category[];
   freeBlocks: FreeTimeBlock[];
+  avatarColor?: string;
+}
+
+export interface AdultProfile {
+  id: string;
+  name: string;
+  email: string;
+  dob: string;
+  occupation: string;
+  interests: Category[];
+  freeBlocks: FreeTimeBlock[];
+  avatarColor?: string;
 }
 
 export interface LearnerProfile {
@@ -60,7 +72,9 @@ export interface LearnerProfile {
   preferredMode: Mode | "Any";
   freeBlocks: FreeTimeBlock[];
   kids: KidProfile[];
+  adults: AdultProfile[];
   activeKidId: string | null; // null = self
+  avatarColor?: string;
 }
 
 export interface ProviderProfile {

@@ -49,7 +49,7 @@ export function TopBar() {
             <>
               <NavBtn to="/discover" active={location.pathname === "/discover"}>Discover</NavBtn>
               <NavBtn to="/requests" active={location.pathname === "/requests"}>My Requests</NavBtn>
-              <NavBtn to="/profile/learner" active={location.pathname === "/profile/learner"}>Profile</NavBtn>
+              <NavBtn to="/profile" active={location.pathname.startsWith("/profile") && location.pathname !== "/profile/provider"}>Profile</NavBtn>
             </>
           )}
         </nav>
@@ -91,7 +91,7 @@ export function TopBar() {
                   : learner.name || "Learner"}
               </DropdownMenuLabel>
               <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={() => navigate("/profile/learner")}>Learner profile</DropdownMenuItem>
+              <DropdownMenuItem onClick={() => navigate("/profile")}>Profiles</DropdownMenuItem>
               <DropdownMenuItem onClick={() => navigate("/profile/provider")}>Provider profile</DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem onClick={() => { store.reset(); navigate("/"); }}>

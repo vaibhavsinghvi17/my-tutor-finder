@@ -1,5 +1,5 @@
 import { useSyncExternalStore } from "react";
-import { AppMode, AppState, JoinRequest, Listing, KidProfile } from "./types";
+import { AppMode, AppState, JoinRequest, Listing, KidProfile, AdultProfile } from "./types";
 import { SEED_LISTINGS } from "./seed";
 
 const STORAGE_KEY = "learnlocal-state-v1";
@@ -22,6 +22,7 @@ const initialState: AppState = {
     preferredMode: "Any",
     freeBlocks: [],
     kids: [],
+    adults: [],
     activeKidId: null,
   },
   provider: {
@@ -60,6 +61,18 @@ function load(): AppState {
               schoolClass: k.schoolClass ?? "",
               interests: Array.isArray(k.interests) ? k.interests : [],
               freeBlocks: Array.isArray(k.freeBlocks) ? k.freeBlocks : [],
+            }))
+          : [],
+        adults: Array.isArray(parsed.learner?.adults)
+          ? parsed.learner.adults.map((a: any) => ({
+              id: a.id,
+              name: a.name ?? "",
+              email: a.email ?? "",
+              dob: a.dob ?? "",
+              occupation: a.occupation ?? "",
+              interests: Array.isArray(a.interests) ? a.interests : [],
+              freeBlocks: Array.isArray(a.freeBlocks) ? a.freeBlocks : [],
+              avatarColor: a.avatarColor,
             }))
           : [],
         freeBlocks: Array.isArray(parsed.learner?.freeBlocks) ? parsed.learner.freeBlocks : [],
@@ -137,6 +150,27 @@ export const store = {
   },
   setActiveKid(id: string | null) {
     set((s) => ({ ...s, learner: { ...s.learner, activeKidId: id } }));
+  },
+  addAdult(adult: Omit<AdultProfile, "id">) {
+    set((s) => ({
+      ...s,
+      learner: { ...s.learner, adults: [...s.learner.adults, { ...adult, id: crypto.randomUUID() }] },
+    }));
+  },
+  updateAdult(id: string, patch: Partial<AdultProfile>) {
+    set((s) => ({
+      ...s,
+      learner: {
+        ...s.learner,
+        adults: s.learner.adults.map((a) => (a.id === id ? { ...a, ...patch } : a)),
+      },
+    }));
+  },
+  removeAdult(id: string) {
+    set((s) => ({
+      ...s,
+      learner: { ...s.learner, adults: s.learner.adults.filter((a) => a.id !== id) },
+    }));
   },
   addListing(listing: Omit<Listing, "id" | "createdAt" | "providerId" | "providerName">) {
     set((s) => ({
