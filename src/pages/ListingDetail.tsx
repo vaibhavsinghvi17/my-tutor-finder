@@ -236,7 +236,7 @@ const ListingDetail = () => {
           </div>
 
           {listing.trial && (
-            <label className="flex items-start gap-2.5 rounded-lg border border-success/40 bg-success/5 p-3 cursor-pointer hover:bg-success/10 transition-colors">
+            <label className="flex items-start gap-2.5 rounded-lg border-2 border-success bg-success/15 p-3 cursor-pointer hover:bg-success/25 transition-colors">
               <input
                 type="checkbox"
                 checked={isTrial}
@@ -244,10 +244,10 @@ const ListingDetail = () => {
                 className="mt-0.5 h-4 w-4 accent-success"
               />
               <div className="text-sm">
-                <div className="font-medium text-success-foreground/90 flex items-center gap-1">
+                <div className="font-semibold text-foreground flex items-center gap-1">
                   <Sparkles className="h-3.5 w-3.5 text-success" /> Request a free trial class
                 </div>
-                <div className="text-xs text-muted-foreground">Try one class before committing.</div>
+                <div className="text-xs text-foreground/70">Try one class before committing.</div>
               </div>
             </label>
           )}
