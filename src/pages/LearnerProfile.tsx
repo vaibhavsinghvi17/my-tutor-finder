@@ -34,7 +34,16 @@ const LearnerProfilePage = () => {
   const navigate = useNavigate();
   const [open, setOpen] = useState<Section>(null);
   const [interestsOpen, setInterestsOpen] = useState(false);
+  const [customInterest, setCustomInterest] = useState("");
   const fileRef = useRef<HTMLInputElement>(null);
+
+  function addCustomInterest() {
+    const v = customInterest.trim();
+    if (!v) return;
+    if (learner.interests.includes(v)) { setCustomInterest(""); return; }
+    store.updateLearner({ interests: [...learner.interests, v] });
+    setCustomInterest("");
+  }
 
   const fullLocation = [learner.area, learner.city, learner.state, learner.country].filter(Boolean).join(", ");
   const addressLines = (learner.address || "").split(" | ").filter(Boolean);
@@ -154,31 +163,23 @@ const LearnerProfilePage = () => {
 
         {/* Quick summary lines */}
         <div className="rounded-xl border border-border/60 bg-card/40 backdrop-blur-sm divide-y divide-border/50 overflow-hidden text-sm">
-          <div className="p-3 flex items-start gap-2">
-            <UserCircle2 className="h-4 w-4 mt-0.5 text-muted-foreground shrink-0" />
-            <div className="flex-1 min-w-0">
-              <div className="truncate">{learner.name || "—"}{learner.email ? ` • ${learner.email}` : ""}</div>
-              <div className="text-xs text-muted-foreground truncate">
-                {[learner.preferredMode === "Any" ? "Any mode" : learner.preferredMode, learner.occupation].filter(Boolean).join(" • ")}
-              </div>
-            </div>
-          </div>
-          <div className="p-3 flex items-start gap-2">
-            <MapPin className="h-4 w-4 mt-0.5 text-muted-foreground shrink-0" />
-            <div className="flex-1 min-w-0">
-              <div className="truncate">{fullLocation || "—"}</div>
-              {addressLines.length > 0 && (
-                <div className="text-xs text-muted-foreground truncate">{addressLines.join(", ")}</div>
-              )}
-            </div>
-          </div>
+          <SummaryRow icon={UserCircle2} label="Preferred Mode"
+            value={learner.preferredMode === "Any" ? "Online / Offline" : learner.preferredMode} />
+          <SummaryRow icon={MapPin} label="City"
+            value={[learner.area, learner.city].filter(Boolean).join(", ") || "—"} />
           <div className="p-3 flex items-start gap-2">
             <Clock className="h-4 w-4 mt-0.5 text-muted-foreground shrink-0" />
-            <div className="flex-1 min-w-0 space-y-0.5">
-              {learner.freeBlocks.length === 0 && <div className="text-muted-foreground">—</div>}
-              {learner.freeBlocks.map((b) => (
-                <div key={b.id} className="text-xs">{blockSummary(b)}</div>
-              ))}
+            <div className="flex-1 min-w-0">
+              <div className="text-[11px] uppercase tracking-wider text-muted-foreground">Preferred Timings</div>
+              {learner.freeBlocks.length === 0 ? (
+                <div className="text-muted-foreground">—</div>
+              ) : (
+                <div className="space-y-0.5 mt-0.5">
+                  {learner.freeBlocks.map((b) => (
+                    <div key={b.id} className="text-xs">{blockSummary(b)}</div>
+                  ))}
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -325,7 +326,7 @@ const LearnerProfilePage = () => {
         <DialogContent className="max-w-lg">
           <DialogHeader><DialogTitle>Interests</DialogTitle></DialogHeader>
           <div className="flex flex-wrap gap-1.5">
-            {CATEGORIES.map((c) => {
+            {Array.from(new Set([...CATEGORIES, ...learner.interests])).map((c) => {
               const active = learner.interests.includes(c);
               return (
                 <button
@@ -345,6 +346,16 @@ const LearnerProfilePage = () => {
                 </button>
               );
             })}
+          </div>
+          <div className="flex gap-2 pt-2 border-t">
+            <Input
+              placeholder="Add your own interest"
+              value={customInterest}
+              onChange={(e) => setCustomInterest(e.target.value.slice(0, 30))}
+              onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); addCustomInterest(); } }}
+              className="h-9"
+            />
+            <Button type="button" size="sm" onClick={addCustomInterest}>Add</Button>
           </div>
           <DialogFooter>
             <Button onClick={() => { setInterestsOpen(false); toast.success("Saved"); }}>Done</Button>
@@ -396,6 +407,18 @@ function MiniListing({ id, title, subtitle }: { id: string; title: string; subti
 
 function Empty({ text }: { text: string }) {
   return <p className="text-xs text-muted-foreground">{text}</p>;
+}
+
+function SummaryRow({ icon: Icon, label, value }: { icon: React.ElementType; label: string; value: string }) {
+  return (
+    <div className="p-3 flex items-start gap-2">
+      <Icon className="h-4 w-4 mt-0.5 text-muted-foreground shrink-0" />
+      <div className="flex-1 min-w-0">
+        <div className="text-[11px] uppercase tracking-wider text-muted-foreground">{label}</div>
+        <div className="truncate">{value}</div>
+      </div>
+    </div>
+  );
 }
 
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
