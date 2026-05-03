@@ -4,10 +4,15 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { CategoryIcon, categoryGradient } from "./CategoryIcon";
 import { StarRating } from "./StarRating";
-import { MapPin, Wifi, Building2, Users, Sparkles, Clock } from "lucide-react";
+import { MapPin, Wifi, Building2, Users, Sparkles, Clock, Bookmark, Share2, MessageCircle, Link as LinkIcon } from "lucide-react";
 import { slotsToText } from "./ScheduleGrid";
 import { formatDuration, formatPrice } from "@/lib/listingUtils";
-import { useStore } from "@/lib/store";
+import { store, useStore } from "@/lib/store";
+import {
+  DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { toast } from "sonner";
+import { cn } from "@/lib/utils";
 
 interface Props {
   listing: Listing;
@@ -16,16 +21,75 @@ interface Props {
 
 export function ListingCard({ listing, reasons = [] }: Props) {
   const allRatings = useStore((s) => s.ratings);
+  const savedListings = useStore((s) => s.learner.savedListings);
   const ratings = allRatings.filter((r) => r.listingId === listing.id);
   const avg = ratings.length ? ratings.reduce((a, r) => a + r.stars, 0) / ratings.length : 0;
   const priceText = formatPrice(listing);
   const durationText = formatDuration(listing.durationMins);
+  const isSaved = (savedListings || []).includes(listing.id);
+  const shareUrl = `${window.location.origin}/listing/${listing.id}`;
+  const shareText = `Check out "${listing.title}" by ${listing.providerName} on LearnLocal`;
+
+  function stop(e: React.MouseEvent) { e.preventDefault(); e.stopPropagation(); }
 
   return (
     <Link to={`/listing/${listing.id}`} className="block group animate-fade-in">
       <Card className="overflow-hidden h-full transition-all hover:shadow-elegant hover:-translate-y-0.5 border">
         <div className={`${categoryGradient(listing.category)} h-24 relative flex items-end p-4`}>
-          <div className="absolute top-3 right-3 flex gap-1.5">
+          <div className="absolute top-3 right-3 flex gap-1.5 items-center">
+            <button
+              onClick={(e) => { stop(e); store.toggleSaved(listing.id); toast.success(isSaved ? "Removed from saved" : "Saved to your profile"); }}
+              className={cn(
+                "h-7 w-7 rounded-full grid place-items-center bg-background/90 hover:bg-background transition-colors",
+                isSaved && "text-primary",
+              )}
+              title={isSaved ? "Saved" : "Save"}
+            >
+              <Bookmark className={cn("h-3.5 w-3.5", isSaved && "fill-current")} />
+            </button>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <button
+                  onClick={stop}
+                  className="h-7 w-7 rounded-full grid place-items-center bg-background/90 hover:bg-background"
+                  title="Share"
+                >
+                  <Share2 className="h-3.5 w-3.5" />
+                </button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="bg-popover" onClick={stop}>
+                <DropdownMenuItem
+                  onClick={(e) => {
+                    stop(e);
+                    window.open(`https://wa.me/?text=${encodeURIComponent(`${shareText} ${shareUrl}`)}`, "_blank");
+                  }}
+                >
+                  <MessageCircle className="h-4 w-4 mr-2 text-[#25D366]" /> Share via WhatsApp
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  onClick={async (e) => {
+                    stop(e);
+                    if (navigator.share) {
+                      try { await navigator.share({ title: listing.title, text: shareText, url: shareUrl }); } catch {}
+                    } else {
+                      await navigator.clipboard.writeText(shareUrl);
+                      toast.success("Link copied — share with anyone");
+                    }
+                  }}
+                >
+                  <Share2 className="h-4 w-4 mr-2" /> Share in app
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  onClick={async (e) => {
+                    stop(e);
+                    await navigator.clipboard.writeText(shareUrl);
+                    toast.success("Link copied");
+                  }}
+                >
+                  <LinkIcon className="h-4 w-4 mr-2" /> Copy link
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
             <Badge variant="secondary" className="bg-background/90 text-foreground gap-1">
               {listing.mode === "Online" ? <Wifi className="h-3 w-3" /> :
                listing.mode === "Offline" ? <Building2 className="h-3 w-3" /> :
