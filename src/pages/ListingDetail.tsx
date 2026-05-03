@@ -233,42 +233,29 @@ const ListingDetail = () => {
             <div>
               <h3 className="font-semibold mb-2">Class schedule</h3>
               {listing.mode === "Both" ? (
-                <div className="space-y-4">
-                  <div>
-                    <div className="text-xs font-medium mb-1.5 text-muted-foreground">Offline batches</div>
-                    <ScheduleGrid value={listing.slots} highlightSlots={freeSlots} readOnly compact />
-                  </div>
+                <div className="space-y-3">
+                  {listing.slots.length > 0 && (
+                    <SlotList title="Offline batches" slots={listing.slots} freeSlots={freeSlots} seats={listing.seatsBySlot} />
+                  )}
                   {(listing.onlineSlots?.length ?? 0) > 0 && (
-                    <div>
-                      <div className="text-xs font-medium mb-1.5 text-muted-foreground">Online batches</div>
-                      <ScheduleGrid value={listing.onlineSlots ?? []} highlightSlots={freeSlots} readOnly compact />
-                    </div>
+                    <SlotList title="Online batches" slots={listing.onlineSlots ?? []} freeSlots={freeSlots} seats={listing.onlineSeatsBySlot} />
                   )}
                 </div>
               ) : (
-                <ScheduleGrid value={listing.slots} highlightSlots={freeSlots} readOnly compact />
+                <SlotList slots={listing.slots} freeSlots={freeSlots} seats={listing.seatsBySlot} />
               )}
               {matching.length > 0 && (
-                <p className="text-xs text-success mt-2">
-                  ✓ {matching.length} slot{matching.length > 1 ? "s" : ""} match your free time.
-                </p>
-              )}
-              {listing.seatsBySlot && Object.keys(listing.seatsBySlot).length > 0 && (
-                <div className="mt-3 grid gap-1.5 sm:grid-cols-2">
-                  {listing.slots.map((s) => {
-                    const info = listing.seatsBySlot?.[s];
-                    if (!info || info.total === 0) return null;
-                    const left = Math.max(0, info.total - info.occupied);
-                    const full = left === 0;
-                    return (
-                      <div key={s} className="flex items-center justify-between text-xs rounded-md border px-2.5 py-1.5">
-                        <span className="font-medium">{s.replace("-", " · ")}:00</span>
-                        <span className={full ? "text-destructive font-semibold" : "text-success font-semibold"}>
-                          {full ? "Full" : `${left}/${info.total} seats left`}
-                        </span>
-                      </div>
-                    );
-                  })}
+                <div className="mt-3 rounded-md border border-success/40 bg-success/10 p-2.5">
+                  <p className="text-xs font-semibold text-success mb-1.5">
+                    ✓ {matching.length} slot{matching.length > 1 ? "s" : ""} match your free time
+                  </p>
+                  <div className="flex flex-wrap gap-1.5">
+                    {matching.map((s) => (
+                      <span key={s} className="text-[11px] px-2 py-0.5 rounded-full bg-success text-success-foreground font-medium">
+                        {slotsToText([s])}
+                      </span>
+                    ))}
+                  </div>
                 </div>
               )}
             </div>
@@ -437,3 +424,74 @@ const ListingDetail = () => {
 };
 
 export default ListingDetail;
+
+function SlotList({
+  title, slots, freeSlots, seats,
+}: {
+  title?: string;
+  slots: SlotKey[];
+  freeSlots: SlotKey[];
+  seats?: Record<string, { total: number; occupied: number }>;
+}) {
+  // Group by day
+  const byDay = new Map<string, { hour: number; key: SlotKey }[]>();
+  slots.forEach((s) => {
+    const [d, h] = s.split("-") as [string, string];
+    const arr = byDay.get(d) ?? [];
+    arr.push({ hour: parseInt(h, 10), key: s });
+    byDay.set(d, arr);
+  });
+  const DAY_ORDER = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+  const days = DAY_ORDER.filter((d) => byDay.has(d));
+
+  function fmt(h: number) {
+    const period = h >= 12 ? "PM" : "AM";
+    const hr = h % 12 === 0 ? 12 : h % 12;
+    return `${hr}${period}`;
+  }
+
+  if (!slots.length) return null;
+
+  return (
+    <div className="space-y-1.5">
+      {title && <div className="text-xs font-medium text-muted-foreground">{title}</div>}
+      <div className="rounded-md border divide-y">
+        {days.map((d) => {
+          const items = (byDay.get(d) ?? []).sort((a, b) => a.hour - b.hour);
+          return (
+            <div key={d} className="flex items-start gap-3 px-3 py-2 text-xs">
+              <div className="w-10 font-semibold text-foreground shrink-0">{d}</div>
+              <div className="flex flex-wrap gap-1.5 flex-1">
+                {items.map(({ hour, key }) => {
+                  const info = seats?.[key];
+                  const left = info && info.total > 0 ? Math.max(0, info.total - info.occupied) : null;
+                  const full = left === 0;
+                  const isFree = freeSlots.includes(key);
+                  return (
+                    <span
+                      key={key}
+                      className={
+                        "inline-flex items-center gap-1 px-2 py-0.5 rounded-md border " +
+                        (isFree
+                          ? "border-success bg-success/10 text-success font-medium"
+                          : "border-border bg-muted/40 text-foreground")
+                      }
+                    >
+                      {fmt(hour)}
+                      {left !== null && (
+                        <span className={full ? "text-destructive font-semibold" : "text-muted-foreground"}>
+                          · {full ? "Full" : `${left}/${info!.total}`}
+                        </span>
+                      )}
+                    </span>
+                  );
+                })}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
