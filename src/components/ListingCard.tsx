@@ -184,6 +184,9 @@ export function ListingCard({ listing, reasons = [] }: Props) {
             <MapPin className="h-3 w-3 mt-0.5 shrink-0" />
             <span className="line-clamp-1">
               {listing.area}, {listing.city}{listing.pinCode ? ` · ${listing.pinCode}` : ""}
+              {distanceKm != null && (
+                <span className="ml-1 text-primary font-medium">· {formatDistance(distanceKm)}</span>
+              )}
             </span>
           </p>
           <p className="text-xs text-muted-foreground line-clamp-1">⏰ {slotsToText(listing.slots)}</p>
