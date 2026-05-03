@@ -8,13 +8,15 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { ScheduleGrid } from "@/components/ScheduleGrid";
 import { LocationFields } from "@/components/LocationFields";
 import { PinCodeInput } from "@/components/PinCodeInput";
 import { LanguagesEditor } from "@/components/LanguagesEditor";
 import { AGE_GROUPS, AgeGroup, Category, Mode, PriceUnit, SeatInfo, SlotKey } from "@/lib/types";
 import { useCategories } from "@/lib/useCategories";
-import { Plus, Globe2, Users, Wifi, Building2 } from "lucide-react";
+import { Plus, Globe2, Users, Wifi, MapPin, Locate } from "lucide-react";
 import { store, useStore } from "@/lib/store";
 import { toast } from "sonner";
 
