@@ -14,6 +14,7 @@ import AdultProfileEditor from "./pages/AdultProfileEditor";
 import KidProfileEditor from "./pages/KidProfileEditor";
 import ProviderDashboard from "./pages/ProviderDashboard";
 import ListingForm from "./pages/ListingForm";
+import Auth from "./pages/Auth";
 import NotFound from "./pages/NotFound.tsx";
 
 const queryClient = new QueryClient();
