@@ -1,15 +1,18 @@
+import { useState } from "react";
 import { TopBar } from "@/components/TopBar";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-import { CATEGORIES, Category, SocialLinks } from "@/lib/types";
+import { Category, ContactInfo, SocialLinks } from "@/lib/types";
 import { LocationFields } from "@/components/LocationFields";
 import { AddressFields } from "@/components/AddressFields";
 import { SocialLinksRow } from "@/components/SocialLinksRow";
+import { ContactActions } from "@/components/ContactActions";
+import { useCategories } from "@/lib/useCategories";
 import { store, useStore } from "@/lib/store";
-import { Instagram, Facebook, Youtube, Twitter, Linkedin, Globe, MessageCircle } from "lucide-react";
+import { Instagram, Facebook, Youtube, Twitter, Linkedin, Globe, MessageCircle, Phone, MapPin, Plus } from "lucide-react";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 
