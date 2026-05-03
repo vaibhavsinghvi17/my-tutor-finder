@@ -221,7 +221,22 @@ const ListingDetail = () => {
 
             <div>
               <h3 className="font-semibold mb-2">Class schedule</h3>
-              <ScheduleGrid value={listing.slots} highlightSlots={freeSlots} readOnly compact />
+              {listing.mode === "Both" ? (
+                <div className="space-y-4">
+                  <div>
+                    <div className="text-xs font-medium mb-1.5 text-muted-foreground">Offline batches</div>
+                    <ScheduleGrid value={listing.slots} highlightSlots={freeSlots} readOnly compact />
+                  </div>
+                  {(listing.onlineSlots?.length ?? 0) > 0 && (
+                    <div>
+                      <div className="text-xs font-medium mb-1.5 text-muted-foreground">Online batches</div>
+                      <ScheduleGrid value={listing.onlineSlots ?? []} highlightSlots={freeSlots} readOnly compact />
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <ScheduleGrid value={listing.slots} highlightSlots={freeSlots} readOnly compact />
+              )}
               {matching.length > 0 && (
                 <p className="text-xs text-success mt-2">
                   ✓ {matching.length} slot{matching.length > 1 ? "s" : ""} match your free time.
