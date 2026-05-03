@@ -12,7 +12,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
-import { Search, UserCircle2, Baby, Plus } from "lucide-react";
+import { Search, UserCircle2, Baby, Plus, MapPin } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Card } from "@/components/ui/card";
 
@@ -172,12 +172,15 @@ const Discover = () => {
               <SelectItem value="Offline">Offline</SelectItem>
             </SelectContent>
           </Select>
-          <Combobox
-            value={cityFilter === "all" ? "" : cityFilter}
-            onChange={(v) => setCityFilter(v || "all")}
-            options={state.learner.city ? [state.learner.city] : allKnownCities()}
-            placeholder={state.learner.city || "All cities"}
-          />
+          <div className="relative">
+            <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <Input
+              placeholder="Pin / Postal code"
+              value={pinFilter}
+              onChange={(e) => setPinFilter(e.target.value.slice(0, 12))}
+              className="pl-9"
+            />
+          </div>
           <Select value={timeOfDay} onValueChange={(v) => setTimeOfDay(v as TimeOfDay)}>
             <SelectTrigger><SelectValue placeholder="Any time" /></SelectTrigger>
             <SelectContent>
