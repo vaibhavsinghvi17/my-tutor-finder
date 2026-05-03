@@ -112,7 +112,7 @@ const ProviderProfilePage = () => {
           <div className="space-y-2">
             <Label>What you teach</Label>
             <div className="flex flex-wrap gap-2">
-              {CATEGORIES.map((c) => {
+              {Array.from(new Set([...categoryNames, ...provider.categories])).map((c) => {
                 const active = provider.categories.includes(c);
                 return (
                   <button
@@ -130,8 +130,62 @@ const ProviderProfilePage = () => {
                 );
               })}
             </div>
+            <div className="flex gap-2 pt-2">
+              <Input
+                placeholder="Don't see your category? Add a new one"
+                value={newCat}
+                onChange={(e) => setNewCat(e.target.value.slice(0, 40))}
+                onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); handleAddCategory(); } }}
+                className="h-9"
+              />
+              <Button type="button" size="sm" onClick={handleAddCategory} className="gap-1">
+                <Plus className="h-3.5 w-3.5" /> Add
+              </Button>
+            </div>
+            <p className="text-xs text-muted-foreground">
+              New categories are added to the app's global list and become available to all users.
+            </p>
           </div>
         </Card>
+
+        {/* Contact actions */}
+        <Card className="p-5 space-y-4">
+          <div className="flex items-start justify-between gap-3 flex-wrap">
+            <div>
+              <h2 className="font-semibold">Contact actions</h2>
+              <p className="text-sm text-muted-foreground">Learners can call, WhatsApp, or get directions in one tap.</p>
+            </div>
+            <ContactActions contact={contactInfo} fallbackAddress={provider.address} size="sm" />
+          </div>
+          <div className="grid sm:grid-cols-2 gap-3">
+            <div className="space-y-1.5">
+              <Label className="text-xs flex items-center gap-1.5"><Phone className="h-3.5 w-3.5" /> Phone (for Call button)</Label>
+              <Input
+                value={contactInfo.phone ?? ""}
+                onChange={(e) => setContact({ phone: e.target.value.slice(0, 20) })}
+                placeholder="+91 9XXXXXXXXX"
+                className="h-9"
+              />
+            </div>
+            <div className="space-y-1.5">
+              <Label className="text-xs flex items-center gap-1.5"><MessageCircle className="h-3.5 w-3.5 text-[#25D366]" /> WhatsApp number</Label>
+              <Input
+                value={contactInfo.whatsapp ?? ""}
+                onChange={(e) => setContact({ whatsapp: e.target.value.slice(0, 20) })}
+                placeholder="Same as phone if blank"
+                className="h-9"
+              />
+            </div>
+            <div className="space-y-1.5 sm:col-span-2">
+              <Label className="text-xs flex items-center gap-1.5"><MapPin className="h-3.5 w-3.5" /> Google Maps link or address</Label>
+              <Input
+                value={contactInfo.mapsUrl ?? ""}
+                onChange={(e) => setContact({ mapsUrl: e.target.value.slice(0, 500) })}
+                placeholder="Paste a Google Maps link, or leave blank to use studio address"
+                className="h-9"
+              />
+            </div>
+          </div>
 
         <Card className="p-5 space-y-3">
           <div className="flex items-start justify-between gap-3 flex-wrap">
