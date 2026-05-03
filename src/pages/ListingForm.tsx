@@ -253,9 +253,9 @@ const ListingForm = () => {
               <Select value={durationMins} onValueChange={setDurationMins}>
                 <SelectTrigger><SelectValue /></SelectTrigger>
                 <SelectContent>
-                  {[30, 45, 60, 75, 90, 120].map((m) => (
+                  {[30, 45, 60, 90, 120, 180, 240, 300].map((m) => (
                     <SelectItem key={m} value={String(m)}>
-                      {m < 60 ? `${m} min` : m === 60 ? "1 hour" : `${Math.floor(m / 60)}h ${m % 60 ? `${m % 60}m` : ""}`.trim()}
+                      {m < 60 ? `${m} min` : m === 60 ? "1 hour" : `${Math.floor(m / 60)} hour${m / 60 > 1 ? "s" : ""}${m % 60 ? ` ${m % 60}m` : ""}`}
                     </SelectItem>
                   ))}
                 </SelectContent>
