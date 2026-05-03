@@ -68,7 +68,7 @@ const ProfilePicker = () => {
       <TopBar />
       <main className="container py-8 max-w-3xl">
         <div className="text-center mb-8 animate-fade-in">
-          <h1 className="text-2xl font-bold">Who's it for?</h1>
+          <h1 className="text-lg font-semibold">Who's it for?</h1>
           <p className="text-sm text-muted-foreground mt-1">Pick a profile to view or edit.</p>
         </div>
 

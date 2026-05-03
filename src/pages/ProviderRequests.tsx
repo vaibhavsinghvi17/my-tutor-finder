@@ -50,7 +50,7 @@ const ProviderRequests = () => {
 
         <div className="flex items-start justify-between gap-3 flex-wrap">
           <div>
-            <h1 className="text-2xl font-bold">Join requests</h1>
+            <h1 className="text-lg font-semibold">Join requests</h1>
             <p className="text-sm text-muted-foreground">Approve or decline learners interested in your classes.</p>
           </div>
           <Button size="sm" className="gap-1.5 rounded-full" onClick={() => setAddOpen(true)}>

@@ -16,7 +16,7 @@ const Requests = () => {
       <TopBar />
       <main className="container py-6 space-y-5 max-w-3xl">
         <div>
-          <h1 className="text-2xl font-bold">My Requests</h1>
+          <h1 className="text-lg font-semibold">My Requests</h1>
           <p className="text-sm text-muted-foreground">Track classes you've asked to join.</p>
         </div>
 

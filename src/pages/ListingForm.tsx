@@ -155,7 +155,7 @@ const ListingForm = () => {
       <TopBar />
       <main className="container py-6 space-y-6 max-w-3xl">
         <div>
-          <h1 className="text-2xl font-bold">{id ? "Edit class" : "New class"}</h1>
+          <h1 className="text-lg font-semibold">{id ? "Edit class" : "New class"}</h1>
           <p className="text-sm text-muted-foreground">
             Fill in the details — learners will see this on the discover page.
           </p>

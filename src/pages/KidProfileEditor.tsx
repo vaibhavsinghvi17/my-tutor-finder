@@ -70,7 +70,7 @@ const KidProfileEditor = () => {
         </button>
 
         <div>
-          <h1 className="text-2xl font-bold">{isNew ? "Add kid profile" : "Edit kid profile"}</h1>
+          <h1 className="text-lg font-semibold">{isNew ? "Add kid profile" : "Edit kid profile"}</h1>
           <p className="text-sm text-muted-foreground">Helps suggest age-appropriate classes.</p>
         </div>
 
