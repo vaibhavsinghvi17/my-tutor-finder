@@ -75,12 +75,16 @@ const ListingForm = () => {
       state: stateName,
       city: city || (mode === "Online" ? "Online" : ""),
       area: area.trim(),
+      pinCode: pinCode.trim() || undefined,
       venue: mode === "Online" ? undefined : venue.trim() || undefined,
       priceAmount: priceAmount ? Number(priceAmount) : undefined,
       priceUnit: priceAmount ? priceUnit : undefined,
       durationMins: durationMins ? Number(durationMins) : undefined,
       trial,
       slots,
+      seatsBySlot: Object.keys(seatsBySlot).length ? seatsBySlot : undefined,
+      languages: languages.length ? languages : undefined,
+      teachesInternationally: mode !== "Offline" ? teachesInternationally : undefined,
     };
 
     if (id && existing) {
