@@ -3,7 +3,8 @@ import { FxRates, convertFromINR, currencyForCountry, formatMoney } from "./curr
 
 type PriceListing = Pick<Listing,
   "price" | "priceAmount" | "priceUnit" | "intlPriceAmount" | "intlPriceCurrency"
-  | "onlinePriceAmount" | "onlineIntlPriceAmount" | "country" | "mode" | "sessionsPerMonth"
+  | "onlinePriceAmount" | "onlineIntlPriceAmount" | "onlinePriceUnit" | "onlineSessionsPerMonth"
+  | "country" | "mode" | "sessionsPerMonth"
 >;
 
 function unitLabel(unit: PriceUnit, sessionsPerMonth?: number) {
@@ -19,47 +20,41 @@ function fmt(amount: number, ccy: string, unit: PriceUnit, sessionsPerMonth?: nu
   return `${formatMoney(amount, ccy)} ${unitLabel(unit, sessionsPerMonth)}`;
 }
 
-/**
- * Resolve a price for a single delivery mode. Behavior:
- *  - Same country: show provider's INR price.
- *  - Different country & provider set intl override: show that.
- *  - Different country & no override: auto-convert INR → viewer's currency
- *    using cached FX rates. Falls back to INR if rates not loaded yet.
- */
 function priceForMode(
   l: PriceListing,
   modeKind: "Online" | "Offline",
   viewerCountry?: string,
   rates?: FxRates | null,
 ): string | null {
-  const unit: PriceUnit = l.priceUnit ?? "session";
+  const isOnline = modeKind === "Online";
+  const unit: PriceUnit = isOnline
+    ? (l.onlinePriceUnit ?? l.priceUnit ?? "session")
+    : (l.priceUnit ?? "session");
+  const sessionsPM = isOnline
+    ? (l.onlineSessionsPerMonth ?? (l.onlinePriceUnit ? undefined : l.sessionsPerMonth))
+    : l.sessionsPerMonth;
   const isIntl = !!viewerCountry && !!l.country && viewerCountry !== l.country;
 
-  // Pick the right INR base + intl override for this mode
-  const inrBase = modeKind === "Online" && typeof l.onlinePriceAmount === "number" && l.onlinePriceAmount > 0
+  const inrBase = isOnline && typeof l.onlinePriceAmount === "number" && l.onlinePriceAmount > 0
     ? l.onlinePriceAmount
     : (typeof l.priceAmount === "number" && l.priceAmount > 0 ? l.priceAmount : undefined);
 
-  const intlOverride = modeKind === "Online" && typeof l.onlineIntlPriceAmount === "number" && l.onlineIntlPriceAmount > 0
+  const intlOverride = isOnline && typeof l.onlineIntlPriceAmount === "number" && l.onlineIntlPriceAmount > 0
     ? l.onlineIntlPriceAmount
     : (typeof l.intlPriceAmount === "number" && l.intlPriceAmount > 0 ? l.intlPriceAmount : undefined);
 
-  
-
   if (isIntl) {
-    // International price is provided in INR by the tutor.
-    // Convert it to the viewer's currency in real time.
     const baseInr = typeof intlOverride === "number" ? intlOverride : (typeof inrBase === "number" ? inrBase : undefined);
     if (typeof baseInr === "number") {
       const viewerCcy = currencyForCountry(viewerCountry);
       const converted = convertFromINR(baseInr, viewerCcy, rates ?? null);
-      if (converted != null) return fmt(converted, viewerCcy, unit, l.sessionsPerMonth);
-      return fmt(baseInr, "INR", unit, l.sessionsPerMonth);
+      if (converted != null) return fmt(converted, viewerCcy, unit, sessionsPM);
+      return fmt(baseInr, "INR", unit, sessionsPM);
     }
     return null;
   }
 
-  if (typeof inrBase === "number") return fmt(inrBase, "INR", unit, l.sessionsPerMonth);
+  if (typeof inrBase === "number") return fmt(inrBase, "INR", unit, sessionsPM);
   return null;
 }
 
