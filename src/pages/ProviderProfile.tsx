@@ -92,13 +92,28 @@ const ProviderProfilePage = () => {
             hint="Where is your studio? For online-only, just pick country & state."
           />
 
-          <div className="space-y-1.5">
-            <Label>Studio / venue address</Label>
-            <AddressFields
-              value={provider.address}
-              onChange={(v) => store.updateProvider({ address: v })}
-            />
+          <div className="grid sm:grid-cols-[1fr_180px] gap-3">
+            <div className="space-y-1.5">
+              <Label>Studio / venue address</Label>
+              <AddressFields
+                value={provider.address}
+                onChange={(v) => store.updateProvider({ address: v })}
+              />
+            </div>
+            <div className="space-y-1.5">
+              <Label>Pin / Postal code</Label>
+              <PinCodeInput
+                value={provider.pinCode ?? ""}
+                onChange={(v) => store.updateProvider({ pinCode: v })}
+                country={provider.country}
+              />
+            </div>
           </div>
+
+          <LanguagesEditor
+            value={provider.languages ?? []}
+            onChange={(v) => store.updateProvider({ languages: v })}
+          />
 
           <div className="grid sm:grid-cols-[1fr_auto] gap-4 items-end">
             <div className="space-y-1.5">
