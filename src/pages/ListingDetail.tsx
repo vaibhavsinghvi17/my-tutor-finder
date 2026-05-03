@@ -141,6 +141,16 @@ const ListingDetail = () => {
                   <Sparkles className="h-3 w-3" /> Free trial available
                 </Badge>
               )}
+              {listing.teachesInternationally && (
+                <Badge variant="outline" className="gap-1 border-primary/40 text-primary">
+                  <Globe2 className="h-3 w-3" /> Teaches internationally
+                </Badge>
+              )}
+              {listing.pinCode && (
+                <Badge variant="outline" className="gap-1">
+                  <MapPin className="h-3 w-3" /> {listing.pinCode}
+                </Badge>
+              )}
             </div>
 
             {(() => {
