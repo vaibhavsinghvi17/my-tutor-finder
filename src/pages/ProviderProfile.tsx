@@ -186,6 +186,7 @@ const ProviderProfilePage = () => {
               />
             </div>
           </div>
+        </Card>
 
         <Card className="p-5 space-y-3">
           <div className="flex items-start justify-between gap-3 flex-wrap">
