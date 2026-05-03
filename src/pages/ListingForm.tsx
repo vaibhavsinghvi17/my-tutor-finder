@@ -385,18 +385,7 @@ const ListingForm = () => {
             </div>
           )}
 
-          {mode !== "Offline" && (
-            <div className="flex items-center justify-between rounded-lg border p-3">
-              <div className="flex items-start gap-2">
-                <Globe2 className="h-4 w-4 mt-0.5 text-primary" />
-                <div>
-                  <Label className="text-sm">Open to teach internationally</Label>
-                  <p className="text-xs text-muted-foreground">Show this online class to learners worldwide.</p>
-                </div>
-              </div>
-              <Switch checked={teachesInternationally} onCheckedChange={setTeachesInternationally} />
-            </div>
-          )}
+
 
           <LanguagesEditor value={languages} onChange={setLanguages} />
 
