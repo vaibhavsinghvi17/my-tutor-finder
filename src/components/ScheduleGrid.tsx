@@ -27,18 +27,18 @@ export function ScheduleGrid({ value, onChange, highlightSlots = [], readOnly, c
   }
 
   return (
-    <div className="overflow-x-auto">
+    <div className="overflow-auto max-h-[70vh] rounded-md border bg-background">
       <div className="min-w-[640px]">
-        <div className="grid grid-cols-[60px_repeat(7,1fr)] gap-1">
-          <div />
+        <div className="grid grid-cols-[60px_repeat(7,1fr)] gap-1 p-1">
+          <div className="sticky top-0 left-0 z-30 bg-background" />
           {DAYS.map((d) => (
-            <div key={d} className="text-xs font-semibold text-center text-muted-foreground py-1">
+            <div key={d} className="sticky top-0 z-20 bg-background text-xs font-semibold text-center text-muted-foreground py-1">
               {d}
             </div>
           ))}
           {TIME_SLOTS.map((h) => (
             <div key={h} className="contents">
-              <div className="text-[10px] text-muted-foreground text-right pr-2 self-center">
+              <div className="sticky left-0 z-10 bg-background text-[10px] text-muted-foreground text-right pr-2 self-center">
                 {fmtHour(h)}
               </div>
               {DAYS.map((d) => {
