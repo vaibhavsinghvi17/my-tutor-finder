@@ -98,9 +98,8 @@ const ProviderDashboard = () => {
           </Button>
         </div>
 
-        <section className="grid gap-6 lg:grid-cols-3">
-          <div className="lg:col-span-2 space-y-3">
-            <h2 className="font-semibold">Your classes</h2>
+        <section className="space-y-3">
+          <h2 className="font-semibold">Your classes</h2>
             {listings.length === 0 ? (
               <Card className="p-8 text-center">
                 <p className="text-muted-foreground mb-4">You haven't published any classes yet.</p>
