@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { FreeTimeEditor } from "@/components/FreeTimeEditor";
+import { DatePicker } from "@/components/DatePicker";
 import { CATEGORIES, Category, FreeTimeBlock } from "@/lib/types";
 import { store, useStore } from "@/lib/store";
 import { ageFromDob } from "@/lib/timeUtils";
