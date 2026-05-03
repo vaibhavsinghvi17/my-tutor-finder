@@ -16,6 +16,7 @@ import { Instagram, Facebook, Youtube, Twitter, Linkedin, Globe, MessageCircle, 
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { PinCodeInput } from "@/components/PinCodeInput";
+import { LanguagesEditor } from "@/components/LanguagesEditor";
 
 const SOCIAL_FIELDS: { key: keyof SocialLinks; icon: React.ComponentType<{ className?: string }>; label: string; placeholder: string }[] = [
   { key: "instagram", icon: Instagram, label: "Instagram", placeholder: "@yourhandle or full URL" },
