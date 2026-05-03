@@ -59,6 +59,14 @@ const ProviderDashboard = () => {
           </p>
         </div>
 
+        {/* At-a-glance stats */}
+        <section className="grid gap-3 grid-cols-2 lg:grid-cols-4">
+          <StatTile icon={BookOpen} label="Total classes" value={listings.length} tint="primary" />
+          <StatTile icon={Inbox} label="Total requests" value={incoming.length} tint="accent"
+            sub={`${incoming.filter((r) => r.status === "Pending").length} pending`} />
+          <StatTile icon={CheckCircle2} label="Approved" value={incoming.filter((r) => r.status === "Approved").length} tint="secondary" />
+          <StatTile icon={Users} label="Students enrolled" value={new Set(incoming.filter((r) => r.status === "Approved").map((r) => r.forKidName ?? r.learnerName)).size} tint="muted" />
+        </section>
 
         <section className="grid gap-6 lg:grid-cols-3">
           <div className="lg:col-span-2 space-y-3">
