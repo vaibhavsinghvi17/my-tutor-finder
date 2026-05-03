@@ -220,6 +220,20 @@ export const store = {
       ],
     }));
   },
+  toggleSaved(listingId: string) {
+    set((s) => {
+      const cur = s.learner.savedListings || [];
+      const next = cur.includes(listingId) ? cur.filter((x) => x !== listingId) : [...cur, listingId];
+      return { ...s, learner: { ...s.learner, savedListings: next } };
+    });
+  },
+  toggleCompleted(listingId: string) {
+    set((s) => {
+      const cur = s.learner.completedListings || [];
+      const next = cur.includes(listingId) ? cur.filter((x) => x !== listingId) : [...cur, listingId];
+      return { ...s, learner: { ...s.learner, completedListings: next } };
+    });
+  },
   reset() {
     state = initialState;
     persist();
