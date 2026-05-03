@@ -214,6 +214,11 @@ const ListingForm = () => {
                   <SelectItem value="Both">Both online & offline</SelectItem>
                 </SelectContent>
               </Select>
+              {mode === "Both" && (
+                <p className="text-xs text-muted-foreground">
+                  This class will appear in both <span className="font-medium text-foreground">Online</span> and <span className="font-medium text-foreground">Offline</span> searches. Set separate weekly batches and prices for each below.
+                </p>
+              )}
             </div>
             <div className="space-y-1.5">
               <Label>Duration</Label>
