@@ -49,6 +49,7 @@ const Discover = () => {
   const [category, setCategory] = useState<Category | "all">("all");
   const [mode, setMode] = useState<Mode | "all">("all");
   const [cityFilter, setCityFilter] = useState<string>(state.city || "all");
+  const [pinFilter, setPinFilter] = useState<string>("");
   const [sortBy, setSortBy] = useState<SortOption>("recommended");
   const [timeOfDay, setTimeOfDay] = useState<TimeOfDay>("all");
 
@@ -76,6 +77,15 @@ const Discover = () => {
     if (category !== "all") scoredList = scoredList.filter((s) => s.listing.category === category);
     if (mode !== "all") scoredList = scoredList.filter((s) => s.listing.mode === mode || s.listing.mode === "Both");
     if (cityFilter !== "all") scoredList = scoredList.filter((s) => s.listing.city === cityFilter);
+    if (pinFilter.trim()) {
+      const pin = pinFilter.trim();
+      const prefix = pin.slice(0, Math.min(3, pin.length));
+      scoredList = scoredList.filter((s) => {
+        const lp = (s.listing as any).pinCode as string | undefined;
+        if (!lp) return s.listing.teachesInternationally === true || s.listing.mode === "Online";
+        return lp === pin || lp.startsWith(prefix);
+      });
+    }
     if (timeOfDay !== "all") scoredList = scoredList.filter((s) => listingHasTimeOfDay(s.listing.slots as any, timeOfDay));
 
     if (sortBy === "price-asc" || sortBy === "price-desc") {
@@ -94,7 +104,7 @@ const Discover = () => {
     }
     return scoredList;
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [state, query, category, mode, cityFilter, sortBy, timeOfDay, ratings, requests]);
+  }, [state, query, category, mode, cityFilter, pinFilter, sortBy, timeOfDay, ratings, requests]);
 
   const activeKid = state.learner.activeKidId
     ? state.learner.kids.find((k) => k.id === state.learner.activeKidId)
