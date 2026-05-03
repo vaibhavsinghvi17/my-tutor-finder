@@ -24,6 +24,8 @@ const initialState: AppState = {
     kids: [],
     adults: [],
     activeKidId: null,
+    savedListings: [],
+    completedListings: [],
   },
   provider: {
     businessName: "",
@@ -78,6 +80,8 @@ function load(): AppState {
           : [],
         freeBlocks: Array.isArray(parsed.learner?.freeBlocks) ? parsed.learner.freeBlocks : [],
         interests: Array.isArray(parsed.learner?.interests) ? parsed.learner.interests : [],
+        savedListings: Array.isArray(parsed.learner?.savedListings) ? parsed.learner.savedListings : [],
+        completedListings: Array.isArray(parsed.learner?.completedListings) ? parsed.learner.completedListings : [],
       },
       provider: { ...initialState.provider, ...(parsed.provider ?? {}) },
       listings: Array.isArray(parsed.listings) ? parsed.listings : [],
@@ -215,6 +219,20 @@ export const store = {
         ...s.ratings,
       ],
     }));
+  },
+  toggleSaved(listingId: string) {
+    set((s) => {
+      const cur = s.learner.savedListings || [];
+      const next = cur.includes(listingId) ? cur.filter((x) => x !== listingId) : [...cur, listingId];
+      return { ...s, learner: { ...s.learner, savedListings: next } };
+    });
+  },
+  toggleCompleted(listingId: string) {
+    set((s) => {
+      const cur = s.learner.completedListings || [];
+      const next = cur.includes(listingId) ? cur.filter((x) => x !== listingId) : [...cur, listingId];
+      return { ...s, learner: { ...s.learner, completedListings: next } };
+    });
   },
   reset() {
     state = initialState;
