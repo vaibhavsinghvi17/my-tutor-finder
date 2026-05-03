@@ -133,6 +133,10 @@ const ListingForm = () => {
       onlineSeatsBySlot: mode === "Both" && Object.keys(onlineSeatsBySlot).length ? onlineSeatsBySlot : undefined,
       languages: languages.length ? languages : undefined,
       teachesInternationally: mode !== "Offline" ? teachesInternationally : undefined,
+      locationPin: mode !== "Online" ? (locationPin.trim() || undefined) : undefined,
+      startDate: startDate || undefined,
+      endDate: continuous ? undefined : (endDate || undefined),
+      continuous,
     };
 
     if (id && existing) {
