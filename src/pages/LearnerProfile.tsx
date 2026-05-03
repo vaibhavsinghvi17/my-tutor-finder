@@ -398,10 +398,10 @@ const LearnerProfilePage = () => {
 };
 
 function Section({
-  title, icon: Icon, count, children,
-}: { title: string; icon: React.ElementType; count: number; children: React.ReactNode }) {
+  title, icon: Icon, count, children, id,
+}: { title: string; icon: React.ElementType; count: number; children: React.ReactNode; id?: string }) {
   return (
-    <div className="rounded-xl border border-border/60 bg-card/40 backdrop-blur-sm p-3 space-y-2">
+    <div id={id} className="rounded-xl border border-border/60 bg-card/40 backdrop-blur-sm p-3 space-y-2 scroll-mt-20">
       <div className="flex items-center gap-2">
         <Icon className="h-4 w-4 text-primary" />
         <h2 className="text-sm font-semibold">{title}</h2>
