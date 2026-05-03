@@ -26,6 +26,8 @@ interface Props {
   /** Visual variant for the trigger button */
   triggerVariant?: "default" | "outline" | "secondary" | "ghost";
   triggerLabel?: string;
+  /** Render the trigger as a floating bubble pinned to the bottom-right of the viewport. */
+  floating?: boolean;
 }
 
 /**
@@ -35,7 +37,7 @@ interface Props {
  */
 export function ClassChat({
   listingId, listingTitle, providerUserId, learnerUserId,
-  otherPartyName, triggerVariant = "outline", triggerLabel = "Message",
+  otherPartyName, triggerVariant = "outline", triggerLabel = "Message", floating = false,
 }: Props) {
   const { user } = useAuth();
   const [open, setOpen] = useState(false);
@@ -111,9 +113,22 @@ export function ClassChat({
   return (
     <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger asChild>
-        <Button variant={triggerVariant} size="sm" className="gap-1.5">
-          <MessageCircle className="h-4 w-4" /> {triggerLabel}
-        </Button>
+        {floating ? (
+          <button
+            type="button"
+            aria-label="Chat instantly"
+            className="fixed bottom-5 right-5 z-50 flex items-center gap-2 rounded-full bg-primary text-primary-foreground pl-4 pr-5 py-3 shadow-elegant hover:bg-primary/90 transition-all hover:scale-105 active:scale-95"
+          >
+            <span className="grid place-items-center h-8 w-8 rounded-full bg-primary-foreground/20">
+              <MessageCircle className="h-5 w-5" />
+            </span>
+            <span className="text-sm font-semibold whitespace-nowrap">Chat instantly</span>
+          </button>
+        ) : (
+          <Button variant={triggerVariant} size="sm" className="gap-1.5">
+            <MessageCircle className="h-4 w-4" /> {triggerLabel}
+          </Button>
+        )}
       </SheetTrigger>
       <SheetContent side="right" className="w-full sm:max-w-md flex flex-col p-0">
         <SheetHeader className="border-b p-4">

@@ -119,30 +119,18 @@ const ListingDetail = () => {
           {hasContact && (
             <div className="rounded-lg bg-background/95 backdrop-blur-sm p-1.5 shadow-sm flex items-center gap-1.5 flex-wrap">
               <ContactActions contact={contact} fallbackAddress={contactFallback} size="sm" />
-              <ClassChat
-                listingId={listing.id}
-                listingTitle={listing.title}
-                providerUserId={listing.providerUserId}
-                otherPartyName={listing.providerName}
-                triggerVariant="default"
-                triggerLabel="Chat"
-              />
-            </div>
-          )}
-          {!hasContact && (
-            <div className="rounded-lg bg-background/95 backdrop-blur-sm p-1.5 shadow-sm">
-              <ClassChat
-                listingId={listing.id}
-                listingTitle={listing.title}
-                providerUserId={listing.providerUserId}
-                otherPartyName={listing.providerName}
-                triggerVariant="default"
-                triggerLabel={`Chat with ${listing.providerName}`}
-              />
             </div>
           )}
         </div>
       </div>
+
+      <ClassChat
+        listingId={listing.id}
+        listingTitle={listing.title}
+        providerUserId={listing.providerUserId}
+        otherPartyName={listing.providerName}
+        floating
+      />
 
       <main className="container py-6 space-y-6 max-w-4xl">
         <Card className="overflow-hidden">
