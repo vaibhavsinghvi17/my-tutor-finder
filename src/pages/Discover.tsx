@@ -10,9 +10,10 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
-import { Search, UserCircle2, Baby, Plus, MapPin } from "lucide-react";
+import { Search, UserCircle2, Baby, Plus, MapPin, Home, Globe2 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Card } from "@/components/ui/card";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 type SortOption = "recommended" | "price-asc" | "price-desc" | "popularity" | "newest";
 type TimeOfDay = "all" | "morning" | "afternoon" | "evening";
@@ -50,6 +51,7 @@ const Discover = () => {
   const [pinFilter, setPinFilter] = useState<string>("");
   const [sortBy, setSortBy] = useState<SortOption>("recommended");
   const [timeOfDay, setTimeOfDay] = useState<TimeOfDay>("all");
+  const [scope, setScope] = useState<"local" | "world">("local");
 
   const allListings = getAllListings();
   const allCategories = Array.from(new Set([...categoryNames, ...CATEGORIES])).sort();
@@ -86,6 +88,23 @@ const Discover = () => {
     }
     if (timeOfDay !== "all") scoredList = scoredList.filter((s) => listingHasTimeOfDay(s.listing.slots as any, timeOfDay));
 
+    // Tab scope: local vs around the world
+    const learnerCountry = state.learner.country;
+    if (learnerCountry) {
+      if (scope === "local") {
+        scoredList = scoredList.filter((s) => s.listing.country === learnerCountry);
+      } else {
+        scoredList = scoredList.filter((s) =>
+          s.listing.country !== learnerCountry &&
+          (s.listing.teachesInternationally === true || s.listing.mode === "Online" || s.listing.mode === "Both"),
+        );
+      }
+    } else if (scope === "world") {
+      scoredList = scoredList.filter((s) =>
+        s.listing.teachesInternationally === true || s.listing.mode === "Online" || s.listing.mode === "Both",
+      );
+    }
+
     if (sortBy === "price-asc" || sortBy === "price-desc") {
       scoredList = [...scoredList].sort((a, b) => {
         const pa = listingPrice(a.listing);
@@ -102,7 +121,7 @@ const Discover = () => {
     }
     return scoredList;
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [state, query, category, mode, pinFilter, sortBy, timeOfDay, ratings, requests]);
+  }, [state, query, category, mode, pinFilter, sortBy, timeOfDay, scope, ratings, requests]);
 
   const activeKid = state.learner.activeKidId
     ? state.learner.kids.find((k) => k.id === state.learner.activeKidId)
