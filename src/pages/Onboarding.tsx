@@ -54,7 +54,8 @@ const Onboarding = () => {
     if (pendingRole === "learner") store.updateLearner({ username: slug });
     else store.updateProvider({ username: slug });
     store.setOnboarded(pendingRole);
-    navigate(pendingRole === "provider" ? "/provider" : "/dashboard");
+    // Always send brand-new users to fill out their profile first.
+    navigate(pendingRole === "provider" ? "/profile/provider" : "/profile/learner");
   }
 
   if (showSplash) {
