@@ -201,7 +201,7 @@ const LearnerProfilePage = () => {
         </div>
 
         {/* Saved classes */}
-        <Section title="Saved classes" icon={Bookmark} count={savedClasses.length}>
+        <Section id="saved" title="Saved classes" icon={Bookmark} count={savedClasses.length}>
           {savedClasses.length === 0 ? (
             <Empty text="Tap the bookmark on any class to save it." />
           ) : (
