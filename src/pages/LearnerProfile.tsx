@@ -34,7 +34,16 @@ const LearnerProfilePage = () => {
   const navigate = useNavigate();
   const [open, setOpen] = useState<Section>(null);
   const [interestsOpen, setInterestsOpen] = useState(false);
+  const [customInterest, setCustomInterest] = useState("");
   const fileRef = useRef<HTMLInputElement>(null);
+
+  function addCustomInterest() {
+    const v = customInterest.trim();
+    if (!v) return;
+    if (learner.interests.includes(v)) { setCustomInterest(""); return; }
+    store.updateLearner({ interests: [...learner.interests, v] });
+    setCustomInterest("");
+  }
 
   const fullLocation = [learner.area, learner.city, learner.state, learner.country].filter(Boolean).join(", ");
   const addressLines = (learner.address || "").split(" | ").filter(Boolean);
