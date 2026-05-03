@@ -74,27 +74,39 @@ const ListingDetail = () => {
     navigate("/requests");
   }
 
+  const contact = listing.contactInfo ?? (listing.providerId === "self" ? provider.contactInfo : undefined);
+  const contactFallback = [listing.venue, listing.area, listing.city].filter(Boolean).join(", ");
+  const hasContact = !!(contact?.phone || contact?.whatsapp || contact?.mapsUrl || contactFallback);
+
   return (
     <div className="min-h-screen">
       <TopBar />
-      <main className="container py-6 space-y-6 max-w-4xl">
-        <Button variant="ghost" size="sm" onClick={() => navigate(-1)} className="gap-1.5">
-          <ArrowLeft className="h-4 w-4" /> Back
-        </Button>
-
-        <Card className="overflow-hidden">
-          <div className={`${categoryGradient(listing.category)} h-40 flex items-end p-6`}>
-            <div className="flex items-center gap-3 text-primary-foreground">
-              <div className="h-12 w-12 rounded-xl bg-background/20 grid place-items-center backdrop-blur-sm">
-                <CategoryIcon category={listing.category} className="h-6 w-6" />
-              </div>
-              <div>
-                <p className="text-sm opacity-90">{listing.category} • {listing.providerName}</p>
-                <h1 className="text-2xl sm:text-3xl font-bold">{listing.title}</h1>
-              </div>
+      <div className={`sticky top-16 z-30 ${categoryGradient(listing.category)} shadow-md`}>
+        <div className="container max-w-4xl px-4 py-3 sm:py-4 space-y-2.5">
+          <div className="flex items-start gap-3 text-primary-foreground">
+            <button
+              onClick={() => navigate(-1)}
+              className="h-8 w-8 shrink-0 rounded-lg bg-background/20 hover:bg-background/30 grid place-items-center backdrop-blur-sm transition-colors"
+              aria-label="Back"
+            >
+              <ArrowLeft className="h-4 w-4" />
+            </button>
+            <div className="h-10 w-10 shrink-0 rounded-xl bg-background/20 grid place-items-center backdrop-blur-sm">
+              <CategoryIcon category={listing.category} className="h-5 w-5" />
+            </div>
+            <div className="min-w-0 flex-1">
+              <p className="text-[11px] sm:text-xs opacity-90 truncate">{listing.category} • {listing.providerName}</p>
+              <h1 className="text-lg sm:text-2xl font-bold leading-tight line-clamp-2">{listing.title}</h1>
             </div>
           </div>
+          {hasContact && (
+            <ContactActions contact={contact} fallbackAddress={contactFallback} size="sm" />
+          )}
+        </div>
+      </div>
 
+      <main className="container py-6 space-y-6 max-w-4xl">
+        <Card className="overflow-hidden">
           <div className="p-6 space-y-5">
             <div className="flex flex-wrap gap-2">
               <Badge variant="outline" className="gap-1">
