@@ -5,9 +5,7 @@ import { getAllListings, store, useStore } from "@/lib/store";
 import { scoreListings } from "@/lib/suggest";
 import { CATEGORIES, Category, Mode } from "@/lib/types";
 import { useCategories } from "@/lib/useCategories";
-import { allKnownCities } from "@/lib/locations";
 import { ageFromDob } from "@/lib/timeUtils";
-import { Combobox } from "@/components/Combobox";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -48,7 +46,7 @@ const Discover = () => {
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState<Category | "all">("all");
   const [mode, setMode] = useState<Mode | "all">("all");
-  const [cityFilter, setCityFilter] = useState<string>(state.city || "all");
+  // city filter removed — using pin code instead
   const [pinFilter, setPinFilter] = useState<string>("");
   const [sortBy, setSortBy] = useState<SortOption>("recommended");
   const [timeOfDay, setTimeOfDay] = useState<TimeOfDay>("all");
@@ -76,7 +74,7 @@ const Discover = () => {
     }
     if (category !== "all") scoredList = scoredList.filter((s) => s.listing.category === category);
     if (mode !== "all") scoredList = scoredList.filter((s) => s.listing.mode === mode || s.listing.mode === "Both");
-    if (cityFilter !== "all") scoredList = scoredList.filter((s) => s.listing.city === cityFilter);
+    // city filter removed — using pin code prefix matching instead
     if (pinFilter.trim()) {
       const pin = pinFilter.trim();
       const prefix = pin.slice(0, Math.min(3, pin.length));
@@ -104,7 +102,7 @@ const Discover = () => {
     }
     return scoredList;
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [state, query, category, mode, cityFilter, pinFilter, sortBy, timeOfDay, ratings, requests]);
+  }, [state, query, category, mode, pinFilter, sortBy, timeOfDay, ratings, requests]);
 
   const activeKid = state.learner.activeKidId
     ? state.learner.kids.find((k) => k.id === state.learner.activeKidId)
