@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import { TopBar } from "@/components/TopBar";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -13,7 +14,7 @@ import { SocialLinksRow } from "@/components/SocialLinksRow";
 import { ContactActions } from "@/components/ContactActions";
 import { useCategories } from "@/lib/useCategories";
 import { store, useStore } from "@/lib/store";
-import { Instagram, Facebook, Youtube, Twitter, Linkedin, Globe, MessageCircle, Phone, MapPin, Plus, X, Languages } from "lucide-react";
+import { Instagram, Facebook, Youtube, Twitter, Linkedin, Globe, MessageCircle, Phone, MapPin, Plus, X, Languages, Pencil, Trash2, BookOpen } from "lucide-react";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { PinCodeInput } from "@/components/PinCodeInput";
