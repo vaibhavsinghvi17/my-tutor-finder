@@ -15,6 +15,7 @@ import KidProfileEditor from "./pages/KidProfileEditor";
 import ProviderDashboard from "./pages/ProviderDashboard";
 import ProviderRequests from "./pages/ProviderRequests";
 import LearnerDashboard from "./pages/LearnerDashboard";
+import LearnerList from "./pages/LearnerList";
 import ListingForm from "./pages/ListingForm";
 import Auth from "./pages/Auth";
 import NotFound from "./pages/NotFound.tsx";
