@@ -4,51 +4,51 @@
 
 @layer base {
   :root {
-    --background: 40 33% 98%;
-    --foreground: 230 25% 18%;
+    --background: 200 50% 98%;
+    --foreground: 210 40% 12%;
 
     --card: 0 0% 100%;
-    --card-foreground: 230 25% 18%;
+    --card-foreground: 210 40% 12%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 230 25% 18%;
+    --popover-foreground: 210 40% 12%;
 
-    --primary: 252 64% 56%;
+    --primary: 199 95% 48%;
     --primary-foreground: 0 0% 100%;
-    --primary-glow: 268 80% 70%;
+    --primary-glow: 188 95% 55%;
 
-    --secondary: 168 62% 42%;
+    --secondary: 160 84% 42%;
     --secondary-foreground: 0 0% 100%;
 
-    --muted: 240 16% 95%;
-    --muted-foreground: 230 12% 46%;
+    --muted: 200 30% 95%;
+    --muted-foreground: 210 15% 42%;
 
-    --accent: 28 95% 62%;
+    --accent: 172 90% 42%;
     --accent-foreground: 0 0% 100%;
 
     --destructive: 0 78% 58%;
     --destructive-foreground: 0 0% 100%;
 
-    --success: 142 60% 42%;
+    --success: 152 70% 40%;
     --success-foreground: 0 0% 100%;
 
     --warning: 38 92% 52%;
     --warning-foreground: 0 0% 100%;
 
-    --border: 240 14% 90%;
-    --input: 240 14% 90%;
-    --ring: 252 64% 56%;
+    --border: 200 25% 88%;
+    --input: 200 25% 88%;
+    --ring: 199 95% 48%;
 
     --radius: 0.85rem;
 
-    --gradient-primary: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--primary-glow)));
-    --gradient-warm: linear-gradient(135deg, hsl(var(--accent)), hsl(348 88% 64%));
-    --gradient-cool: linear-gradient(135deg, hsl(var(--secondary)), hsl(200 80% 55%));
-    --gradient-hero: linear-gradient(135deg, hsl(252 64% 56% / 0.08), hsl(168 62% 42% / 0.08));
+    --gradient-primary: linear-gradient(135deg, hsl(199 95% 48%), hsl(188 95% 55%));
+    --gradient-warm: linear-gradient(135deg, hsl(172 90% 42%), hsl(160 84% 42%));
+    --gradient-cool: linear-gradient(135deg, hsl(160 84% 42%), hsl(188 95% 55%));
+    --gradient-hero: linear-gradient(135deg, hsl(199 95% 48% / 0.10), hsl(160 84% 42% / 0.10));
 
-    --shadow-sm: 0 1px 2px hsl(230 25% 18% / 0.06);
-    --shadow-md: 0 6px 20px -6px hsl(252 64% 56% / 0.18);
-    --shadow-lg: 0 18px 40px -12px hsl(252 64% 56% / 0.28);
+    --shadow-sm: 0 1px 2px hsl(210 40% 12% / 0.06);
+    --shadow-md: 0 6px 20px -6px hsl(199 95% 48% / 0.22);
+    --shadow-lg: 0 18px 40px -12px hsl(199 95% 48% / 0.32);
 
     --sidebar-background: 0 0% 98%;
     --sidebar-foreground: 240 5.3% 26.1%;
