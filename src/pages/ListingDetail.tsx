@@ -24,7 +24,8 @@ const ListingDetail = () => {
   const navigate = useNavigate();
   const learner = useStore((s) => s.learner);
   const provider = useStore((s) => s.provider);
-  const ratings = useStore((s) => id ? s.ratings.filter((r) => r.listingId === id) : []);
+  const allRatings = useStore((s) => s.ratings);
+  const ratings = id ? allRatings.filter((r) => r.listingId === id) : [];
   const all = [...store.get().listings, ...SEED_LISTINGS];
   const listing = all.find((l) => l.id === id);
 
