@@ -38,6 +38,7 @@ const ListingDetail = () => {
 
   const [slot, setSlot] = useState<SlotKey | "">("");
   const [note, setNote] = useState("");
+  const [isTrial, setIsTrial] = useState(false);
   const [reviewStars, setReviewStars] = useState(0);
   const [reviewText, setReviewText] = useState("");
 
@@ -63,14 +64,17 @@ const ListingDetail = () => {
       return;
     }
     const learnerName = learner.name || "Guest";
+    const finalNote = isTrial
+      ? `[Trial class request] ${note}`.trim()
+      : note;
     store.addRequest({
       listingId: listing!.id,
       learnerName,
       forKidName: activeKid?.name,
       slot,
-      note,
+      note: finalNote,
     });
-    toast.success("Request sent! The provider will reply soon.");
+    toast.success(isTrial ? "Trial class request sent!" : "Request sent! The provider will reply soon.");
     navigate("/requests");
   }
 
@@ -81,26 +85,28 @@ const ListingDetail = () => {
   return (
     <div className="min-h-screen">
       <TopBar />
-      <div className={`sticky top-16 z-30 ${categoryGradient(listing.category)} shadow-md`}>
-        <div className="container max-w-4xl px-4 py-3 sm:py-4 space-y-2.5">
-          <div className="flex items-start gap-3 text-primary-foreground">
+      <div className="sticky top-16 z-30 px-3 sm:px-4 pt-2">
+        <div className={`container max-w-4xl ${categoryGradient(listing.category)} rounded-xl shadow-elegant px-3 sm:px-4 py-2.5 sm:py-3 space-y-2`}>
+          <div className="flex items-center gap-2 text-primary-foreground">
             <button
               onClick={() => navigate(-1)}
-              className="h-8 w-8 shrink-0 rounded-lg bg-background/20 hover:bg-background/30 grid place-items-center backdrop-blur-sm transition-colors"
+              className="h-7 w-7 shrink-0 rounded-md bg-background/25 hover:bg-background/35 grid place-items-center backdrop-blur-sm transition-colors"
               aria-label="Back"
             >
-              <ArrowLeft className="h-4 w-4" />
+              <ArrowLeft className="h-3.5 w-3.5" />
             </button>
-            <div className="h-10 w-10 shrink-0 rounded-xl bg-background/20 grid place-items-center backdrop-blur-sm">
-              <CategoryIcon category={listing.category} className="h-5 w-5" />
+            <div className="h-8 w-8 shrink-0 rounded-lg bg-background/25 grid place-items-center backdrop-blur-sm">
+              <CategoryIcon category={listing.category} className="h-4 w-4" />
             </div>
             <div className="min-w-0 flex-1">
-              <p className="text-[11px] sm:text-xs opacity-90 truncate">{listing.category} • {listing.providerName}</p>
-              <h1 className="text-lg sm:text-2xl font-bold leading-tight line-clamp-2">{listing.title}</h1>
+              <p className="text-[10px] sm:text-xs opacity-90 truncate">{listing.category} • {listing.providerName}</p>
+              <h1 className="text-sm sm:text-lg font-bold leading-tight line-clamp-2">{listing.title}</h1>
             </div>
           </div>
           {hasContact && (
-            <ContactActions contact={contact} fallbackAddress={contactFallback} size="sm" />
+            <div className="rounded-lg bg-background/95 backdrop-blur-sm p-1.5 shadow-sm">
+              <ContactActions contact={contact} fallbackAddress={contactFallback} size="sm" />
+            </div>
           )}
         </div>
       </div>
@@ -210,10 +216,27 @@ const ListingDetail = () => {
             </div>
           </div>
 
+          {listing.trial && (
+            <label className="flex items-start gap-2.5 rounded-lg border border-success/40 bg-success/5 p-3 cursor-pointer hover:bg-success/10 transition-colors">
+              <input
+                type="checkbox"
+                checked={isTrial}
+                onChange={(e) => setIsTrial(e.target.checked)}
+                className="mt-0.5 h-4 w-4 accent-success"
+              />
+              <div className="text-sm">
+                <div className="font-medium text-success-foreground/90 flex items-center gap-1">
+                  <Sparkles className="h-3.5 w-3.5 text-success" /> Request a free trial class
+                </div>
+                <div className="text-xs text-muted-foreground">Try one class before committing.</div>
+              </div>
+            </label>
+          )}
+
           <div className="space-y-1.5">
             <label className="text-sm font-medium">Note (optional)</label>
             <Textarea
-              placeholder="Anything the provider should know? Prior experience, questions..."
+              placeholder={isTrial ? "Anything the provider should know about your trial?" : "Anything the provider should know? Prior experience, questions..."}
               value={note}
               onChange={(e) => setNote(e.target.value.slice(0, 500))}
               rows={3}
@@ -221,7 +244,7 @@ const ListingDetail = () => {
           </div>
 
           <div className="flex justify-end">
-            <Button onClick={submit}>Send request</Button>
+            <Button onClick={submit}>{isTrial ? "Request trial class" : "Send request"}</Button>
           </div>
         </Card>
 
