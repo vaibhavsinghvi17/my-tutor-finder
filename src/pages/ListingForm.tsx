@@ -232,7 +232,7 @@ const ListingForm = () => {
 
           <div className="grid sm:grid-cols-3 gap-3">
             <div className="space-y-1.5 sm:col-span-2">
-              <Label>{mode === "Both" ? "Offline price (optional)" : "Price (optional)"}</Label>
+              <Label>{mode === "Both" ? "Offline price (optional)" : mode === "Online" ? "Online price (optional)" : "Price (optional)"}</Label>
               <div className="flex gap-2">
                 <div className="relative flex-1">
                   <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground">₹</span>
@@ -258,7 +258,7 @@ const ListingForm = () => {
 
           {priceUnit === "month" && (
             <div className="space-y-1.5 sm:max-w-xs">
-              <Label>Sessions per month</Label>
+              <Label>Sessions per month{mode === "Both" ? " (offline)" : ""}</Label>
               <Input
                 type="number"
                 min="1"
@@ -272,20 +272,44 @@ const ListingForm = () => {
           )}
 
           {mode === "Both" && (
-            <div className="space-y-1.5">
-              <Label>Online price (optional)</Label>
-              <p className="text-xs text-muted-foreground">Set a different price for online sessions. Leave blank to use the offline price.</p>
-              <div className="relative">
-                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground">₹</span>
-                <Input
-                  type="number"
-                  min="0"
-                  value={onlinePriceAmount}
-                  onChange={(e) => setOnlinePriceAmount(e.target.value)}
-                  placeholder="2000"
-                  className="pl-7"
-                />
+            <div className="space-y-3 rounded-lg border p-3 bg-muted/20">
+              <div>
+                <Label>Online price (optional)</Label>
+                <p className="text-xs text-muted-foreground">Set a different price for online batches. Leave blank to use the offline price.</p>
               </div>
+              <div className="flex gap-2">
+                <div className="relative flex-1">
+                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground">₹</span>
+                  <Input
+                    type="number"
+                    min="0"
+                    value={onlinePriceAmount}
+                    onChange={(e) => setOnlinePriceAmount(e.target.value)}
+                    placeholder="2000"
+                    className="pl-7"
+                  />
+                </div>
+                <Select value={onlinePriceUnit} onValueChange={(v) => setOnlinePriceUnit(v as PriceUnit)}>
+                  <SelectTrigger className="w-[140px]"><SelectValue /></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="session">per session</SelectItem>
+                    <SelectItem value="month">per month</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              {onlinePriceUnit === "month" && (
+                <div className="space-y-1.5 sm:max-w-xs">
+                  <Label className="text-xs">Online sessions per month</Label>
+                  <Input
+                    type="number"
+                    min="1"
+                    max="60"
+                    value={onlineSessionsPerMonth}
+                    onChange={(e) => setOnlineSessionsPerMonth(e.target.value)}
+                    placeholder="4"
+                  />
+                </div>
+              )}
             </div>
           )}
 
