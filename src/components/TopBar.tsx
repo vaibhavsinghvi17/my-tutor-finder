@@ -78,27 +78,15 @@ export function TopBar() {
             <span className="sm:hidden">Switch</span>
           </Button>
 
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="icon" className="rounded-full">
-                <User className="h-5 w-5" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-56 bg-popover">
-              <DropdownMenuLabel>
-                {isProvider
-                  ? provider.businessName || "Provider"
-                  : learner.name || "Learner"}
-              </DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={() => navigate("/profile")}>Profiles</DropdownMenuItem>
-              <DropdownMenuItem onClick={() => navigate("/profile/provider")}>Provider profile</DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={() => { store.reset(); navigate("/"); }}>
-                Reset everything
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+          <Button
+            variant="ghost"
+            size="icon"
+            className="rounded-full"
+            onClick={() => navigate(isProvider ? "/profile/provider" : "/profile")}
+            title={isProvider ? provider.businessName || "Provider" : learner.name || "Learner"}
+          >
+            <User className="h-5 w-5" />
+          </Button>
         </div>
       </div>
     </header>
