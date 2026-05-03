@@ -11,7 +11,7 @@ const Onboarding = () => {
 
   useEffect(() => {
     if (onboarded) {
-      navigate(mode === "provider" ? "/provider" : "/discover", { replace: true });
+      navigate(mode === "provider" ? "/provider" : "/dashboard", { replace: true });
       return;
     }
     const t = setTimeout(() => setShowSplash(false), 1600);
