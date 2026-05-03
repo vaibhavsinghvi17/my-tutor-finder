@@ -36,7 +36,11 @@ const ListingForm = () => {
   const [city, setCity] = useState<string>(existing?.city ?? provider.city ?? "");
   const [area, setArea] = useState<string>(existing?.area ?? provider.area ?? "");
   const [pinCode, setPinCode] = useState<string>(existing?.pinCode ?? provider.pinCode ?? "");
-  const [venue, setVenue] = useState(existing?.venue ?? "");
+  const venueParts = (existing?.venue ?? "").split(" | ");
+  const [venueLine1, setVenueLine1] = useState(venueParts[0] ?? "");
+  const [venueLine2, setVenueLine2] = useState(venueParts[1] ?? "");
+  const [venueLine3, setVenueLine3] = useState(venueParts[2] ?? "");
+  const venue = [venueLine1, venueLine2, venueLine3].map((s) => s.trim()).filter(Boolean).join(" | ");
   const [priceAmount, setPriceAmount] = useState<string>(existing?.priceAmount?.toString() ?? "");
   const [priceUnit, setPriceUnit] = useState<PriceUnit>(existing?.priceUnit ?? "session");
   const [intlPriceAmount, setIntlPriceAmount] = useState<string>(existing?.intlPriceAmount?.toString() ?? "");
