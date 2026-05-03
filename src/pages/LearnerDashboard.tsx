@@ -50,12 +50,20 @@ const LearnerDashboard = () => {
         </div>
 
         <section className="grid gap-3 grid-cols-2 lg:grid-cols-4">
-          <StatCard icon={GraduationCap} label="Classes joined" value={approved} tint="primary" />
-          <StatCard icon={Hourglass} label="Interest / requests" value={myRequests.length} tint="accent"
-            sub={pending ? `${pending} pending` : undefined} />
-          <StatCard icon={Bookmark} label="Saved classes" value={saved} tint="secondary" />
-          <StatCard icon={Star} label="Reviews given" value={myRatings.length} tint="muted"
-            sub={`${completed} completed`} />
+          <Link to="/requests" className="block group">
+            <StatCard icon={GraduationCap} label="Classes joined" value={approved} tint="primary" />
+          </Link>
+          <Link to="/requests" className="block group">
+            <StatCard icon={Hourglass} label="Interest / requests" value={myRequests.length} tint="accent"
+              sub={pending ? `${pending} pending` : undefined} />
+          </Link>
+          <Link to="/profile/learner#saved" className="block group">
+            <StatCard icon={Bookmark} label="Saved classes" value={saved} tint="secondary" />
+          </Link>
+          <Link to="/profile/learner#ratings" className="block group">
+            <StatCard icon={Star} label="Reviews given" value={myRatings.length} tint="muted"
+              sub={`${completed} completed`} />
+          </Link>
         </section>
 
         <section className="grid gap-4 lg:grid-cols-2">
