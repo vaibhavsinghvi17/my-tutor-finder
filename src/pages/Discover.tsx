@@ -91,7 +91,7 @@ const Discover = () => {
         return lp === pin || lp.startsWith(prefix);
       });
     }
-    if (timeOfDay !== "all") scoredList = scoredList.filter((s) => listingHasTimeOfDay(s.listing.slots as any, timeOfDay));
+    if (timeOfDay !== "all") scoredList = scoredList.filter((s) => listingHasTimeOfDay([...(s.listing.slots as any), ...((s.listing as any).onlineSlots ?? [])], timeOfDay));
 
     // Tab scope: local vs around the world
     const learnerCountry = state.learner.country;

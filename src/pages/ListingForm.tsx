@@ -14,7 +14,7 @@ import { PinCodeInput } from "@/components/PinCodeInput";
 import { LanguagesEditor } from "@/components/LanguagesEditor";
 import { AGE_GROUPS, AgeGroup, Category, Mode, PriceUnit, SeatInfo, SlotKey } from "@/lib/types";
 import { useCategories } from "@/lib/useCategories";
-import { Plus, Globe2, Users } from "lucide-react";
+import { Plus, Globe2, Users, Wifi, Building2 } from "lucide-react";
 import { store, useStore } from "@/lib/store";
 import { toast } from "sonner";
 
@@ -46,12 +46,16 @@ const ListingForm = () => {
   const [intlPriceAmount, setIntlPriceAmount] = useState<string>(existing?.intlPriceAmount?.toString() ?? "");
   const [intlPriceCurrency, setIntlPriceCurrency] = useState<string>(existing?.intlPriceCurrency ?? "USD");
   const [onlinePriceAmount, setOnlinePriceAmount] = useState<string>(existing?.onlinePriceAmount?.toString() ?? "");
+  const [onlinePriceUnit, setOnlinePriceUnit] = useState<PriceUnit>(existing?.onlinePriceUnit ?? existing?.priceUnit ?? "session");
+  const [onlineSessionsPerMonth, setOnlineSessionsPerMonth] = useState<string>(existing?.onlineSessionsPerMonth?.toString() ?? "4");
   const [onlineIntlPriceAmount, setOnlineIntlPriceAmount] = useState<string>(existing?.onlineIntlPriceAmount?.toString() ?? "");
   const [durationMins, setDurationMins] = useState<string>(existing?.durationMins?.toString() ?? "60");
   const [sessionsPerMonth, setSessionsPerMonth] = useState<string>(existing?.sessionsPerMonth?.toString() ?? "4");
   const [trial, setTrial] = useState(existing?.trial ?? true);
   const [slots, setSlots] = useState<SlotKey[]>(existing?.slots ?? []);
+  const [onlineSlots, setOnlineSlots] = useState<SlotKey[]>(existing?.onlineSlots ?? []);
   const [seatsBySlot, setSeatsBySlot] = useState<Record<string, SeatInfo>>(existing?.seatsBySlot ?? {});
+  const [onlineSeatsBySlot, setOnlineSeatsBySlot] = useState<Record<string, SeatInfo>>(existing?.onlineSeatsBySlot ?? {});
   const [languages, setLanguages] = useState<string[]>(existing?.languages ?? provider.languages ?? []);
   const [teachesInternationally, setTeachesInternationally] = useState<boolean>(existing?.teachesInternationally ?? false);
 
@@ -73,7 +77,8 @@ const ListingForm = () => {
     } else {
       if (!country) return toast.error("Pick a country");
     }
-    if (slots.length === 0) return toast.error("Pick at least one class time");
+    if (slots.length === 0) return toast.error(mode === "Both" ? "Pick at least one offline class time" : "Pick at least one class time");
+    if (mode === "Both" && onlineSlots.length === 0) return toast.error("Pick at least one online batch time");
 
     const data = {
       title: title.trim(),
@@ -93,11 +98,15 @@ const ListingForm = () => {
       intlPriceCurrency: (intlPriceAmount || onlineIntlPriceAmount) ? intlPriceCurrency : undefined,
       onlinePriceAmount: onlinePriceAmount ? Number(onlinePriceAmount) : undefined,
       onlineIntlPriceAmount: onlineIntlPriceAmount ? Number(onlineIntlPriceAmount) : undefined,
+      onlinePriceUnit: (mode === "Both" && onlinePriceAmount) ? onlinePriceUnit : undefined,
+      onlineSessionsPerMonth: (mode === "Both" && onlinePriceUnit === "month" && onlineSessionsPerMonth) ? Number(onlineSessionsPerMonth) : undefined,
       durationMins: durationMins ? Number(durationMins) : undefined,
       sessionsPerMonth: priceUnit === "month" && sessionsPerMonth ? Number(sessionsPerMonth) : undefined,
       trial,
       slots,
+      onlineSlots: mode === "Both" ? onlineSlots : undefined,
       seatsBySlot: Object.keys(seatsBySlot).length ? seatsBySlot : undefined,
+      onlineSeatsBySlot: mode === "Both" && Object.keys(onlineSeatsBySlot).length ? onlineSeatsBySlot : undefined,
       languages: languages.length ? languages : undefined,
       teachesInternationally: mode !== "Offline" ? teachesInternationally : undefined,
     };
@@ -205,6 +214,11 @@ const ListingForm = () => {
                   <SelectItem value="Both">Both online & offline</SelectItem>
                 </SelectContent>
               </Select>
+              {mode === "Both" && (
+                <p className="text-xs text-muted-foreground">
+                  This class will appear in both <span className="font-medium text-foreground">Online</span> and <span className="font-medium text-foreground">Offline</span> searches. Set separate weekly batches and prices for each below.
+                </p>
+              )}
             </div>
             <div className="space-y-1.5">
               <Label>Duration</Label>
@@ -223,7 +237,7 @@ const ListingForm = () => {
 
           <div className="grid sm:grid-cols-3 gap-3">
             <div className="space-y-1.5 sm:col-span-2">
-              <Label>{mode === "Both" ? "Offline price (optional)" : "Price (optional)"}</Label>
+              <Label>{mode === "Both" ? "Offline price (optional)" : mode === "Online" ? "Online price (optional)" : "Price (optional)"}</Label>
               <div className="flex gap-2">
                 <div className="relative flex-1">
                   <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground">₹</span>
@@ -249,7 +263,7 @@ const ListingForm = () => {
 
           {priceUnit === "month" && (
             <div className="space-y-1.5 sm:max-w-xs">
-              <Label>Sessions per month</Label>
+              <Label>Sessions per month{mode === "Both" ? " (offline)" : ""}</Label>
               <Input
                 type="number"
                 min="1"
@@ -263,20 +277,44 @@ const ListingForm = () => {
           )}
 
           {mode === "Both" && (
-            <div className="space-y-1.5">
-              <Label>Online price (optional)</Label>
-              <p className="text-xs text-muted-foreground">Set a different price for online sessions. Leave blank to use the offline price.</p>
-              <div className="relative">
-                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground">₹</span>
-                <Input
-                  type="number"
-                  min="0"
-                  value={onlinePriceAmount}
-                  onChange={(e) => setOnlinePriceAmount(e.target.value)}
-                  placeholder="2000"
-                  className="pl-7"
-                />
+            <div className="space-y-3 rounded-lg border p-3 bg-muted/20">
+              <div>
+                <Label>Online price (optional)</Label>
+                <p className="text-xs text-muted-foreground">Set a different price for online batches. Leave blank to use the offline price.</p>
               </div>
+              <div className="flex gap-2">
+                <div className="relative flex-1">
+                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground">₹</span>
+                  <Input
+                    type="number"
+                    min="0"
+                    value={onlinePriceAmount}
+                    onChange={(e) => setOnlinePriceAmount(e.target.value)}
+                    placeholder="2000"
+                    className="pl-7"
+                  />
+                </div>
+                <Select value={onlinePriceUnit} onValueChange={(v) => setOnlinePriceUnit(v as PriceUnit)}>
+                  <SelectTrigger className="w-[140px]"><SelectValue /></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="session">per session</SelectItem>
+                    <SelectItem value="month">per month</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              {onlinePriceUnit === "month" && (
+                <div className="space-y-1.5 sm:max-w-xs">
+                  <Label className="text-xs">Online sessions per month</Label>
+                  <Input
+                    type="number"
+                    min="1"
+                    max="60"
+                    value={onlineSessionsPerMonth}
+                    onChange={(e) => setOnlineSessionsPerMonth(e.target.value)}
+                    placeholder="4"
+                  />
+                </div>
+              )}
             </div>
           )}
 
@@ -400,11 +438,27 @@ const ListingForm = () => {
 
         <Card className="p-5 space-y-3">
           <div>
-            <h2 className="font-semibold">Class timings</h2>
-            <p className="text-sm text-muted-foreground">Tap the weekly slots when this class runs.</p>
+            <h2 className="font-semibold">{mode === "Both" ? "Offline batch timings" : "Class timings"}</h2>
+            <p className="text-sm text-muted-foreground">
+              {mode === "Both"
+                ? "Tap weekly slots when the in-person batches run."
+                : "Tap the weekly slots when this class runs."}
+            </p>
           </div>
           <ScheduleGrid value={slots} onChange={setSlots} />
         </Card>
+
+        {mode === "Both" && (
+          <Card className="p-5 space-y-3">
+            <div>
+              <h2 className="font-semibold flex items-center gap-1.5"><Wifi className="h-4 w-4" /> Online batch timings</h2>
+              <p className="text-sm text-muted-foreground">
+                Tap weekly slots when the online batches run. These show up separately for learners searching for online classes.
+              </p>
+            </div>
+            <ScheduleGrid value={onlineSlots} onChange={setOnlineSlots} />
+          </Card>
+        )}
 
         {slots.length > 0 && (
           <Card className="p-5 space-y-3">

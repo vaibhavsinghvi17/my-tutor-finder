@@ -58,7 +58,8 @@ const ListingDetail = () => {
 
   const activeKid = learner.activeKidId ? learner.kids.find((k) => k.id === learner.activeKidId) : null;
   const freeSlots = blocksToSlots(activeKid ? activeKid.freeBlocks : learner.freeBlocks);
-  const matching = listing.slots.filter((s) => freeSlots.includes(s));
+  const allSlots = [...listing.slots, ...((listing.onlineSlots ?? []) as typeof listing.slots)];
+  const matching = allSlots.filter((s) => freeSlots.includes(s));
 
   function submit() {
     if (!slot) {
@@ -220,7 +221,22 @@ const ListingDetail = () => {
 
             <div>
               <h3 className="font-semibold mb-2">Class schedule</h3>
-              <ScheduleGrid value={listing.slots} highlightSlots={freeSlots} readOnly compact />
+              {listing.mode === "Both" ? (
+                <div className="space-y-4">
+                  <div>
+                    <div className="text-xs font-medium mb-1.5 text-muted-foreground">Offline batches</div>
+                    <ScheduleGrid value={listing.slots} highlightSlots={freeSlots} readOnly compact />
+                  </div>
+                  {(listing.onlineSlots?.length ?? 0) > 0 && (
+                    <div>
+                      <div className="text-xs font-medium mb-1.5 text-muted-foreground">Online batches</div>
+                      <ScheduleGrid value={listing.onlineSlots ?? []} highlightSlots={freeSlots} readOnly compact />
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <ScheduleGrid value={listing.slots} highlightSlots={freeSlots} readOnly compact />
+              )}
               {matching.length > 0 && (
                 <p className="text-xs text-success mt-2">
                   ✓ {matching.length} slot{matching.length > 1 ? "s" : ""} match your free time.
@@ -262,18 +278,38 @@ const ListingDetail = () => {
               <Select value={slot} onValueChange={(v) => setSlot(v as SlotKey)}>
                 <SelectTrigger><SelectValue placeholder="Select a class time" /></SelectTrigger>
                 <SelectContent>
+                  {listing.mode === "Both" && listing.slots.length > 0 && (
+                    <div className="px-2 py-1 text-[10px] uppercase tracking-wide text-muted-foreground">Offline batches</div>
+                  )}
                   {listing.slots.map((s) => {
                     const info = listing.seatsBySlot?.[s];
                     const left = info && info.total > 0 ? Math.max(0, info.total - info.occupied) : null;
                     const full = left === 0;
                     return (
-                      <SelectItem key={s} value={s} disabled={full}>
+                      <SelectItem key={`off-${s}`} value={s} disabled={full}>
                         {slotsToText([s])}
                         {freeSlots.includes(s) ? "  ✓ free" : ""}
                         {left !== null ? (full ? "  · Full" : `  · ${left} seats left`) : ""}
                       </SelectItem>
                     );
                   })}
+                  {listing.mode === "Both" && (listing.onlineSlots?.length ?? 0) > 0 && (
+                    <>
+                      <div className="px-2 py-1 mt-1 text-[10px] uppercase tracking-wide text-muted-foreground">Online batches</div>
+                      {(listing.onlineSlots ?? []).map((s) => {
+                        const info = listing.onlineSeatsBySlot?.[s];
+                        const left = info && info.total > 0 ? Math.max(0, info.total - info.occupied) : null;
+                        const full = left === 0;
+                        return (
+                          <SelectItem key={`on-${s}`} value={s} disabled={full}>
+                            {slotsToText([s])} · Online
+                            {freeSlots.includes(s) ? "  ✓ free" : ""}
+                            {left !== null ? (full ? "  · Full" : `  · ${left} seats left`) : ""}
+                          </SelectItem>
+                        );
+                      })}
+                    </>
+                  )}
                 </SelectContent>
               </Select>
             </div>

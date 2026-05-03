@@ -141,11 +141,15 @@ export interface Listing {
   intlPriceCurrency?: string; // ISO code, default "USD"
   onlinePriceAmount?: number;     // home-country price for online sessions
   onlineIntlPriceAmount?: number; // international price for online sessions
+  onlinePriceUnit?: PriceUnit;     // per session or per month for online (defaults to priceUnit)
+  onlineSessionsPerMonth?: number; // shown when onlinePriceUnit === "month"
   durationMins?: number;     // class duration in minutes
   sessionsPerMonth?: number; // shown when priceUnit === "month"
   trial: boolean;
-  slots: SlotKey[];
-  seatsBySlot?: Record<string, SeatInfo>; // seats per slot key
+  slots: SlotKey[];          // Offline slots when mode === "Both"; otherwise the class's only schedule
+  onlineSlots?: SlotKey[];   // Used only when mode === "Both" — separate weekly online batches
+  seatsBySlot?: Record<string, SeatInfo>; // seats per offline slot
+  onlineSeatsBySlot?: Record<string, SeatInfo>; // seats per online slot (Both mode)
   languages?: string[];
   teachesInternationally?: boolean; // for online/both classes
   createdAt: number;
