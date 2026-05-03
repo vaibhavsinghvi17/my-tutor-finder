@@ -143,7 +143,7 @@ function StatCard({
     muted: "bg-muted text-foreground",
   }[tint];
   return (
-    <Card className="p-4 space-y-2">
+    <Card className="p-4 space-y-2 group-hover:shadow-elegant group-hover:border-primary/40 transition-all cursor-pointer h-full">
       <div className={`h-9 w-9 rounded-lg grid place-items-center ${tintClass}`}>
         <Icon className="h-4 w-4" />
       </div>
