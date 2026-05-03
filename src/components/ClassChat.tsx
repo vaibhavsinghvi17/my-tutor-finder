@@ -37,7 +37,7 @@ interface Props {
  */
 export function ClassChat({
   listingId, listingTitle, providerUserId, learnerUserId,
-  otherPartyName, triggerVariant = "outline", triggerLabel = "Message",
+  otherPartyName, triggerVariant = "outline", triggerLabel = "Message", floating = false,
 }: Props) {
   const { user } = useAuth();
   const [open, setOpen] = useState(false);
