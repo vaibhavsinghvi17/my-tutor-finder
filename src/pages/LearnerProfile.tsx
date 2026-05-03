@@ -317,7 +317,7 @@ const LearnerProfilePage = () => {
         <DialogContent className="max-w-lg">
           <DialogHeader><DialogTitle>Interests</DialogTitle></DialogHeader>
           <div className="flex flex-wrap gap-1.5">
-            {CATEGORIES.map((c) => {
+            {Array.from(new Set([...CATEGORIES, ...learner.interests])).map((c) => {
               const active = learner.interests.includes(c);
               return (
                 <button
@@ -337,6 +337,16 @@ const LearnerProfilePage = () => {
                 </button>
               );
             })}
+          </div>
+          <div className="flex gap-2 pt-2 border-t">
+            <Input
+              placeholder="Add your own interest"
+              value={customInterest}
+              onChange={(e) => setCustomInterest(e.target.value.slice(0, 30))}
+              onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); addCustomInterest(); } }}
+              className="h-9"
+            />
+            <Button type="button" size="sm" onClick={addCustomInterest}>Add</Button>
           </div>
           <DialogFooter>
             <Button onClick={() => { setInterestsOpen(false); toast.success("Saved"); }}>Done</Button>
