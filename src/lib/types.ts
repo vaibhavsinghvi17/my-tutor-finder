@@ -105,6 +105,7 @@ export interface ProviderProfile {
   email?: string;
   verifiedEmail?: string;       // last-verified email
   verifiedWhatsapp?: string;    // last-verified WhatsApp number (digits)
+  avatarDataUrl?: string;
 }
 
 export interface SeatInfo {
