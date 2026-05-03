@@ -16,6 +16,7 @@ import { CATEGORIES, FreeTimeBlock, Mode } from "@/lib/types";
 import { useCategories } from "@/lib/useCategories";
 import { LocationFields } from "@/components/LocationFields";
 import { AddressFields } from "@/components/AddressFields";
+import { DatePicker } from "@/components/DatePicker";
 import { store, useStore, getAllListings } from "@/lib/store";
 import { ageFromDob, blockSummary } from "@/lib/timeUtils";
 import {
