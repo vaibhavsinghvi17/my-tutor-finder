@@ -20,7 +20,7 @@ import { store, useStore, getAllListings } from "@/lib/store";
 import { ageFromDob, blockSummary } from "@/lib/timeUtils";
 import {
   ArrowLeft, UserCircle2, MapPin, Clock, Pencil, Plus, Camera,
-  ChevronDown, Bookmark, Hourglass, Star, GraduationCap,
+  ChevronDown, Bookmark, Hourglass, Star, GraduationCap, Search,
 } from "lucide-react";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
