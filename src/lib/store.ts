@@ -38,6 +38,7 @@ const initialState: AppState = {
   },
   listings: [],
   requests: [],
+  ratings: [],
 };
 
 function load(): AppState {
@@ -81,6 +82,7 @@ function load(): AppState {
       provider: { ...initialState.provider, ...(parsed.provider ?? {}) },
       listings: Array.isArray(parsed.listings) ? parsed.listings : [],
       requests: Array.isArray(parsed.requests) ? parsed.requests : [],
+      ratings: Array.isArray(parsed.ratings) ? parsed.ratings : [],
     };
   } catch {
     return initialState;
