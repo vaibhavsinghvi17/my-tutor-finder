@@ -35,7 +35,9 @@ interface Circle {
 
 const ProfilePicker = () => {
   const learner = useStore((s) => s.learner);
+  const provider = useStore((s) => s.provider);
   const navigate = useNavigate();
+  const hasBothProfiles = !!learner.name?.trim() && !!provider.businessName?.trim();
 
   const circles: Circle[] = [
     {
