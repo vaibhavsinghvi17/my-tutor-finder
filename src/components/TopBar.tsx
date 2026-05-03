@@ -45,7 +45,7 @@ export function TopBar() {
         <nav className="hidden md:flex items-center gap-1 ml-4">
           {isProvider ? (
             <>
-              <NavBtn to="/provider" active={location.pathname === "/provider"}>Listings</NavBtn>
+              <NavBtn to="/provider" active={location.pathname === "/provider"}>Dashboard</NavBtn>
               <NavBtn to="/provider/listing/new" active={location.pathname.startsWith("/provider/listing")}>
                 New Class
               </NavBtn>
@@ -53,6 +53,7 @@ export function TopBar() {
             </>
           ) : (
             <>
+              <NavBtn to="/dashboard" active={location.pathname === "/dashboard"}>Dashboard</NavBtn>
               <NavBtn to="/discover" active={location.pathname === "/discover"}>Discover</NavBtn>
               <NavBtn to="/requests" active={location.pathname === "/requests"}>My Requests</NavBtn>
               <NavBtn to="/profile" active={location.pathname.startsWith("/profile") && location.pathname !== "/profile/provider"}>Profile</NavBtn>
