@@ -168,6 +168,25 @@ const Discover = () => {
             options={state.learner.city ? [state.learner.city] : allKnownCities()}
             placeholder={state.learner.city || "All cities"}
           />
+          <Select value={timeOfDay} onValueChange={(v) => setTimeOfDay(v as TimeOfDay)}>
+            <SelectTrigger><SelectValue placeholder="Any time" /></SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">Any time of day</SelectItem>
+              <SelectItem value="morning">Morning (5am–12pm)</SelectItem>
+              <SelectItem value="afternoon">Afternoon (12–5pm)</SelectItem>
+              <SelectItem value="evening">Evening (5–11pm)</SelectItem>
+            </SelectContent>
+          </Select>
+          <Select value={sortBy} onValueChange={(v) => setSortBy(v as SortOption)}>
+            <SelectTrigger><SelectValue placeholder="Sort" /></SelectTrigger>
+            <SelectContent>
+              <SelectItem value="recommended">Recommended</SelectItem>
+              <SelectItem value="popularity">Most popular</SelectItem>
+              <SelectItem value="price-asc">Price: low to high</SelectItem>
+              <SelectItem value="price-desc">Price: high to low</SelectItem>
+              <SelectItem value="newest">Newest first</SelectItem>
+            </SelectContent>
+          </Select>
         </section>
 
         {scored.length === 0 ? (
