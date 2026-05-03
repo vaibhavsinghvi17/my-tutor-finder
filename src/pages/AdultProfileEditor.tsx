@@ -81,7 +81,7 @@ const AdultProfileEditor = () => {
               <Label>
                 Date of birth {age !== null && <span className="text-muted-foreground font-normal">• age {age}</span>}
               </Label>
-              <Input type="date" value={dob} max={new Date().toISOString().split("T")[0]} onChange={(e) => setDob(e.target.value)} />
+              <DatePicker value={dob} max={new Date().toISOString().split("T")[0]} onChange={setDob} placeholder="Pick date of birth" />
             </div>
             <div className="space-y-1.5">
               <Label>Occupation <span className="text-muted-foreground font-normal">(optional)</span></Label>
