@@ -20,7 +20,7 @@ import { store, useStore, getAllListings } from "@/lib/store";
 import { ageFromDob, blockSummary } from "@/lib/timeUtils";
 import {
   ArrowLeft, UserCircle2, MapPin, Clock, Pencil, Plus, Camera,
-  ChevronDown, Bookmark, Hourglass, Star, GraduationCap,
+  ChevronDown, Bookmark, Hourglass, Star, GraduationCap, Search,
 } from "lucide-react";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
@@ -145,6 +145,16 @@ const LearnerProfilePage = () => {
               ))}
             </div>
           )}
+        </div>
+
+        {/* Quick actions */}
+        <div className="flex items-center gap-2 py-1 w-full">
+          <Button asChild size="sm" className="gap-1.5 rounded-full flex-1 min-w-0">
+            <Link to="/discover">
+              <Search className="h-4 w-4" />
+              <span className="text-xs font-medium truncate">Search for classes</span>
+            </Link>
+          </Button>
         </div>
 
         {/* Compact tabs as dropdown */}
