@@ -93,6 +93,16 @@ export function TopBar() {
           >
             <User className="h-5 w-5" />
           </Button>
+
+          {user ? (
+            <Button variant="ghost" size="icon" className="rounded-full" onClick={handleSignOut} title="Sign out">
+              <LogOut className="h-5 w-5" />
+            </Button>
+          ) : (
+            <Button variant="outline" size="sm" onClick={() => navigate("/auth")} className="gap-1.5">
+              <LogIn className="h-4 w-4" /> <span className="hidden sm:inline">Sign in</span>
+            </Button>
+          )}
         </div>
       </div>
     </header>
