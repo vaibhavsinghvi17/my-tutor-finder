@@ -1,4 +1,5 @@
-import { AppState, Category, Listing, SlotKey } from "./types";
+import { AppState, Category, Listing } from "./types";
+import { blocksToSlots, ageFromDob } from "./timeUtils";
 
 export interface ScoredListing {
   listing: Listing;
@@ -13,7 +14,7 @@ export function scoreListings(state: AppState, listings: Listing[]): ScoredListi
     : null;
 
   const interests: Category[] = kid ? kid.interests : learner.interests;
-  const freeSlots: SlotKey[] = kid ? kid.freeSlots : learner.freeSlots;
+  const freeSlots = kid ? blocksToSlots(kid.freeBlocks) : blocksToSlots(learner.freeBlocks);
   const city = learner.city || state.city;
   const area = learner.area;
   const preferredMode = learner.preferredMode;
@@ -57,3 +58,5 @@ export function scoreListings(state: AppState, listings: Listing[]): ScoredListi
     })
     .sort((a, b) => b.score - a.score || b.listing.createdAt - a.listing.createdAt);
 }
+
+export { ageFromDob };

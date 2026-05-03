@@ -67,6 +67,16 @@ const ProviderProfilePage = () => {
           </div>
 
           <div className="space-y-1.5">
+            <Label>Studio / venue address</Label>
+            <Textarea
+              value={provider.address}
+              onChange={(e) => store.updateProvider({ address: e.target.value.slice(0, 240) })}
+              rows={2}
+              placeholder="Street, building, landmark, postal code"
+            />
+          </div>
+
+          <div className="space-y-1.5">
             <Label>About</Label>
             <Textarea
               value={provider.bio}
