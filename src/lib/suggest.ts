@@ -39,7 +39,8 @@ export function scoreListings(state: AppState, listings: Listing[]): ScoredListi
         score += 2;
         reasons.push("Matches your interests");
       }
-      if (freeSlots.length && listing.slots.some((s) => freeSlots.includes(s))) {
+      const allSlots = [...listing.slots, ...((listing.onlineSlots ?? []) as typeof listing.slots)];
+      if (freeSlots.length && allSlots.some((s) => freeSlots.includes(s))) {
         score += 2;
         reasons.push("Fits your schedule");
       }
