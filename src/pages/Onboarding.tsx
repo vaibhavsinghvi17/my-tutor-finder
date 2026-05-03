@@ -28,7 +28,14 @@ const Onboarding = () => {
 
   useEffect(() => {
     if (onboarded) {
-      navigate(mode === "provider" ? "/provider" : "/dashboard", { replace: true });
+      const s = store.get();
+      const needsProfile = mode === "provider"
+        ? !(s.provider.businessName?.trim() && s.provider.city?.trim())
+        : !(s.learner.name?.trim() && s.learner.city?.trim());
+      const dest = needsProfile
+        ? (mode === "provider" ? "/profile/provider" : "/profile/learner")
+        : (mode === "provider" ? "/provider" : "/dashboard");
+      navigate(dest, { replace: true });
       return;
     }
     const t = setTimeout(() => setShowSplash(false), 1600);
