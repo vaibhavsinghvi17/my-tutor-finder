@@ -121,11 +121,45 @@ const ListingForm = () => {
             <div className="space-y-1.5">
               <Label>Category</Label>
               <Select value={category} onValueChange={(v) => setCategory(v as Category)}>
-                <SelectTrigger><SelectValue /></SelectTrigger>
-                <SelectContent>
-                  {CATEGORIES.map((c) => <SelectItem key={c} value={c}>{c}</SelectItem>)}
+                <SelectTrigger><SelectValue placeholder="Pick a category" /></SelectTrigger>
+                <SelectContent className="max-h-72">
+                  {Array.from(new Set([...(categoryNames as string[]), category].filter(Boolean))).sort().map((c) => (
+                    <SelectItem key={c} value={c}>{c}</SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
+              <div className="flex gap-2">
+                <Input
+                  placeholder="Don't see it? Add a new category"
+                  value={newCat}
+                  onChange={(e) => setNewCat(e.target.value.slice(0, 40))}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      e.preventDefault();
+                      const v = newCat.trim();
+                      if (!v) return;
+                      addCategory(v, provider.businessName).then((c) => {
+                        if (c) { setCategory(c.name); setNewCat(""); toast.success(`Added "${c.name}"`); }
+                      });
+                    }
+                  }}
+                  className="h-8 text-xs"
+                />
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  className="h-8 gap-1"
+                  onClick={async () => {
+                    const v = newCat.trim();
+                    if (!v) return;
+                    const c = await addCategory(v, provider.businessName);
+                    if (c) { setCategory(c.name); setNewCat(""); toast.success(`Added "${c.name}"`); }
+                  }}
+                >
+                  <Plus className="h-3.5 w-3.5" />
+                </Button>
+              </div>
             </div>
             <div className="space-y-1.5">
               <Label>Age group</Label>
