@@ -12,6 +12,7 @@ import { ScheduleGrid, slotsToText } from "@/components/ScheduleGrid";
 import { CategoryIcon, categoryGradient } from "@/components/CategoryIcon";
 import { StarRating } from "@/components/StarRating";
 import { SocialLinksRow } from "@/components/SocialLinksRow";
+import { ContactActions } from "@/components/ContactActions";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { ArrowLeft, Building2, MapPin, Wifi, Users, Sparkles, Clock } from "lucide-react";
 import { SlotKey } from "@/lib/types";
