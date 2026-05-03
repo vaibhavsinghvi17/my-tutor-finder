@@ -313,11 +313,12 @@ const ListingForm = () => {
           {mode !== "Online" && (
             <div className="grid sm:grid-cols-[1fr_180px] gap-3">
               <div className="space-y-1.5">
-                <Label>Venue address (optional)</Label>
+                <Label>Venue address <span className="text-destructive">*</span></Label>
                 <Input
                   value={venue}
                   onChange={(e) => setVenue(e.target.value.slice(0, 160))}
                   placeholder="100 Ft Road, near metro"
+                  required
                 />
               </div>
               <div className="space-y-1.5">
