@@ -36,12 +36,14 @@ export function ListingCard({ listing, reasons = [] }: Props) {
   const interactions = requestCount + ratings.length + seedInteractions;
   const yearsExp = listing.providerId === "self" ? provider.yearsExperience : undefined;
   const viewerCountry = useStore((s) => s.learner.country);
+  const homePin = useStore((s) => s.learner.homePin);
   const fxRates = useFxRates();
   const priceText = formatPrice(listing, viewerCountry, fxRates);
   const durationText = formatDuration(listing.durationMins);
   const isSaved = (savedListings || []).includes(listing.id);
   const shareUrl = `${window.location.origin}/listing/${listing.id}`;
   const shareText = `Check out "${listing.title}" by ${listing.providerName} on LearnLocal`;
+  const distanceKm = listing.mode !== "Online" ? distanceKmBetween(homePin, listing.locationPin) : null;
 
   function stop(e: React.MouseEvent) { e.preventDefault(); e.stopPropagation(); }
 
