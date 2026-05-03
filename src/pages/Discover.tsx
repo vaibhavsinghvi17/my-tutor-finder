@@ -164,6 +164,17 @@ const Discover = () => {
           </Card>
         )}
 
+        <Tabs value={scope} onValueChange={(v) => setScope(v as "local" | "world")}>
+          <TabsList className="w-full sm:w-auto">
+            <TabsTrigger value="local" className="gap-1.5">
+              <Home className="h-3.5 w-3.5" /> Learn from the locals
+            </TabsTrigger>
+            <TabsTrigger value="world" className="gap-1.5">
+              <Globe2 className="h-3.5 w-3.5" /> From around the world
+            </TabsTrigger>
+          </TabsList>
+        </Tabs>
+
         <section className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
           <div className="relative sm:col-span-2 lg:col-span-1">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
