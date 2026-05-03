@@ -97,6 +97,7 @@ export interface ProviderProfile {
   address: string;
   contact: string;
   categories: Category[];
+  yearsExperience?: number;
   socials?: SocialLinks;
   contactInfo?: ContactInfo;
 }
