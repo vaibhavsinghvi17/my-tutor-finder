@@ -1,11 +1,16 @@
+import { useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { TopBar } from "@/components/TopBar";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { getAllListings, useStore } from "@/lib/store";
+import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { store, getAllListings, useStore } from "@/lib/store";
 import { StarRating } from "@/components/StarRating";
 import { ArrowLeft, Bookmark, GraduationCap, Hourglass, Star } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { toast } from "sonner";
 
 type TabKey = "joined" | "requests" | "saved" | "ratings";
 
