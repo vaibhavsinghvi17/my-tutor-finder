@@ -32,7 +32,7 @@ const AuthPage = () => {
   // If already signed in, bounce away
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => {
-      if (data.session) navigate("/discover", { replace: true });
+      if (data.session) navigate("/dashboard", { replace: true });
     });
   }, [navigate]);
 
@@ -47,7 +47,7 @@ const AuthPage = () => {
           email: parsed.data.email,
           password: parsed.data.password,
           options: {
-            emailRedirectTo: `${window.location.origin}/discover`,
+            emailRedirectTo: `${window.location.origin}/dashboard`,
             data: { display_name: parsed.data.displayName },
           },
         });
@@ -59,7 +59,7 @@ const AuthPage = () => {
         const { error } = await supabase.auth.signInWithPassword({ email: parsed.data.email, password: parsed.data.password });
         if (error) { toast.error(error.message); return; }
         toast.success("Welcome back!");
-        navigate("/discover");
+        navigate("/dashboard");
       }
     } finally {
       setBusy(false);
@@ -68,10 +68,10 @@ const AuthPage = () => {
 
   async function handleGoogle() {
     setBusy(true);
-    const result = await lovable.auth.signInWithOAuth("google", { redirect_uri: window.location.origin + "/discover" });
+    const result = await lovable.auth.signInWithOAuth("google", { redirect_uri: window.location.origin + "/dashboard" });
     if (result.error) { toast.error("Google sign-in failed"); setBusy(false); return; }
     if (result.redirected) return;
-    navigate("/discover");
+    navigate("/dashboard");
   }
 
   return (

@@ -24,7 +24,7 @@ const ProviderDashboard = () => {
 
   function switchToLearner() {
     store.setMode("learner");
-    navigate("/discover");
+    navigate("/dashboard");
   }
 
   return (

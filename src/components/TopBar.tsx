@@ -23,7 +23,7 @@ export function TopBar() {
   function switchMode() {
     const next = isProvider ? "learner" : "provider";
     store.setMode(next);
-    navigate(next === "provider" ? "/provider" : "/discover");
+    navigate(next === "provider" ? "/provider" : "/dashboard");
   }
 
   async function handleSignOut() {
@@ -35,7 +35,7 @@ export function TopBar() {
   return (
     <header className="sticky top-0 z-40 backdrop-blur-md bg-background/80 border-b">
       <div className="container flex items-center gap-3 h-16">
-        <Link to={isProvider ? "/provider" : "/discover"} className="flex items-center gap-2 font-bold text-lg">
+        <Link to={isProvider ? "/provider" : "/dashboard"} className="flex items-center gap-2 font-bold text-lg">
           <span className="h-8 w-8 rounded-lg bg-gradient-primary grid place-items-center text-primary-foreground">
             <Sparkles className="h-4 w-4" />
           </span>

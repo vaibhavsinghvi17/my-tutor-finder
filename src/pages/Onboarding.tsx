@@ -11,7 +11,7 @@ const Onboarding = () => {
 
   useEffect(() => {
     if (onboarded) {
-      navigate(mode === "provider" ? "/provider" : "/discover", { replace: true });
+      navigate(mode === "provider" ? "/provider" : "/dashboard", { replace: true });
       return;
     }
     const t = setTimeout(() => setShowSplash(false), 1600);
@@ -20,7 +20,7 @@ const Onboarding = () => {
 
   function pick(m: "learner" | "provider") {
     store.setOnboarded(m);
-    navigate(m === "provider" ? "/provider" : "/discover");
+    navigate(m === "provider" ? "/provider" : "/dashboard");
   }
 
   if (showSplash) {
