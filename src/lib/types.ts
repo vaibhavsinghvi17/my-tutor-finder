@@ -75,6 +75,9 @@ export interface LearnerProfile {
   adults: AdultProfile[];
   activeKidId: string | null; // null = self
   avatarColor?: string;
+  avatarDataUrl?: string;
+  savedListings?: string[];
+  completedListings?: string[];
 }
 
 export interface SocialLinks {
