@@ -23,7 +23,7 @@ export function TopBar() {
   function switchMode() {
     const next = isProvider ? "learner" : "provider";
     store.setMode(next);
-    navigate(next === "provider" ? "/provider" : "/discover");
+    navigate(next === "provider" ? "/provider" : "/dashboard");
   }
 
   async function handleSignOut() {

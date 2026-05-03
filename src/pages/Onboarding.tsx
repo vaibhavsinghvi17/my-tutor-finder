@@ -20,7 +20,7 @@ const Onboarding = () => {
 
   function pick(m: "learner" | "provider") {
     store.setOnboarded(m);
-    navigate(m === "provider" ? "/provider" : "/discover");
+    navigate(m === "provider" ? "/provider" : "/dashboard");
   }
 
   if (showSplash) {
