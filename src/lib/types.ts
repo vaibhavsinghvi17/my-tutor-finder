@@ -159,10 +159,16 @@ export interface JoinRequest {
   id: string;
   listingId: string;
   learnerName: string;
+  learnerUsername?: string;
   forKidName?: string;
   slot: SlotKey;
   note: string;
+  isTrial?: boolean;
   status: RequestStatus;
+  converted?: boolean;
+  startDate?: string; // YYYY-MM-DD
+  endDate?: string;   // YYYY-MM-DD
+  addedByTutor?: boolean;
   createdAt: number;
 }
 
