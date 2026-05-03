@@ -143,14 +143,35 @@ const ListingDetail = () => {
               )}
             </div>
 
-            {ratings.length > 0 && (
-              <div className="flex items-center gap-2">
-                <StarRating value={ratings.reduce((a, r) => a + r.stars, 0) / ratings.length} size="md" />
-                <span className="text-sm text-muted-foreground">
-                  {(ratings.reduce((a, r) => a + r.stars, 0) / ratings.length).toFixed(1)} • {ratings.length} review{ratings.length > 1 ? "s" : ""}
-                </span>
-              </div>
-            )}
+            {(() => {
+              const yearsExp = listing.providerId === "self" ? provider.yearsExperience : undefined;
+              const avgRating = ratings.length ? ratings.reduce((a, r) => a + r.stars, 0) / ratings.length : 0;
+              return (
+                <div className="rounded-xl border bg-muted/30 p-4 space-y-1.5">
+                  <Link
+                    to={listing.providerId === "self" ? "/provider" : `/listing/${listing.id}`}
+                    className="text-lg sm:text-xl font-semibold hover:text-primary transition-colors"
+                  >
+                    {listing.providerName}
+                  </Link>
+                  <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-muted-foreground">
+                    {ratings.length > 0 ? (
+                      <span className="inline-flex items-center gap-1">
+                        <StarRating value={avgRating} size="sm" />
+                        <span>{avgRating.toFixed(1)} ({ratings.length})</span>
+                      </span>
+                    ) : (
+                      <span className="text-xs italic">No reviews yet</span>
+                    )}
+                    {yearsExp != null && yearsExp > 0 && (
+                      <span className="inline-flex items-center gap-1 text-primary font-medium">
+                        <Award className="h-3.5 w-3.5" /> {yearsExp}+ yrs experience
+                      </span>
+                    )}
+                  </div>
+                </div>
+              );
+            })()}
 
             <p className="text-sm leading-relaxed">{listing.description}</p>
 
