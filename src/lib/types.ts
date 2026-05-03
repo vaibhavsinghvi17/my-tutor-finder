@@ -142,6 +142,7 @@ export interface Listing {
   onlinePriceAmount?: number;     // home-country price for online sessions
   onlineIntlPriceAmount?: number; // international price for online sessions
   durationMins?: number;     // class duration in minutes
+  sessionsPerMonth?: number; // shown when priceUnit === "month"
   trial: boolean;
   slots: SlotKey[];
   seatsBySlot?: Record<string, SeatInfo>; // seats per slot key
