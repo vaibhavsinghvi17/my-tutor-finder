@@ -21,6 +21,8 @@ const ListingForm = () => {
   const navigate = useNavigate();
   const provider = useStore((s) => s.provider);
   const existing = useStore((s) => id ? s.listings.find((l) => l.id === id) : undefined);
+  const { names: categoryNames, addCategory } = useCategories();
+  const [newCat, setNewCat] = useState("");
 
   const [title, setTitle] = useState(existing?.title ?? "");
   const [description, setDescription] = useState(existing?.description ?? "");
