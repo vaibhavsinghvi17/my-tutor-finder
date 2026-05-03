@@ -97,15 +97,11 @@ const LearnerProfilePage = () => {
             onChange={(v) => store.updateLearner(v)}
             hint="Pick country → state → city. If yours isn't listed, type to add it."
           />
-          <div className="space-y-1.5">
-            <Label>Address <span className="text-muted-foreground font-normal">(helps providers know how far you are)</span></Label>
-            <Textarea
-              value={learner.address}
-              onChange={(e) => store.updateLearner({ address: e.target.value.slice(0, 240) })}
-              rows={2}
-              placeholder="House / street / landmark, postal code"
-            />
-          </div>
+          <AddressFields
+            value={learner.address}
+            onChange={(v) => store.updateLearner({ address: v })}
+            hint="Helps providers know how far you are."
+          />
         </Card>
 
         <Card className="p-5 space-y-3">
