@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import { TopBar } from "@/components/TopBar";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -13,7 +14,7 @@ import { SocialLinksRow } from "@/components/SocialLinksRow";
 import { ContactActions } from "@/components/ContactActions";
 import { useCategories } from "@/lib/useCategories";
 import { store, useStore } from "@/lib/store";
-import { Instagram, Facebook, Youtube, Twitter, Linkedin, Globe, MessageCircle, Phone, MapPin, Plus, X, Languages } from "lucide-react";
+import { Instagram, Facebook, Youtube, Twitter, Linkedin, Globe, MessageCircle, Phone, MapPin, Plus, X, Languages, Pencil, Trash2, BookOpen } from "lucide-react";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { PinCodeInput } from "@/components/PinCodeInput";
@@ -32,6 +33,7 @@ const SOCIAL_FIELDS: { key: keyof SocialLinks; icon: React.ComponentType<{ class
 
 const ProviderProfilePage = () => {
   const provider = useStore((s) => s.provider);
+  const listings = useStore((s) => s.listings);
   const { names: categoryNames, addCategory } = useCategories();
   const [newCat, setNewCat] = useState("");
   const contactInfo: ContactInfo = provider.contactInfo ?? {};
@@ -296,6 +298,53 @@ const ProviderProfilePage = () => {
               </div>
             ))}
           </div>
+        </Card>
+
+        <Card className="p-5 space-y-3">
+          <div className="flex items-start justify-between gap-3 flex-wrap">
+            <div>
+              <h2 className="font-semibold flex items-center gap-1.5"><BookOpen className="h-4 w-4" /> My classes</h2>
+              <p className="text-sm text-muted-foreground">List as many classes as you teach. Each one appears on Discover.</p>
+            </div>
+            <Button asChild size="sm" className="gap-1">
+              <Link to="/provider/listing/new"><Plus className="h-3.5 w-3.5" /> Add class</Link>
+            </Button>
+          </div>
+          {listings.length === 0 ? (
+            <p className="text-sm text-muted-foreground italic">No classes yet — add your first one.</p>
+          ) : (
+            <div className="space-y-2">
+              {listings.map((l) => (
+                <div key={l.id} className="flex items-center justify-between gap-2 rounded-lg border p-2.5">
+                  <div className="min-w-0">
+                    <p className="font-medium text-sm truncate">{l.title}</p>
+                    <p className="text-xs text-muted-foreground truncate">
+                      {l.category} · {l.mode} · {l.ageGroup}
+                    </p>
+                  </div>
+                  <div className="flex items-center gap-1 shrink-0">
+                    <Button asChild variant="ghost" size="icon" className="h-8 w-8">
+                      <Link to={`/provider/listing/${l.id}`} title="Edit"><Pencil className="h-3.5 w-3.5" /></Link>
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="h-8 w-8 text-destructive hover:text-destructive"
+                      onClick={() => {
+                        if (confirm(`Delete "${l.title}"?`)) {
+                          store.removeListing(l.id);
+                          toast.success("Class deleted");
+                        }
+                      }}
+                      title="Delete"
+                    >
+                      <Trash2 className="h-3.5 w-3.5" />
+                    </Button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
         </Card>
 
         <div className="flex justify-end">
