@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { TopBar } from "@/components/TopBar";
 import { store, useStore } from "@/lib/store";
+import { distanceKmBetween, formatDistance } from "@/lib/distance";
 import { SEED_LISTINGS } from "@/lib/seed";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -195,7 +196,14 @@ const ListingDetail = () => {
               <div className="flex items-start gap-2">
                 <MapPin className="h-4 w-4 mt-0.5 text-muted-foreground" />
                 <div>
-                  <div className="font-medium">{listing.area}, {listing.city}</div>
+                  <div className="font-medium">
+                    {listing.area}, {listing.city}
+                    {(() => {
+                      if (listing.mode === "Online") return null;
+                      const km = distanceKmBetween(learner.homePin, listing.locationPin);
+                      return km != null ? <span className="ml-2 text-primary text-xs font-semibold">{formatDistance(km)}</span> : null;
+                    })()}
+                  </div>
                   {listing.venue && <div className="text-muted-foreground text-xs">{listing.venue}</div>}
                 </div>
               </div>

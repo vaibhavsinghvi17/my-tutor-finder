@@ -9,6 +9,7 @@ import { slotsToText } from "./ScheduleGrid";
 import { formatDuration, formatPrice } from "@/lib/listingUtils";
 import { useFxRates } from "@/lib/useFxRates";
 import { store, useStore } from "@/lib/store";
+import { distanceKmBetween, formatDistance } from "@/lib/distance";
 import {
   DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
@@ -35,12 +36,14 @@ export function ListingCard({ listing, reasons = [] }: Props) {
   const interactions = requestCount + ratings.length + seedInteractions;
   const yearsExp = listing.providerId === "self" ? provider.yearsExperience : undefined;
   const viewerCountry = useStore((s) => s.learner.country);
+  const homePin = useStore((s) => s.learner.homePin);
   const fxRates = useFxRates();
   const priceText = formatPrice(listing, viewerCountry, fxRates);
   const durationText = formatDuration(listing.durationMins);
   const isSaved = (savedListings || []).includes(listing.id);
   const shareUrl = `${window.location.origin}/listing/${listing.id}`;
   const shareText = `Check out "${listing.title}" by ${listing.providerName} on LearnLocal`;
+  const distanceKm = listing.mode !== "Online" ? distanceKmBetween(homePin, listing.locationPin) : null;
 
   function stop(e: React.MouseEvent) { e.preventDefault(); e.stopPropagation(); }
 
@@ -181,6 +184,9 @@ export function ListingCard({ listing, reasons = [] }: Props) {
             <MapPin className="h-3 w-3 mt-0.5 shrink-0" />
             <span className="line-clamp-1">
               {listing.area}, {listing.city}{listing.pinCode ? ` · ${listing.pinCode}` : ""}
+              {distanceKm != null && (
+                <span className="ml-1 text-primary font-medium">· {formatDistance(distanceKm)}</span>
+              )}
             </span>
           </p>
           <p className="text-xs text-muted-foreground line-clamp-1">⏰ {slotsToText(listing.slots)}</p>

@@ -62,6 +62,7 @@ export interface LearnerProfile {
   city: string;
   area: string;
   address: string;
+  homePin?: string; // Google Maps URL or "lat,lng" — used to compute distance to classes
   interests: Category[];
   preferredMode: Mode | "Any";
   freeBlocks: FreeTimeBlock[];
