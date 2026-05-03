@@ -3,15 +3,20 @@ import { FxRates, convertFromINR, currencyForCountry, formatMoney } from "./curr
 
 type PriceListing = Pick<Listing,
   "price" | "priceAmount" | "priceUnit" | "intlPriceAmount" | "intlPriceCurrency"
-  | "onlinePriceAmount" | "onlineIntlPriceAmount" | "country" | "mode"
+  | "onlinePriceAmount" | "onlineIntlPriceAmount" | "country" | "mode" | "sessionsPerMonth"
 >;
 
-function unitLabel(unit: PriceUnit) {
-  return unit === "month" ? "/ month" : "/ session";
+function unitLabel(unit: PriceUnit, sessionsPerMonth?: number) {
+  if (unit === "month") {
+    return sessionsPerMonth && sessionsPerMonth > 0
+      ? `/ month · ${sessionsPerMonth} session${sessionsPerMonth === 1 ? "" : "s"}`
+      : "/ month";
+  }
+  return "/ session";
 }
 
-function fmt(amount: number, ccy: string, unit: PriceUnit) {
-  return `${formatMoney(amount, ccy)} ${unitLabel(unit)}`;
+function fmt(amount: number, ccy: string, unit: PriceUnit, sessionsPerMonth?: number) {
+  return `${formatMoney(amount, ccy)} ${unitLabel(unit, sessionsPerMonth)}`;
 }
 
 /**
