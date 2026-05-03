@@ -26,42 +26,42 @@ export function ContactActions({ contact, fallbackAddress, size = "default", cla
     : "";
 
   return (
-    <div className={`flex flex-wrap gap-2 ${className ?? ""}`}>
+    <div className={`flex flex-nowrap gap-1.5 w-full ${className ?? ""}`}>
       <Button
         size={size}
         variant="outline"
-        className="gap-1.5"
+        className="flex-1 min-w-0 gap-1 px-2 text-xs"
         disabled={!phone}
         onClick={() => {
           if (!phone) return;
           window.location.href = `tel:${digitsOnly(phone)}`;
         }}
       >
-        <Phone className="h-4 w-4" /> Call
+        <Phone className="h-3.5 w-3.5 shrink-0" /> <span className="truncate">Call</span>
       </Button>
       <Button
         size={size}
         variant="outline"
-        className="gap-1.5 text-[#25D366] border-[#25D366]/40 hover:bg-[#25D366]/10"
+        className="flex-1 min-w-0 gap-1 px-2 text-xs text-[#25D366] border-[#25D366]/40 hover:bg-[#25D366]/10"
         disabled={!wa}
         onClick={() => {
           if (!wa) return;
           window.open(`https://wa.me/${digitsOnly(wa)}`, "_blank", "noopener,noreferrer");
         }}
       >
-        <MessageCircle className="h-4 w-4" /> WhatsApp
+        <MessageCircle className="h-3.5 w-3.5 shrink-0" /> <span className="truncate">WhatsApp</span>
       </Button>
       <Button
         size={size}
         variant="outline"
-        className="gap-1.5"
+        className="flex-1 min-w-0 gap-1 px-2 text-xs"
         disabled={!mapsHref}
         onClick={() => {
           if (!mapsHref) { toast.info("No location set"); return; }
           window.open(mapsHref, "_blank", "noopener,noreferrer");
         }}
       >
-        <MapPin className="h-4 w-4" /> Directions
+        <MapPin className="h-3.5 w-3.5 shrink-0" /> <span className="truncate">Directions</span>
       </Button>
     </div>
   );
