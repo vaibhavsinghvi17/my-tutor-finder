@@ -38,6 +38,7 @@ const ListingDetail = () => {
 
   const [slot, setSlot] = useState<SlotKey | "">("");
   const [note, setNote] = useState("");
+  const [isTrial, setIsTrial] = useState(false);
   const [reviewStars, setReviewStars] = useState(0);
   const [reviewText, setReviewText] = useState("");
 
