@@ -216,10 +216,27 @@ const ListingDetail = () => {
             </div>
           </div>
 
+          {listing.trial && (
+            <label className="flex items-start gap-2.5 rounded-lg border border-success/40 bg-success/5 p-3 cursor-pointer hover:bg-success/10 transition-colors">
+              <input
+                type="checkbox"
+                checked={isTrial}
+                onChange={(e) => setIsTrial(e.target.checked)}
+                className="mt-0.5 h-4 w-4 accent-success"
+              />
+              <div className="text-sm">
+                <div className="font-medium text-success-foreground/90 flex items-center gap-1">
+                  <Sparkles className="h-3.5 w-3.5 text-success" /> Request a free trial class
+                </div>
+                <div className="text-xs text-muted-foreground">Try one class before committing.</div>
+              </div>
+            </label>
+          )}
+
           <div className="space-y-1.5">
             <label className="text-sm font-medium">Note (optional)</label>
             <Textarea
-              placeholder="Anything the provider should know? Prior experience, questions..."
+              placeholder={isTrial ? "Anything the provider should know about your trial?" : "Anything the provider should know? Prior experience, questions..."}
               value={note}
               onChange={(e) => setNote(e.target.value.slice(0, 500))}
               rows={3}
@@ -227,7 +244,7 @@ const ListingDetail = () => {
           </div>
 
           <div className="flex justify-end">
-            <Button onClick={submit}>Send request</Button>
+            <Button onClick={submit}>{isTrial ? "Request trial class" : "Send request"}</Button>
           </div>
         </Card>
 
