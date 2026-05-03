@@ -292,6 +292,11 @@ const LearnerProfilePage = () => {
         <DialogContent className="max-w-lg">
           <DialogHeader><DialogTitle>About you</DialogTitle></DialogHeader>
           <div className="grid sm:grid-cols-2 gap-3">
+            <Field label="Username">
+              <Input value={learner.username ?? ""}
+                onChange={(e) => store.updateLearner({ username: e.target.value.toLowerCase().replace(/[^a-z0-9._-]/g, "").slice(0, 24) })}
+                placeholder="e.g. priya.sharma" className="h-9" />
+            </Field>
             <Field label="Name">
               <Input value={learner.name} onChange={(e) => store.updateLearner({ name: e.target.value.slice(0, 80) })} className="h-9" />
             </Field>
