@@ -1,11 +1,16 @@
+import { useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { TopBar } from "@/components/TopBar";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { getAllListings, useStore } from "@/lib/store";
+import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { store, getAllListings, useStore } from "@/lib/store";
 import { StarRating } from "@/components/StarRating";
 import { ArrowLeft, Bookmark, GraduationCap, Hourglass, Star } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { toast } from "sonner";
 
 type TabKey = "joined" | "requests" | "saved" | "ratings";
 
@@ -73,25 +78,7 @@ const LearnerList = () => {
       </div>
     );
   } else {
-    const items = ratings.filter((r) => r.byName === myName);
-    body = items.length === 0 ? <Empty /> : (
-      <div className="space-y-2">
-        {items.map((r) => {
-          const l = allListings.find((x) => x.id === r.listingId);
-          return (
-            <Card key={r.id} className="p-3 space-y-1">
-              <div className="flex items-center justify-between gap-2">
-                <Link to={`/listing/${r.listingId}`} className="text-sm font-semibold truncate hover:text-primary">
-                  {l?.title || "Class"}
-                </Link>
-                <StarRating value={r.stars} size="sm" />
-              </div>
-              {r.comment && <p className="text-xs text-muted-foreground line-clamp-2">{r.comment}</p>}
-            </Card>
-          );
-        })}
-      </div>
-    );
+    body = <RatingsTab myName={myName} />;
   }
 
   const Icon = meta.icon;
@@ -137,6 +124,111 @@ function Empty() {
   return (
     <Card className="p-10 text-center">
       <p className="text-sm text-muted-foreground">Nothing to show here yet.</p>
+    </Card>
+  );
+}
+
+function RatingsTab({ myName }: { myName: string }) {
+  const requests = useStore((s) => s.requests);
+  const ratings = useStore((s) => s.ratings);
+  const allListings = getAllListings();
+
+  const myApproved = requests.filter((r) => r.learnerName === myName && r.status === "Approved");
+  const reviewedListingIds = new Set(ratings.filter((r) => r.byName === myName).map((r) => r.listingId));
+  const reviewed = ratings.filter((r) => r.byName === myName);
+  const pending = myApproved.filter((r) => !reviewedListingIds.has(r.listingId));
+  // de-dupe pending by listingId
+  const pendingByListing = Array.from(new Map(pending.map((r) => [r.listingId, r])).values());
+
+  return (
+    <Tabs defaultValue={pendingByListing.length > 0 ? "pending" : "given"}>
+      <TabsList>
+        <TabsTrigger value="given" className="gap-1.5">
+          Reviews given
+          {reviewed.length > 0 && <Badge variant="outline" className="ml-1 h-5 px-1.5 text-[10px]">{reviewed.length}</Badge>}
+        </TabsTrigger>
+        <TabsTrigger value="pending" className="gap-1.5">
+          Reviews pending
+          {pendingByListing.length > 0 && <Badge variant="outline" className="ml-1 h-5 px-1.5 text-[10px]">{pendingByListing.length}</Badge>}
+        </TabsTrigger>
+      </TabsList>
+
+      <TabsContent value="given" className="space-y-2 mt-3">
+        {reviewed.length === 0 ? <Empty /> : reviewed.map((r) => {
+          const l = allListings.find((x) => x.id === r.listingId);
+          return (
+            <Card key={r.id} className="p-3 space-y-1">
+              <div className="flex items-center justify-between gap-2">
+                <Link to={`/listing/${r.listingId}`} className="text-sm font-semibold truncate hover:text-primary">
+                  {l?.title || "Class"}
+                </Link>
+                <StarRating value={r.stars} size="sm" />
+              </div>
+              {r.comment && <p className="text-xs text-muted-foreground line-clamp-2">{r.comment}</p>}
+            </Card>
+          );
+        })}
+      </TabsContent>
+
+      <TabsContent value="pending" className="space-y-2 mt-3">
+        {pendingByListing.length === 0 ? (
+          <Card className="p-10 text-center">
+            <p className="text-sm text-muted-foreground">No pending reviews. Join a class to leave one!</p>
+          </Card>
+        ) : pendingByListing.map((r) => {
+          const l = allListings.find((x) => x.id === r.listingId);
+          if (!l) return null;
+          return <PendingReviewCard key={r.id} listingId={l.id} title={l.title} provider={l.providerName} byName={myName} />;
+        })}
+      </TabsContent>
+    </Tabs>
+  );
+}
+
+function PendingReviewCard({
+  listingId, title, provider, byName,
+}: { listingId: string; title: string; provider: string; byName: string }) {
+  const [stars, setStars] = useState(0);
+  const [comment, setComment] = useState("");
+  const [open, setOpen] = useState(false);
+
+  function submit() {
+    if (stars < 1) { toast.error("Pick a star rating"); return; }
+    store.addRating({ listingId, byName, stars, comment: comment.trim() });
+    toast.success("Review posted");
+    setOpen(false);
+    setStars(0);
+    setComment("");
+  }
+
+  return (
+    <Card className="p-3 space-y-2">
+      <div className="flex items-center justify-between gap-2">
+        <Link to={`/listing/${listingId}`} className="min-w-0 flex-1">
+          <div className="text-sm font-semibold truncate hover:text-primary">{title}</div>
+          <div className="text-xs text-muted-foreground truncate">{provider}</div>
+        </Link>
+        {!open && (
+          <Button size="sm" variant="outline" className="gap-1.5 rounded-full" onClick={() => setOpen(true)}>
+            <Star className="h-3.5 w-3.5" /> Review
+          </Button>
+        )}
+      </div>
+      {open && (
+        <div className="space-y-2 pt-2 border-t">
+          <StarRating value={stars} onChange={setStars} />
+          <Textarea
+            value={comment}
+            onChange={(e) => setComment(e.target.value.slice(0, 500))}
+            placeholder="Share what you liked (optional)"
+            rows={3}
+          />
+          <div className="flex gap-2 justify-end">
+            <Button size="sm" variant="ghost" onClick={() => setOpen(false)}>Cancel</Button>
+            <Button size="sm" onClick={submit}>Post review</Button>
+          </div>
+        </div>
+      )}
     </Card>
   );
 }
