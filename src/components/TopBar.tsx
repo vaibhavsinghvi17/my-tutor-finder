@@ -34,12 +34,12 @@ export function TopBar() {
 
   return (
     <header className="sticky top-0 z-40 backdrop-blur-md bg-background/80 border-b">
-      <div className="container flex items-center gap-3 h-16">
-        <Link to={isProvider ? "/provider" : "/dashboard"} className="flex items-center gap-2 font-bold text-lg">
-          <span className="h-8 w-8 rounded-lg bg-gradient-primary grid place-items-center text-primary-foreground">
+      <div className="container flex items-center gap-2 sm:gap-3 h-16">
+        <Link to={isProvider ? "/provider" : "/dashboard"} className="flex items-center gap-2 font-bold text-lg shrink-0 min-w-0">
+          <span className="h-8 w-8 shrink-0 rounded-lg bg-gradient-primary grid place-items-center text-primary-foreground">
             <Sparkles className="h-4 w-4" />
           </span>
-          <span>LearnLocal</span>
+          <span className="hidden xs:inline truncate">LearnLocal</span>
         </Link>
 
         <nav className="hidden md:flex items-center gap-1 ml-4">
