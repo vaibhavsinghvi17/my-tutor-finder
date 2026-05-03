@@ -176,7 +176,7 @@ const Discover = () => {
         )}
 
         <Tabs value={scope} onValueChange={(v) => setScope(v as "local" | "world")}>
-          <TabsList className="w-full h-auto grid grid-cols-2 gap-1">
+          <TabsList className="w-full h-auto grid grid-cols-1 gap-1">
             <TabsTrigger value="local" className="flex-col items-start py-2 h-auto whitespace-normal text-left min-w-0">
               <span className="flex items-center gap-1.5 text-xs sm:text-sm">
                 <Home className="h-3.5 w-3.5 shrink-0" /> Learn from the locals
