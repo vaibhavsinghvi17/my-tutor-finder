@@ -13,6 +13,7 @@ import { Badge } from "@/components/ui/badge";
 import { FreeTimeEditor } from "@/components/FreeTimeEditor";
 import { StarRating } from "@/components/StarRating";
 import { CATEGORIES, FreeTimeBlock, Mode } from "@/lib/types";
+import { useCategories } from "@/lib/useCategories";
 import { LocationFields } from "@/components/LocationFields";
 import { AddressFields } from "@/components/AddressFields";
 import { store, useStore, getAllListings } from "@/lib/store";
