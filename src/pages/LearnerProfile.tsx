@@ -248,7 +248,7 @@ const LearnerProfilePage = () => {
         </Section>
 
         {/* Your ratings */}
-        <Section title="Ratings you've given" icon={Star} count={myRatings.length}>
+        <Section id="ratings" title="Ratings you've given" icon={Star} count={myRatings.length}>
           {myRatings.length === 0 ? (
             <Empty text="No reviews yet." />
           ) : (
