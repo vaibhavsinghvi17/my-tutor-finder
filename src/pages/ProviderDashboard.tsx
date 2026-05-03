@@ -208,4 +208,27 @@ const ProviderDashboard = () => {
   );
 };
 
+function StatTile({
+  icon: Icon, label, value, sub, tint,
+}: { icon: React.ElementType; label: string; value: number; sub?: string; tint: "primary" | "accent" | "secondary" | "muted" }) {
+  const tintClass = {
+    primary: "bg-primary/10 text-primary",
+    accent: "bg-accent/15 text-accent-foreground",
+    secondary: "bg-secondary text-secondary-foreground",
+    muted: "bg-muted text-foreground",
+  }[tint];
+  return (
+    <Card className="p-4 space-y-2">
+      <div className={`h-9 w-9 rounded-lg grid place-items-center ${tintClass}`}>
+        <Icon className="h-4 w-4" />
+      </div>
+      <div>
+        <div className="text-2xl font-bold leading-none">{value}</div>
+        <div className="text-xs text-muted-foreground mt-1">{label}</div>
+        {sub && <div className="text-[10px] text-muted-foreground mt-0.5">{sub}</div>}
+      </div>
+    </Card>
+  );
+}
+
 export default ProviderDashboard;
