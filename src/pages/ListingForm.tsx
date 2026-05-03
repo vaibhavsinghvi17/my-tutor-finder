@@ -8,13 +8,15 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { ScheduleGrid } from "@/components/ScheduleGrid";
 import { LocationFields } from "@/components/LocationFields";
 import { PinCodeInput } from "@/components/PinCodeInput";
 import { LanguagesEditor } from "@/components/LanguagesEditor";
 import { AGE_GROUPS, AgeGroup, Category, Mode, PriceUnit, SeatInfo, SlotKey } from "@/lib/types";
 import { useCategories } from "@/lib/useCategories";
-import { Plus, Globe2, Users, Wifi, Building2 } from "lucide-react";
+import { Plus, Globe2, Users, Wifi, MapPin, Locate } from "lucide-react";
 import { store, useStore } from "@/lib/store";
 import { toast } from "sonner";
 
@@ -58,6 +60,28 @@ const ListingForm = () => {
   const [onlineSeatsBySlot, setOnlineSeatsBySlot] = useState<Record<string, SeatInfo>>(existing?.onlineSeatsBySlot ?? {});
   const [languages, setLanguages] = useState<string[]>(existing?.languages ?? provider.languages ?? []);
   const [teachesInternationally, setTeachesInternationally] = useState<boolean>(existing?.teachesInternationally ?? false);
+  const [locationPin, setLocationPin] = useState<string>(existing?.locationPin ?? "");
+  const [continuous, setContinuous] = useState<boolean>(existing?.continuous ?? !existing?.endDate);
+  const [startDate, setStartDate] = useState<string>(existing?.startDate ?? "");
+  const [endDate, setEndDate] = useState<string>(existing?.endDate ?? "");
+
+  // Bracket span = full hours of duration (1-5). For 30/45/75/90, round to nearest hour, min 1.
+  const slotHours = Math.max(1, Math.min(5, Math.round((Number(durationMins) || 60) / 60)));
+
+  function fillCurrentLocation() {
+    if (!navigator.geolocation) return toast.error("Geolocation not supported");
+    toast.info("Getting your current location…");
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        const { latitude, longitude } = pos.coords;
+        const url = `https://www.google.com/maps?q=${latitude},${longitude}`;
+        setLocationPin(url);
+        toast.success("Location pin saved");
+      },
+      (err) => toast.error(err.message || "Could not get location"),
+      { enableHighAccuracy: true, timeout: 10000 },
+    );
+  }
 
   useEffect(() => {
     if (id && !existing) {
@@ -109,6 +133,10 @@ const ListingForm = () => {
       onlineSeatsBySlot: mode === "Both" && Object.keys(onlineSeatsBySlot).length ? onlineSeatsBySlot : undefined,
       languages: languages.length ? languages : undefined,
       teachesInternationally: mode !== "Offline" ? teachesInternationally : undefined,
+      locationPin: mode !== "Online" ? (locationPin.trim() || undefined) : undefined,
+      startDate: startDate || undefined,
+      endDate: continuous ? undefined : (endDate || undefined),
+      continuous,
     };
 
     if (id && existing) {
@@ -225,9 +253,9 @@ const ListingForm = () => {
               <Select value={durationMins} onValueChange={setDurationMins}>
                 <SelectTrigger><SelectValue /></SelectTrigger>
                 <SelectContent>
-                  {[30, 45, 60, 75, 90, 120].map((m) => (
+                  {[30, 45, 60, 90, 120, 180, 240, 300].map((m) => (
                     <SelectItem key={m} value={String(m)}>
-                      {m < 60 ? `${m} min` : m === 60 ? "1 hour" : `${Math.floor(m / 60)}h ${m % 60 ? `${m % 60}m` : ""}`.trim()}
+                      {m < 60 ? `${m} min` : m === 60 ? "1 hour" : `${Math.floor(m / 60)} hour${m / 60 > 1 ? "s" : ""}${m % 60 ? ` ${m % 60}m` : ""}`}
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -409,6 +437,27 @@ const ListingForm = () => {
                   />
                 </div>
               </div>
+
+              <div className="space-y-1.5">
+                <Label className="flex items-center gap-1.5"><MapPin className="h-3.5 w-3.5 text-primary" /> Google location pin (optional)</Label>
+                <Input
+                  value={locationPin}
+                  onChange={(e) => setLocationPin(e.target.value.slice(0, 300))}
+                  placeholder="Paste Google Maps link (e.g. https://maps.app.goo.gl/...)"
+                />
+                <div className="flex flex-wrap gap-2">
+                  <Button type="button" variant="outline" size="sm" className="gap-1.5" onClick={fillCurrentLocation}>
+                    <Locate className="h-3.5 w-3.5" /> Use current location
+                  </Button>
+                  {locationPin && (
+                    <Button type="button" variant="ghost" size="sm" onClick={() => setLocationPin("")}>Clear pin</Button>
+                  )}
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  Powers the <span className="font-medium text-foreground">Directions</span> button on the class listing.
+                </p>
+              </div>
+
               <div className="space-y-1.5 sm:max-w-xs">
                 <Label>Pin / Postal code</Label>
                 <PinCodeInput value={pinCode} onChange={setPinCode} country={country} />
@@ -423,7 +472,35 @@ const ListingForm = () => {
             </div>
           )}
 
-
+          <div className="space-y-2 rounded-lg border p-3">
+            <Label className="text-sm">Class duration window</Label>
+            <RadioGroup
+              value={continuous ? "continuous" : "fixed"}
+              onValueChange={(v) => setContinuous(v === "continuous")}
+              className="flex flex-col gap-2"
+            >
+              <label className="flex items-center gap-2 text-sm">
+                <RadioGroupItem value="continuous" id="dur-continuous" />
+                <span>Continuous — runs until I stop it</span>
+              </label>
+              <label className="flex items-center gap-2 text-sm">
+                <RadioGroupItem value="fixed" id="dur-fixed" />
+                <span>Fixed start &amp; end dates</span>
+              </label>
+            </RadioGroup>
+            <div className="grid grid-cols-2 gap-2 pt-1">
+              <div className="space-y-1">
+                <Label className="text-xs text-muted-foreground">Start date {continuous ? "(optional)" : ""}</Label>
+                <Input type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)} />
+              </div>
+              {!continuous && (
+                <div className="space-y-1">
+                  <Label className="text-xs text-muted-foreground">End date</Label>
+                  <Input type="date" value={endDate} min={startDate || undefined} onChange={(e) => setEndDate(e.target.value)} />
+                </div>
+              )}
+            </div>
+          </div>
 
           <LanguagesEditor value={languages} onChange={setLanguages} />
 
@@ -436,76 +513,66 @@ const ListingForm = () => {
           </div>
         </Card>
 
-        <Card className="p-5 space-y-3">
-          <div>
-            <h2 className="font-semibold">{mode === "Both" ? "Offline batch timings" : "Class timings"}</h2>
-            <p className="text-sm text-muted-foreground">
-              {mode === "Both"
-                ? "Tap weekly slots when the in-person batches run."
-                : "Tap the weekly slots when this class runs."}
-            </p>
-          </div>
-          <ScheduleGrid value={slots} onChange={setSlots} />
-        </Card>
+        <Card className="p-2 sm:p-3">
+          <Accordion type="multiple" defaultValue={["offline-times"]} className="w-full">
+            <AccordionItem value="offline-times" className="border-b-0">
+              <AccordionTrigger className="px-2 py-3 hover:no-underline">
+                <div className="text-left">
+                  <div className="font-semibold text-sm">{mode === "Both" ? "Offline batch timings" : "Class timings"}</div>
+                  <div className="text-xs text-muted-foreground font-normal">
+                    {slots.length} slot{slots.length === 1 ? "" : "s"} selected · {slotHours}h bracket{slotHours > 1 ? "s" : ""}
+                  </div>
+                </div>
+              </AccordionTrigger>
+              <AccordionContent className="px-1">
+                <ScheduleGrid value={slots} onChange={setSlots} slotHours={slotHours} />
+              </AccordionContent>
+            </AccordionItem>
 
-        {mode === "Both" && (
-          <Card className="p-5 space-y-3">
-            <div>
-              <h2 className="font-semibold flex items-center gap-1.5"><Wifi className="h-4 w-4" /> Online batch timings</h2>
-              <p className="text-sm text-muted-foreground">
-                Tap weekly slots when the online batches run. These show up separately for learners searching for online classes.
-              </p>
-            </div>
-            <ScheduleGrid value={onlineSlots} onChange={setOnlineSlots} />
-          </Card>
-        )}
-
-        {slots.length > 0 && (
-          <Card className="p-5 space-y-3">
-            <div>
-              <h2 className="font-semibold flex items-center gap-1.5"><Users className="h-4 w-4" /> Seats per slot</h2>
-              <p className="text-sm text-muted-foreground">Set total seats and how many are already filled. Learners see seats remaining.</p>
-            </div>
-            <div className="space-y-2">
-              {slots.map((s) => {
-                const info = seatsBySlot[s] ?? { total: 0, occupied: 0 };
-                const left = Math.max(0, info.total - info.occupied);
-                return (
-                  <div key={s} className="grid grid-cols-[1fr_auto_auto_auto] items-center gap-2 rounded-lg border p-2.5">
-                    <div className="text-sm font-medium">{s.replace("-", " · ")}:00</div>
-                    <div className="flex items-center gap-1.5">
-                      <Label className="text-xs text-muted-foreground">Total</Label>
-                      <Input
-                        type="number" min={0} max={999}
-                        value={info.total || ""}
-                        onChange={(e) => {
-                          const total = Math.max(0, Number(e.target.value || 0));
-                          setSeatsBySlot({ ...seatsBySlot, [s]: { total, occupied: Math.min(info.occupied, total) } });
-                        }}
-                        className="h-8 w-20"
-                      />
-                    </div>
-                    <div className="flex items-center gap-1.5">
-                      <Label className="text-xs text-muted-foreground">Filled</Label>
-                      <Input
-                        type="number" min={0} max={info.total || 999}
-                        value={info.occupied || ""}
-                        onChange={(e) => {
-                          const occupied = Math.max(0, Math.min(info.total, Number(e.target.value || 0)));
-                          setSeatsBySlot({ ...seatsBySlot, [s]: { total: info.total, occupied } });
-                        }}
-                        className="h-8 w-20"
-                      />
-                    </div>
-                    <div className={`text-xs font-medium px-2 py-1 rounded ${left > 0 ? "bg-success/10 text-success" : info.total > 0 ? "bg-destructive/10 text-destructive" : "bg-muted text-muted-foreground"}`}>
-                      {info.total > 0 ? `${left} left` : "no limit"}
+            {mode === "Both" && (
+              <AccordionItem value="online-times" className="border-b-0">
+                <AccordionTrigger className="px-2 py-3 hover:no-underline">
+                  <div className="text-left">
+                    <div className="font-semibold text-sm flex items-center gap-1.5"><Wifi className="h-4 w-4" /> Online batch timings</div>
+                    <div className="text-xs text-muted-foreground font-normal">
+                      {onlineSlots.length} slot{onlineSlots.length === 1 ? "" : "s"} selected · {slotHours}h bracket{slotHours > 1 ? "s" : ""}
                     </div>
                   </div>
-                );
-              })}
-            </div>
-          </Card>
-        )}
+                </AccordionTrigger>
+                <AccordionContent className="px-1">
+                  <ScheduleGrid value={onlineSlots} onChange={setOnlineSlots} slotHours={slotHours} />
+                </AccordionContent>
+              </AccordionItem>
+            )}
+
+            {(slots.length > 0 || (mode === "Both" && onlineSlots.length > 0)) && (
+              <AccordionItem value="seats" className="border-b-0">
+                <AccordionTrigger className="px-2 py-3 hover:no-underline">
+                  <div className="text-left">
+                    <div className="font-semibold text-sm flex items-center gap-1.5"><Users className="h-4 w-4" /> Seats per slot</div>
+                    <div className="text-xs text-muted-foreground font-normal">Set total &amp; filled seats per batch.</div>
+                  </div>
+                </AccordionTrigger>
+                <AccordionContent className="px-1 space-y-4">
+                  <SeatsList
+                    title={mode === "Both" ? "Offline batches" : undefined}
+                    slots={slots}
+                    seats={seatsBySlot}
+                    onChange={setSeatsBySlot}
+                  />
+                  {mode === "Both" && onlineSlots.length > 0 && (
+                    <SeatsList
+                      title="Online batches"
+                      slots={onlineSlots}
+                      seats={onlineSeatsBySlot}
+                      onChange={setOnlineSeatsBySlot}
+                    />
+                  )}
+                </AccordionContent>
+              </AccordionItem>
+            )}
+          </Accordion>
+        </Card>
         <div className="flex justify-end gap-2">
           <Button variant="outline" onClick={() => navigate("/provider")}>Cancel</Button>
           <Button onClick={save}>{id ? "Save changes" : "Publish class"}</Button>
@@ -514,5 +581,70 @@ const ListingForm = () => {
     </div>
   );
 };
+
+const SEAT_OPTIONS = [1, 2, 3, 4, 5, 6, 8, 10, 12, 15, 20, 25, 30, 40, 50];
+
+interface SeatsListProps {
+  title?: string;
+  slots: SlotKey[];
+  seats: Record<string, SeatInfo>;
+  onChange: (next: Record<string, SeatInfo>) => void;
+}
+
+function SeatsList({ title, slots, seats, onChange }: SeatsListProps) {
+  if (!slots.length) return null;
+  return (
+    <div className="space-y-2">
+      {title && <div className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">{title}</div>}
+      {slots.map((s) => {
+        const info = seats[s] ?? { total: 1, occupied: 0 };
+        const left = Math.max(0, info.total - info.occupied);
+        const filledOptions = Array.from({ length: info.total + 1 }, (_, i) => i);
+        return (
+          <div key={s} className="rounded-lg border p-2.5 space-y-2">
+            <div className="flex items-center justify-between gap-2">
+              <div className="text-sm font-medium truncate">{s.replace("-", " · ")}:00</div>
+              <div className={`text-[11px] font-medium px-2 py-0.5 rounded shrink-0 ${left > 0 ? "bg-success/10 text-success" : "bg-destructive/10 text-destructive"}`}>
+                {left} left
+              </div>
+            </div>
+            <div className="grid grid-cols-2 gap-2">
+              <div className="space-y-1">
+                <Label className="text-[11px] text-muted-foreground">Total seats</Label>
+                <Select
+                  value={String(info.total || 1)}
+                  onValueChange={(v) => {
+                    const total = Math.max(1, Number(v));
+                    onChange({ ...seats, [s]: { total, occupied: Math.min(info.occupied, total) } });
+                  }}
+                >
+                  <SelectTrigger className="h-8 text-sm"><SelectValue /></SelectTrigger>
+                  <SelectContent className="max-h-64">
+                    {SEAT_OPTIONS.map((n) => <SelectItem key={n} value={String(n)}>{n}</SelectItem>)}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-1">
+                <Label className="text-[11px] text-muted-foreground">Filled</Label>
+                <Select
+                  value={String(info.occupied || 0)}
+                  onValueChange={(v) => {
+                    const occupied = Math.max(0, Math.min(info.total, Number(v)));
+                    onChange({ ...seats, [s]: { total: info.total, occupied } });
+                  }}
+                >
+                  <SelectTrigger className="h-8 text-sm"><SelectValue /></SelectTrigger>
+                  <SelectContent className="max-h-64">
+                    {filledOptions.map((n) => <SelectItem key={n} value={String(n)}>{n}</SelectItem>)}
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
 
 export default ListingForm;
