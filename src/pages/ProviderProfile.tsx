@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { CATEGORIES, Category } from "@/lib/types";
 import { LocationFields } from "@/components/LocationFields";
+import { AddressFields } from "@/components/AddressFields";
 import { store, useStore } from "@/lib/store";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
@@ -57,11 +58,9 @@ const ProviderProfilePage = () => {
 
           <div className="space-y-1.5">
             <Label>Studio / venue address</Label>
-            <Textarea
+            <AddressFields
               value={provider.address}
-              onChange={(e) => store.updateProvider({ address: e.target.value.slice(0, 240) })}
-              rows={2}
-              placeholder="Street, building, landmark, postal code"
+              onChange={(v) => store.updateProvider({ address: v })}
             />
           </div>
 
