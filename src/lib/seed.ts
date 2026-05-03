@@ -139,7 +139,7 @@ export const SEED_LISTINGS: Listing[] = [
     id: "seed-8",
     providerId: "seed-lingua",
     providerName: "Lingua Live",
-    country: "India", state: "Maharashtra", country: "India",
+    country: "India",
     state: "Karnataka",
     city: "Online",
     area: "Online",
