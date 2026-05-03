@@ -1,15 +1,18 @@
+import { useState } from "react";
 import { TopBar } from "@/components/TopBar";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-import { CATEGORIES, Category, SocialLinks } from "@/lib/types";
+import { Category, ContactInfo, SocialLinks } from "@/lib/types";
 import { LocationFields } from "@/components/LocationFields";
 import { AddressFields } from "@/components/AddressFields";
 import { SocialLinksRow } from "@/components/SocialLinksRow";
+import { ContactActions } from "@/components/ContactActions";
+import { useCategories } from "@/lib/useCategories";
 import { store, useStore } from "@/lib/store";
-import { Instagram, Facebook, Youtube, Twitter, Linkedin, Globe, MessageCircle } from "lucide-react";
+import { Instagram, Facebook, Youtube, Twitter, Linkedin, Globe, MessageCircle, Phone, MapPin, Plus } from "lucide-react";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 
@@ -25,12 +28,32 @@ const SOCIAL_FIELDS: { key: keyof SocialLinks; icon: React.ComponentType<{ class
 
 const ProviderProfilePage = () => {
   const provider = useStore((s) => s.provider);
+  const { names: categoryNames, addCategory } = useCategories();
+  const [newCat, setNewCat] = useState("");
+  const contactInfo: ContactInfo = provider.contactInfo ?? {};
+
+  function setContact(patch: Partial<ContactInfo>) {
+    store.updateProvider({ contactInfo: { ...contactInfo, ...patch } });
+  }
 
   function toggleCat(c: Category) {
     const has = provider.categories.includes(c);
     store.updateProvider({
       categories: has ? provider.categories.filter((x) => x !== c) : [...provider.categories, c],
     });
+  }
+
+  async function handleAddCategory() {
+    const v = newCat.trim();
+    if (!v) return;
+    const created = await addCategory(v, provider.businessName);
+    if (created) {
+      if (!provider.categories.includes(created.name)) {
+        store.updateProvider({ categories: [...provider.categories, created.name] });
+      }
+      setNewCat("");
+      toast.success(`"${created.name}" added to global categories`);
+    }
   }
 
   return (
@@ -89,7 +112,7 @@ const ProviderProfilePage = () => {
           <div className="space-y-2">
             <Label>What you teach</Label>
             <div className="flex flex-wrap gap-2">
-              {CATEGORIES.map((c) => {
+              {Array.from(new Set([...categoryNames, ...provider.categories])).map((c) => {
                 const active = provider.categories.includes(c);
                 return (
                   <button
@@ -106,6 +129,61 @@ const ProviderProfilePage = () => {
                   </button>
                 );
               })}
+            </div>
+            <div className="flex gap-2 pt-2">
+              <Input
+                placeholder="Don't see your category? Add a new one"
+                value={newCat}
+                onChange={(e) => setNewCat(e.target.value.slice(0, 40))}
+                onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); handleAddCategory(); } }}
+                className="h-9"
+              />
+              <Button type="button" size="sm" onClick={handleAddCategory} className="gap-1">
+                <Plus className="h-3.5 w-3.5" /> Add
+              </Button>
+            </div>
+            <p className="text-xs text-muted-foreground">
+              New categories are added to the app's global list and become available to all users.
+            </p>
+          </div>
+        </Card>
+
+        {/* Contact actions */}
+        <Card className="p-5 space-y-4">
+          <div className="flex items-start justify-between gap-3 flex-wrap">
+            <div>
+              <h2 className="font-semibold">Contact actions</h2>
+              <p className="text-sm text-muted-foreground">Learners can call, WhatsApp, or get directions in one tap.</p>
+            </div>
+            <ContactActions contact={contactInfo} fallbackAddress={provider.address} size="sm" />
+          </div>
+          <div className="grid sm:grid-cols-2 gap-3">
+            <div className="space-y-1.5">
+              <Label className="text-xs flex items-center gap-1.5"><Phone className="h-3.5 w-3.5" /> Phone (for Call button)</Label>
+              <Input
+                value={contactInfo.phone ?? ""}
+                onChange={(e) => setContact({ phone: e.target.value.slice(0, 20) })}
+                placeholder="+91 9XXXXXXXXX"
+                className="h-9"
+              />
+            </div>
+            <div className="space-y-1.5">
+              <Label className="text-xs flex items-center gap-1.5"><MessageCircle className="h-3.5 w-3.5 text-[#25D366]" /> WhatsApp number</Label>
+              <Input
+                value={contactInfo.whatsapp ?? ""}
+                onChange={(e) => setContact({ whatsapp: e.target.value.slice(0, 20) })}
+                placeholder="Same as phone if blank"
+                className="h-9"
+              />
+            </div>
+            <div className="space-y-1.5 sm:col-span-2">
+              <Label className="text-xs flex items-center gap-1.5"><MapPin className="h-3.5 w-3.5" /> Google Maps link or address</Label>
+              <Input
+                value={contactInfo.mapsUrl ?? ""}
+                onChange={(e) => setContact({ mapsUrl: e.target.value.slice(0, 500) })}
+                placeholder="Paste a Google Maps link, or leave blank to use studio address"
+                className="h-9"
+              />
             </div>
           </div>
         </Card>

@@ -13,6 +13,7 @@ import { Badge } from "@/components/ui/badge";
 import { FreeTimeEditor } from "@/components/FreeTimeEditor";
 import { StarRating } from "@/components/StarRating";
 import { CATEGORIES, FreeTimeBlock, Mode } from "@/lib/types";
+import { useCategories } from "@/lib/useCategories";
 import { LocationFields } from "@/components/LocationFields";
 import { AddressFields } from "@/components/AddressFields";
 import { store, useStore, getAllListings } from "@/lib/store";
@@ -30,6 +31,7 @@ const LearnerProfilePage = () => {
   const learner = useStore((s) => s.learner);
   const requests = useStore((s) => s.requests);
   const ratings = useStore((s) => s.ratings);
+  const { names: categoryNames, addCategory } = useCategories();
   const age = ageFromDob(learner.dob);
   const navigate = useNavigate();
   const [open, setOpen] = useState<Section>(null);
@@ -37,12 +39,16 @@ const LearnerProfilePage = () => {
   const [customInterest, setCustomInterest] = useState("");
   const fileRef = useRef<HTMLInputElement>(null);
 
-  function addCustomInterest() {
+  async function addCustomInterest() {
     const v = customInterest.trim();
     if (!v) return;
-    if (learner.interests.includes(v)) { setCustomInterest(""); return; }
-    store.updateLearner({ interests: [...learner.interests, v] });
+    const created = await addCategory(v, learner.name);
+    const name = created?.name ?? v;
+    if (!learner.interests.includes(name)) {
+      store.updateLearner({ interests: [...learner.interests, name] });
+    }
     setCustomInterest("");
+    if (created) toast.success(`"${name}" added globally`);
   }
 
   const fullLocation = [learner.area, learner.city, learner.state, learner.country].filter(Boolean).join(", ");
@@ -326,7 +332,7 @@ const LearnerProfilePage = () => {
         <DialogContent className="max-w-lg">
           <DialogHeader><DialogTitle>Interests</DialogTitle></DialogHeader>
           <div className="flex flex-wrap gap-1.5">
-            {Array.from(new Set([...CATEGORIES, ...learner.interests])).map((c) => {
+            {Array.from(new Set([...categoryNames, ...CATEGORIES, ...learner.interests])).map((c) => {
               const active = learner.interests.includes(c);
               return (
                 <button

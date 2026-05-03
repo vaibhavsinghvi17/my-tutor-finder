@@ -14,6 +14,7 @@ import AdultProfileEditor from "./pages/AdultProfileEditor";
 import KidProfileEditor from "./pages/KidProfileEditor";
 import ProviderDashboard from "./pages/ProviderDashboard";
 import ListingForm from "./pages/ListingForm";
+import Auth from "./pages/Auth";
 import NotFound from "./pages/NotFound.tsx";
 
 const queryClient = new QueryClient();
@@ -26,6 +27,7 @@ const App = () => (
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Onboarding />} />
+          <Route path="/auth" element={<Auth />} />
           <Route path="/discover" element={<Discover />} />
           <Route path="/listing/:id" element={<ListingDetail />} />
           <Route path="/requests" element={<Requests />} />

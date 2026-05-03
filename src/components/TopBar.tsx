@@ -1,13 +1,12 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { store, useStore } from "@/lib/store";
+import { useAuth } from "@/lib/useAuth";
+import { supabase } from "@/integrations/supabase/client";
 import { allKnownCities } from "@/lib/locations";
-import {
-  DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel,
-  DropdownMenuSeparator, DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import { Combobox } from "@/components/Combobox";
-import { GraduationCap, Briefcase, MapPin, User, Sparkles, X } from "lucide-react";
+import { GraduationCap, Briefcase, MapPin, User, Sparkles, X, LogIn, LogOut } from "lucide-react";
+import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 
 export function TopBar() {
@@ -17,6 +16,7 @@ export function TopBar() {
   const provider = useStore((s) => s.provider);
   const location = useLocation();
   const navigate = useNavigate();
+  const { user } = useAuth();
 
   const isProvider = mode === "provider";
 
@@ -24,6 +24,12 @@ export function TopBar() {
     const next = isProvider ? "learner" : "provider";
     store.setMode(next);
     navigate(next === "provider" ? "/provider" : "/discover");
+  }
+
+  async function handleSignOut() {
+    await supabase.auth.signOut();
+    toast.success("Signed out");
+    navigate("/auth");
   }
 
   return (
@@ -87,6 +93,16 @@ export function TopBar() {
           >
             <User className="h-5 w-5" />
           </Button>
+
+          {user ? (
+            <Button variant="ghost" size="icon" className="rounded-full" onClick={handleSignOut} title="Sign out">
+              <LogOut className="h-5 w-5" />
+            </Button>
+          ) : (
+            <Button variant="outline" size="sm" onClick={() => navigate("/auth")} className="gap-1.5">
+              <LogIn className="h-4 w-4" /> <span className="hidden sm:inline">Sign in</span>
+            </Button>
+          )}
         </div>
       </div>
     </header>

@@ -10,7 +10,9 @@ import { Switch } from "@/components/ui/switch";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { ScheduleGrid } from "@/components/ScheduleGrid";
 import { LocationFields } from "@/components/LocationFields";
-import { AGE_GROUPS, AgeGroup, CATEGORIES, Category, Mode, PriceUnit, SlotKey } from "@/lib/types";
+import { AGE_GROUPS, AgeGroup, Category, Mode, PriceUnit, SlotKey } from "@/lib/types";
+import { useCategories } from "@/lib/useCategories";
+import { Plus } from "lucide-react";
 import { store, useStore } from "@/lib/store";
 import { toast } from "sonner";
 
@@ -19,6 +21,8 @@ const ListingForm = () => {
   const navigate = useNavigate();
   const provider = useStore((s) => s.provider);
   const existing = useStore((s) => id ? s.listings.find((l) => l.id === id) : undefined);
+  const { names: categoryNames, addCategory } = useCategories();
+  const [newCat, setNewCat] = useState("");
 
   const [title, setTitle] = useState(existing?.title ?? "");
   const [description, setDescription] = useState(existing?.description ?? "");
@@ -117,11 +121,45 @@ const ListingForm = () => {
             <div className="space-y-1.5">
               <Label>Category</Label>
               <Select value={category} onValueChange={(v) => setCategory(v as Category)}>
-                <SelectTrigger><SelectValue /></SelectTrigger>
-                <SelectContent>
-                  {CATEGORIES.map((c) => <SelectItem key={c} value={c}>{c}</SelectItem>)}
+                <SelectTrigger><SelectValue placeholder="Pick a category" /></SelectTrigger>
+                <SelectContent className="max-h-72">
+                  {Array.from(new Set([...(categoryNames as string[]), category].filter(Boolean))).sort().map((c) => (
+                    <SelectItem key={c} value={c}>{c}</SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
+              <div className="flex gap-2">
+                <Input
+                  placeholder="Don't see it? Add a new category"
+                  value={newCat}
+                  onChange={(e) => setNewCat(e.target.value.slice(0, 40))}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      e.preventDefault();
+                      const v = newCat.trim();
+                      if (!v) return;
+                      addCategory(v, provider.businessName).then((c) => {
+                        if (c) { setCategory(c.name); setNewCat(""); toast.success(`Added "${c.name}"`); }
+                      });
+                    }
+                  }}
+                  className="h-8 text-xs"
+                />
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  className="h-8 gap-1"
+                  onClick={async () => {
+                    const v = newCat.trim();
+                    if (!v) return;
+                    const c = await addCategory(v, provider.businessName);
+                    if (c) { setCategory(c.name); setNewCat(""); toast.success(`Added "${c.name}"`); }
+                  }}
+                >
+                  <Plus className="h-3.5 w-3.5" />
+                </Button>
+              </div>
             </div>
             <div className="space-y-1.5">
               <Label>Age group</Label>

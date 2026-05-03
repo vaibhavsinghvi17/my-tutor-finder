@@ -4,6 +4,7 @@ import { ListingCard } from "@/components/ListingCard";
 import { getAllListings, store, useStore } from "@/lib/store";
 import { scoreListings } from "@/lib/suggest";
 import { CATEGORIES, Category, Mode } from "@/lib/types";
+import { useCategories } from "@/lib/useCategories";
 import { allKnownCities } from "@/lib/locations";
 import { ageFromDob } from "@/lib/timeUtils";
 import { Combobox } from "@/components/Combobox";
@@ -17,12 +18,14 @@ import { Card } from "@/components/ui/card";
 
 const Discover = () => {
   const state = useStore((s) => s);
+  const { names: categoryNames } = useCategories();
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState<Category | "all">("all");
   const [mode, setMode] = useState<Mode | "all">("all");
   const [cityFilter, setCityFilter] = useState<string>(state.city || "all");
 
   const allListings = getAllListings();
+  const allCategories = Array.from(new Set([...categoryNames, ...CATEGORIES])).sort();
 
   const scored = useMemo(() => {
     let scoredList = scoreListings(state, allListings);
@@ -97,7 +100,7 @@ const Discover = () => {
             <SelectTrigger><SelectValue placeholder="Category" /></SelectTrigger>
             <SelectContent>
               <SelectItem value="all">All categories</SelectItem>
-              {CATEGORIES.map((c) => <SelectItem key={c} value={c}>{c}</SelectItem>)}
+              {allCategories.map((c) => <SelectItem key={c} value={c}>{c}</SelectItem>)}
             </SelectContent>
           </Select>
           <Select value={mode} onValueChange={(v) => setMode(v as any)}>

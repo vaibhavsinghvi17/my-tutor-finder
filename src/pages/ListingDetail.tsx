@@ -12,6 +12,7 @@ import { ScheduleGrid, slotsToText } from "@/components/ScheduleGrid";
 import { CategoryIcon, categoryGradient } from "@/components/CategoryIcon";
 import { StarRating } from "@/components/StarRating";
 import { SocialLinksRow } from "@/components/SocialLinksRow";
+import { ContactActions } from "@/components/ContactActions";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { ArrowLeft, Building2, MapPin, Wifi, Users, Sparkles, Clock } from "lucide-react";
 import { SlotKey } from "@/lib/types";
@@ -128,6 +129,18 @@ const ListingDetail = () => {
                 </div>
               </div>
             </div>
+
+            {(() => {
+              const contact = listing.contactInfo ?? (listing.providerId === "self" ? provider.contactInfo : undefined);
+              const fallback = [listing.venue, listing.area, listing.city].filter(Boolean).join(", ");
+              if (!contact?.phone && !contact?.whatsapp && !contact?.mapsUrl && !fallback) return null;
+              return (
+                <div className="space-y-2">
+                  <h3 className="text-sm font-semibold">Get in touch</h3>
+                  <ContactActions contact={contact} fallbackAddress={fallback} size="sm" />
+                </div>
+              );
+            })()}
 
             {(listing.socials || (listing.providerId === "self" && provider.socials)) && (
               <div className="space-y-2">
