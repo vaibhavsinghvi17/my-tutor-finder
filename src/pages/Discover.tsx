@@ -10,10 +10,14 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
-import { Search, UserCircle2, Baby, Plus, MapPin, Home, Globe2 } from "lucide-react";
+import { Search, UserCircle2, Baby, Plus, MapPin, Home, Globe2, Clock, SlidersHorizontal, Check } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Card } from "@/components/ui/card";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel,
+  DropdownMenuSeparator, DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 type SortOption = "recommended" | "price-asc" | "price-desc" | "popularity" | "newest";
 type TimeOfDay = "all" | "morning" | "afternoon" | "evening";
