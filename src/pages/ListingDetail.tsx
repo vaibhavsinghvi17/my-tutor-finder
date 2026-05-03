@@ -64,14 +64,17 @@ const ListingDetail = () => {
       return;
     }
     const learnerName = learner.name || "Guest";
+    const finalNote = isTrial
+      ? `[Trial class request] ${note}`.trim()
+      : note;
     store.addRequest({
       listingId: listing!.id,
       learnerName,
       forKidName: activeKid?.name,
       slot,
-      note,
+      note: finalNote,
     });
-    toast.success("Request sent! The provider will reply soon.");
+    toast.success(isTrial ? "Trial class request sent!" : "Request sent! The provider will reply soon.");
     navigate("/requests");
   }
 
