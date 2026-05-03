@@ -113,6 +113,11 @@ const ListingDetail = () => {
                   <Award className="h-3 w-3" /> {provider.yearsExperience}+ yrs experience
                 </Badge>
               )}
+              {interactions > 0 && (
+                <Badge variant="outline" className="gap-1">
+                  <UsersRound className="h-3 w-3" /> {interactions} interested
+                </Badge>
+              )}
               {listing.trial && (
                 <Badge className="bg-success text-success-foreground border-0 gap-1">
                   <Sparkles className="h-3 w-3" /> Free trial available
