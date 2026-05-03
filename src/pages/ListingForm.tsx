@@ -48,6 +48,7 @@ const ListingForm = () => {
   const [onlinePriceAmount, setOnlinePriceAmount] = useState<string>(existing?.onlinePriceAmount?.toString() ?? "");
   const [onlineIntlPriceAmount, setOnlineIntlPriceAmount] = useState<string>(existing?.onlineIntlPriceAmount?.toString() ?? "");
   const [durationMins, setDurationMins] = useState<string>(existing?.durationMins?.toString() ?? "60");
+  const [sessionsPerMonth, setSessionsPerMonth] = useState<string>(existing?.sessionsPerMonth?.toString() ?? "4");
   const [trial, setTrial] = useState(existing?.trial ?? true);
   const [slots, setSlots] = useState<SlotKey[]>(existing?.slots ?? []);
   const [seatsBySlot, setSeatsBySlot] = useState<Record<string, SeatInfo>>(existing?.seatsBySlot ?? {});
@@ -93,6 +94,7 @@ const ListingForm = () => {
       onlinePriceAmount: onlinePriceAmount ? Number(onlinePriceAmount) : undefined,
       onlineIntlPriceAmount: onlineIntlPriceAmount ? Number(onlineIntlPriceAmount) : undefined,
       durationMins: durationMins ? Number(durationMins) : undefined,
+      sessionsPerMonth: priceUnit === "month" && sessionsPerMonth ? Number(sessionsPerMonth) : undefined,
       trial,
       slots,
       seatsBySlot: Object.keys(seatsBySlot).length ? seatsBySlot : undefined,
@@ -245,6 +247,21 @@ const ListingForm = () => {
             </div>
           </div>
 
+          {priceUnit === "month" && (
+            <div className="space-y-1.5 sm:max-w-xs">
+              <Label>Sessions per month</Label>
+              <Input
+                type="number"
+                min="1"
+                max="60"
+                value={sessionsPerMonth}
+                onChange={(e) => setSessionsPerMonth(e.target.value)}
+                placeholder="4"
+              />
+              <p className="text-xs text-muted-foreground">Shown to learners as e.g. "4 sessions / month".</p>
+            </div>
+          )}
+
           {mode === "Both" && (
             <div className="space-y-1.5">
               <Label>Online price (optional)</Label>
@@ -264,46 +281,63 @@ const ListingForm = () => {
           )}
 
           {mode !== "Offline" && (
-            <div className="rounded-lg border p-3 space-y-3 bg-muted/30">
-              <div className="flex items-start gap-2">
-                <Globe2 className="h-4 w-4 mt-0.5 text-primary" />
-                <div className="flex-1">
-                  <Label className="text-sm">International price (optional)</Label>
-                  <p className="text-xs text-muted-foreground">Shown to learners outside your country. Leave blank to use your home price.</p>
-                </div>
-                <Select value={intlPriceCurrency} onValueChange={setIntlPriceCurrency}>
-                  <SelectTrigger className="w-[100px] h-8"><SelectValue /></SelectTrigger>
-                  <SelectContent>
-                    {["USD","EUR","GBP","AUD","CAD","SGD","AED","JPY"].map((c) => (
-                      <SelectItem key={c} value={c}>{c}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-              <div className="grid sm:grid-cols-2 gap-2">
-                <div className="space-y-1">
-                  <Label className="text-xs text-muted-foreground">{mode === "Both" ? "Offline" : mode === "Online" ? "Online" : ""} ({intlPriceCurrency})</Label>
-                  <Input
-                    type="number"
-                    min="0"
-                    value={intlPriceAmount}
-                    onChange={(e) => setIntlPriceAmount(e.target.value)}
-                    placeholder="50"
-                  />
-                </div>
-                {mode === "Both" && (
-                  <div className="space-y-1">
-                    <Label className="text-xs text-muted-foreground">Online ({intlPriceCurrency})</Label>
-                    <Input
-                      type="number"
-                      min="0"
-                      value={onlineIntlPriceAmount}
-                      onChange={(e) => setOnlineIntlPriceAmount(e.target.value)}
-                      placeholder="35"
-                    />
+            <div className="space-y-3">
+              <div className="flex items-center justify-between rounded-lg border p-3">
+                <div className="flex items-start gap-2">
+                  <Globe2 className="h-4 w-4 mt-0.5 text-primary" />
+                  <div>
+                    <Label className="text-sm">Open to teach internationally</Label>
+                    <p className="text-xs text-muted-foreground">Show this online class to learners worldwide.</p>
                   </div>
-                )}
+                </div>
+                <Switch checked={teachesInternationally} onCheckedChange={setTeachesInternationally} />
               </div>
+
+              {teachesInternationally && (
+                <div className="rounded-lg border p-3 space-y-3 bg-muted/30">
+                  <div className="flex items-start gap-2">
+                    <Globe2 className="h-4 w-4 mt-0.5 text-primary" />
+                    <div className="flex-1">
+                      <Label className="text-sm">International price</Label>
+                      <p className="text-xs text-muted-foreground">
+                        Set the price in your local currency (₹). Learners outside your country will see it auto-converted to their currency in real time.
+                      </p>
+                    </div>
+                  </div>
+                  <div className="grid sm:grid-cols-2 gap-2">
+                    <div className="space-y-1">
+                      <Label className="text-xs text-muted-foreground">{mode === "Both" ? "Offline (₹)" : "Online (₹)"}</Label>
+                      <div className="relative">
+                        <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground">₹</span>
+                        <Input
+                          type="number"
+                          min="0"
+                          value={intlPriceAmount}
+                          onChange={(e) => setIntlPriceAmount(e.target.value)}
+                          placeholder="3000"
+                          className="pl-7"
+                        />
+                      </div>
+                    </div>
+                    {mode === "Both" && (
+                      <div className="space-y-1">
+                        <Label className="text-xs text-muted-foreground">Online (₹)</Label>
+                        <div className="relative">
+                          <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground">₹</span>
+                          <Input
+                            type="number"
+                            min="0"
+                            value={onlineIntlPriceAmount}
+                            onChange={(e) => setOnlineIntlPriceAmount(e.target.value)}
+                            placeholder="2000"
+                            className="pl-7"
+                          />
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
             </div>
           )}
 
@@ -351,18 +385,7 @@ const ListingForm = () => {
             </div>
           )}
 
-          {mode !== "Offline" && (
-            <div className="flex items-center justify-between rounded-lg border p-3">
-              <div className="flex items-start gap-2">
-                <Globe2 className="h-4 w-4 mt-0.5 text-primary" />
-                <div>
-                  <Label className="text-sm">Open to teach internationally</Label>
-                  <p className="text-xs text-muted-foreground">Show this online class to learners worldwide.</p>
-                </div>
-              </div>
-              <Switch checked={teachesInternationally} onCheckedChange={setTeachesInternationally} />
-            </div>
-          )}
+
 
           <LanguagesEditor value={languages} onChange={setLanguages} />
 

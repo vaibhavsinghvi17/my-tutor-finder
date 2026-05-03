@@ -3,15 +3,20 @@ import { FxRates, convertFromINR, currencyForCountry, formatMoney } from "./curr
 
 type PriceListing = Pick<Listing,
   "price" | "priceAmount" | "priceUnit" | "intlPriceAmount" | "intlPriceCurrency"
-  | "onlinePriceAmount" | "onlineIntlPriceAmount" | "country" | "mode"
+  | "onlinePriceAmount" | "onlineIntlPriceAmount" | "country" | "mode" | "sessionsPerMonth"
 >;
 
-function unitLabel(unit: PriceUnit) {
-  return unit === "month" ? "/ month" : "/ session";
+function unitLabel(unit: PriceUnit, sessionsPerMonth?: number) {
+  if (unit === "month") {
+    return sessionsPerMonth && sessionsPerMonth > 0
+      ? `/ month · ${sessionsPerMonth} session${sessionsPerMonth === 1 ? "" : "s"}`
+      : "/ month";
+  }
+  return "/ session";
 }
 
-function fmt(amount: number, ccy: string, unit: PriceUnit) {
-  return `${formatMoney(amount, ccy)} ${unitLabel(unit)}`;
+function fmt(amount: number, ccy: string, unit: PriceUnit, sessionsPerMonth?: number) {
+  return `${formatMoney(amount, ccy)} ${unitLabel(unit, sessionsPerMonth)}`;
 }
 
 /**
@@ -39,35 +44,22 @@ function priceForMode(
     ? l.onlineIntlPriceAmount
     : (typeof l.intlPriceAmount === "number" && l.intlPriceAmount > 0 ? l.intlPriceAmount : undefined);
 
-  const intlCcy = l.intlPriceCurrency || currencyForCountry(viewerCountry);
+  
 
   if (isIntl) {
-    // Provider override wins; auto-convert if viewer's currency differs.
-    if (typeof intlOverride === "number") {
+    // International price is provided in INR by the tutor.
+    // Convert it to the viewer's currency in real time.
+    const baseInr = typeof intlOverride === "number" ? intlOverride : (typeof inrBase === "number" ? inrBase : undefined);
+    if (typeof baseInr === "number") {
       const viewerCcy = currencyForCountry(viewerCountry);
-      if (viewerCcy && viewerCcy !== intlCcy && rates) {
-        // Convert override → INR equivalent → viewer currency.
-        // Override is in intlCcy; INR-base rate is units per 1 INR.
-        const intlPerInr = rates[intlCcy];
-        const viewerPerInr = rates[viewerCcy];
-        if (intlPerInr && viewerPerInr) {
-          const inrEquivalent = intlOverride / intlPerInr;
-          return fmt(inrEquivalent * viewerPerInr, viewerCcy, unit);
-        }
-      }
-      return fmt(intlOverride, intlCcy, unit);
-    }
-    // No override → auto-convert INR base to viewer's currency.
-    if (typeof inrBase === "number") {
-      const viewerCcy = currencyForCountry(viewerCountry);
-      const converted = convertFromINR(inrBase, viewerCcy, rates ?? null);
-      if (converted != null) return fmt(converted, viewerCcy, unit);
-      return fmt(inrBase, "INR", unit);
+      const converted = convertFromINR(baseInr, viewerCcy, rates ?? null);
+      if (converted != null) return fmt(converted, viewerCcy, unit, l.sessionsPerMonth);
+      return fmt(baseInr, "INR", unit, l.sessionsPerMonth);
     }
     return null;
   }
 
-  if (typeof inrBase === "number") return fmt(inrBase, "INR", unit);
+  if (typeof inrBase === "number") return fmt(inrBase, "INR", unit, l.sessionsPerMonth);
   return null;
 }
 

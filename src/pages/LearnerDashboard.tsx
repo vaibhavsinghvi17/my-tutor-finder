@@ -20,7 +20,10 @@ const LearnerDashboard = () => {
 
   const saved = learner.savedListings?.length ?? 0;
   const completed = learner.completedListings?.length ?? 0;
-  const approved = myRequests.filter((r) => r.status === "Approved").length;
+  const approvedAll = myRequests.filter((r) => r.status === "Approved");
+  const trialJoined = approvedAll.filter((r) => r.isTrial).length;
+  const classJoined = approvedAll.filter((r) => !r.isTrial).length;
+  const approved = approvedAll.length;
   const pending = myRequests.filter((r) => r.status === "Pending").length;
 
   const upcoming = myRequests
@@ -51,7 +54,8 @@ const LearnerDashboard = () => {
 
         <section className="grid gap-3 grid-cols-2 lg:grid-cols-4">
           <Link to="/dashboard/joined" className="block group">
-            <StatCard icon={GraduationCap} label="Classes joined" value={approved} tint="primary" />
+            <StatCard icon={GraduationCap} label="Classes joined" value={approved} tint="primary"
+              sub={`${trialJoined} trial · ${classJoined} joined`} />
           </Link>
           <Link to="/dashboard/requests" className="block group">
             <StatCard icon={Hourglass} label="Interest / requests" value={myRequests.length} tint="accent"

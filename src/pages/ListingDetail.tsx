@@ -72,10 +72,12 @@ const ListingDetail = () => {
     store.addRequest({
       listingId: listing!.id,
       learnerName,
+      learnerUsername: learner.username,
       forKidName: activeKid?.name,
       slot,
       note: finalNote,
-    });
+      isTrial,
+    } as any);
     toast.success(isTrial ? "Trial class request sent!" : "Request sent! The provider will reply soon.");
     navigate("/requests");
   }

@@ -29,6 +29,7 @@ export interface FreeTimeBlock {
 
 export interface KidProfile {
   id: string;
+  username?: string;
   name: string;
   dob: string; // YYYY-MM-DD
   school: string;
@@ -40,6 +41,7 @@ export interface KidProfile {
 
 export interface AdultProfile {
   id: string;
+  username?: string;
   name: string;
   email: string;
   dob: string;
@@ -50,6 +52,7 @@ export interface AdultProfile {
 }
 
 export interface LearnerProfile {
+  username?: string;
   name: string;
   email: string;
   dob: string; // YYYY-MM-DD
@@ -88,6 +91,7 @@ export interface ContactInfo {
 }
 
 export interface ProviderProfile {
+  username?: string;
   businessName: string;
   bio: string;
   country: string;
@@ -138,6 +142,7 @@ export interface Listing {
   onlinePriceAmount?: number;     // home-country price for online sessions
   onlineIntlPriceAmount?: number; // international price for online sessions
   durationMins?: number;     // class duration in minutes
+  sessionsPerMonth?: number; // shown when priceUnit === "month"
   trial: boolean;
   slots: SlotKey[];
   seatsBySlot?: Record<string, SeatInfo>; // seats per slot key
@@ -154,10 +159,16 @@ export interface JoinRequest {
   id: string;
   listingId: string;
   learnerName: string;
+  learnerUsername?: string;
   forKidName?: string;
   slot: SlotKey;
   note: string;
+  isTrial?: boolean;
   status: RequestStatus;
+  converted?: boolean;
+  startDate?: string; // YYYY-MM-DD
+  endDate?: string;   // YYYY-MM-DD
+  addedByTutor?: boolean;
   createdAt: number;
 }
 

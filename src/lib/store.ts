@@ -58,6 +58,7 @@ function load(): AppState {
         kids: Array.isArray(parsed.learner?.kids)
           ? parsed.learner.kids.map((k: any) => ({
               id: k.id,
+              username: k.username,
               name: k.name ?? "",
               dob: k.dob ?? "",
               school: k.school ?? "",
@@ -69,6 +70,7 @@ function load(): AppState {
         adults: Array.isArray(parsed.learner?.adults)
           ? parsed.learner.adults.map((a: any) => ({
               id: a.id,
+              username: a.username,
               name: a.name ?? "",
               email: a.email ?? "",
               dob: a.dob ?? "",
@@ -199,17 +201,29 @@ export const store = {
   removeListing(id: string) {
     set((s) => ({ ...s, listings: s.listings.filter((l) => l.id !== id) }));
   },
-  addRequest(req: Omit<JoinRequest, "id" | "createdAt" | "status">) {
+  addRequest(req: Omit<JoinRequest, "id" | "createdAt" | "status"> & { status?: JoinRequest["status"] }) {
     set((s) => ({
       ...s,
       requests: [
-        { ...req, id: crypto.randomUUID(), createdAt: Date.now(), status: "Pending" },
+        { ...req, id: crypto.randomUUID(), createdAt: Date.now(), status: req.status ?? "Pending" },
         ...s.requests,
       ],
     }));
   },
   setRequestStatus(id: string, status: JoinRequest["status"]) {
     set((s) => ({ ...s, requests: s.requests.map((r) => (r.id === id ? { ...r, status } : r)) }));
+  },
+  updateRequest(id: string, patch: Partial<JoinRequest>) {
+    set((s) => ({ ...s, requests: s.requests.map((r) => (r.id === id ? { ...r, ...patch } : r)) }));
+  },
+  addRequestRaw(req: Omit<JoinRequest, "id" | "createdAt">) {
+    set((s) => ({
+      ...s,
+      requests: [
+        { ...req, id: crypto.randomUUID(), createdAt: Date.now() },
+        ...s.requests,
+      ],
+    }));
   },
   addRating(rating: Omit<Rating, "id" | "createdAt">) {
     set((s) => ({
