@@ -23,11 +23,15 @@ const ListingDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const learner = useStore((s) => s.learner);
+  const provider = useStore((s) => s.provider);
+  const ratings = useStore((s) => id ? s.ratings.filter((r) => r.listingId === id) : []);
   const all = [...store.get().listings, ...SEED_LISTINGS];
   const listing = all.find((l) => l.id === id);
 
   const [slot, setSlot] = useState<SlotKey | "">("");
   const [note, setNote] = useState("");
+  const [reviewStars, setReviewStars] = useState(0);
+  const [reviewText, setReviewText] = useState("");
 
   if (!listing) {
     return (
