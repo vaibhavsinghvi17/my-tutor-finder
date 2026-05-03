@@ -58,6 +58,7 @@ function load(): AppState {
         kids: Array.isArray(parsed.learner?.kids)
           ? parsed.learner.kids.map((k: any) => ({
               id: k.id,
+              username: k.username,
               name: k.name ?? "",
               dob: k.dob ?? "",
               school: k.school ?? "",
@@ -69,6 +70,7 @@ function load(): AppState {
         adults: Array.isArray(parsed.learner?.adults)
           ? parsed.learner.adults.map((a: any) => ({
               id: a.id,
+              username: a.username,
               name: a.name ?? "",
               email: a.email ?? "",
               dob: a.dob ?? "",
