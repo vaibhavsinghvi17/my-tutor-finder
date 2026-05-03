@@ -44,6 +44,7 @@ function listingHasTimeOfDay(slots: string[], tod: TimeOfDay): boolean {
 }
 
 const Discover = () => {
+  const navigate = useNavigate();
   const state = useStore((s) => s);
   const ratings = useStore((s) => s.ratings);
   const requests = useStore((s) => s.requests);
