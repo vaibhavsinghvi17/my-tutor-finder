@@ -5,7 +5,7 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { store, useStore } from "@/lib/store";
-import { Plus, Pencil, Trash2, Inbox, Building2, Wifi, MapPin, Clock, GraduationCap, BookOpen, Repeat } from "lucide-react";
+import { Plus, Pencil, Trash2, Inbox, Building2, Wifi, MapPin, Clock, GraduationCap, BookOpen, Repeat, Users, CheckCircle2 } from "lucide-react";
 import { slotsToText } from "@/components/ScheduleGrid";
 import { LearnerProfileDialog } from "@/components/LearnerProfileDialog";
 import { JoinRequest } from "@/lib/types";
