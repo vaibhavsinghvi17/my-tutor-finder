@@ -1,13 +1,12 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { store, useStore } from "@/lib/store";
+import { useAuth } from "@/lib/useAuth";
+import { supabase } from "@/integrations/supabase/client";
 import { allKnownCities } from "@/lib/locations";
-import {
-  DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel,
-  DropdownMenuSeparator, DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import { Combobox } from "@/components/Combobox";
-import { GraduationCap, Briefcase, MapPin, User, Sparkles, X } from "lucide-react";
+import { GraduationCap, Briefcase, MapPin, User, Sparkles, X, LogIn, LogOut } from "lucide-react";
+import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 
 export function TopBar() {
