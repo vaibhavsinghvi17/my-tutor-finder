@@ -76,6 +76,7 @@ const ListingDetail = () => {
       listingId: listing!.id,
       learnerName,
       learnerUsername: learner.username,
+      learnerUserId: user?.id,
       forKidName: activeKid?.name,
       slot,
       note: finalNote,
