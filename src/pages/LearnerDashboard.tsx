@@ -20,7 +20,10 @@ const LearnerDashboard = () => {
 
   const saved = learner.savedListings?.length ?? 0;
   const completed = learner.completedListings?.length ?? 0;
-  const approved = myRequests.filter((r) => r.status === "Approved").length;
+  const approvedAll = myRequests.filter((r) => r.status === "Approved");
+  const trialJoined = approvedAll.filter((r) => r.isTrial).length;
+  const classJoined = approvedAll.filter((r) => !r.isTrial).length;
+  const approved = approvedAll.length;
   const pending = myRequests.filter((r) => r.status === "Pending").length;
 
   const upcoming = myRequests
