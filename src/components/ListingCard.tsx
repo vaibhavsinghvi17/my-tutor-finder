@@ -119,12 +119,24 @@ export function ListingCard({ listing, reasons = [] }: Props) {
             <p className="text-xs text-muted-foreground mt-0.5">{listing.providerName}</p>
           </div>
 
-          {ratings.length > 0 && (
-            <div className="flex items-center gap-1.5">
-              <StarRating value={avg} size="sm" />
-              <span className="text-xs text-muted-foreground">
-                {avg.toFixed(1)} ({ratings.length})
-              </span>
+          {(ratings.length > 0 || interactions > 0 || (yearsExp && yearsExp > 0)) && (
+            <div className="flex items-center gap-2 flex-wrap text-xs text-muted-foreground">
+              {ratings.length > 0 && (
+                <div className="flex items-center gap-1">
+                  <StarRating value={avg} size="sm" />
+                  <span>{avg.toFixed(1)} ({ratings.length})</span>
+                </div>
+              )}
+              {interactions > 0 && (
+                <span className="inline-flex items-center gap-1">
+                  <UsersRound className="h-3 w-3" /> {interactions} interested
+                </span>
+              )}
+              {yearsExp && yearsExp > 0 && (
+                <span className="inline-flex items-center gap-1 text-primary font-medium">
+                  <Award className="h-3 w-3" /> {yearsExp}+ yrs
+                </span>
+              )}
             </div>
           )}
 
