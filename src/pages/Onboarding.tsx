@@ -15,6 +15,16 @@ const Onboarding = () => {
   const [showSplash, setShowSplash] = useState(true);
   const [pendingRole, setPendingRole] = useState<"learner" | "provider" | null>(null);
   const [username, setUsername] = useState("");
+  const stateSnapshot = useStore((s) => s);
+
+  const slug = slugifyUsername(username);
+  const taken = slug.length >= 3 && isUsernameTaken(stateSnapshot, slug);
+  const tooShort = username.length > 0 && slug.length < 3;
+  const usernameError = tooShort
+    ? "Username must be at least 3 characters"
+    : taken
+    ? "That username is already taken"
+    : null;
 
   useEffect(() => {
     if (onboarded) {
@@ -32,11 +42,10 @@ const Onboarding = () => {
 
   function confirmUsername() {
     if (!pendingRole) return;
-    const u = slugifyUsername(username);
-    if (u.length < 3) { toast.error("Pick a username (3+ characters)"); return; }
-    if (isUsernameTaken(store.get(), u)) { toast.error("That username is taken"); return; }
-    if (pendingRole === "learner") store.updateLearner({ username: u });
-    else store.updateProvider({ username: u });
+    if (slug.length < 3) { toast.error("Pick a username (3+ characters)"); return; }
+    if (isUsernameTaken(store.get(), slug)) { toast.error("That username is already taken"); return; }
+    if (pendingRole === "learner") store.updateLearner({ username: slug });
+    else store.updateProvider({ username: slug });
     store.setOnboarded(pendingRole);
     navigate(pendingRole === "provider" ? "/provider" : "/dashboard");
   }
@@ -107,13 +116,19 @@ const Onboarding = () => {
                 placeholder="e.g. priya.sharma"
                 value={username}
                 onChange={(e) => setUsername(e.target.value.slice(0, 24))}
-                onKeyDown={(e) => { if (e.key === "Enter") confirmUsername(); }}
-                className="pl-9"
+                onKeyDown={(e) => { if (e.key === "Enter" && !usernameError) confirmUsername(); }}
+                className={`pl-9 ${usernameError ? "border-destructive focus-visible:ring-destructive" : ""}`}
+                aria-invalid={!!usernameError}
               />
             </div>
+            {usernameError ? (
+              <p className="text-xs text-destructive">{usernameError}</p>
+            ) : slug.length >= 3 ? (
+              <p className="text-xs text-primary">@{slug} is available</p>
+            ) : null}
             <div className="flex gap-2 justify-end pt-1">
               <Button variant="ghost" onClick={() => setPendingRole(null)}>Back</Button>
-              <Button onClick={confirmUsername}>Continue</Button>
+              <Button onClick={confirmUsername} disabled={!!usernameError || slug.length < 3}>Continue</Button>
             </div>
           </div>
         ) : (
