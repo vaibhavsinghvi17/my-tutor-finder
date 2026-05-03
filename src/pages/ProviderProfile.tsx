@@ -136,6 +136,25 @@ const ProviderProfilePage = () => {
           </div>
         </div>
 
+        {/* Quick action tray */}
+        <div className="flex items-center gap-2 py-1 w-full">
+          <Button asChild variant="secondary" size="sm" className="gap-1.5 rounded-full flex-1 min-w-0">
+            <Link to="/provider">
+              <BookOpen className="h-4 w-4" />
+              <span className="text-xs font-medium truncate">Classes</span>
+              <Badge variant="outline" className="ml-0.5 h-5 px-1.5 text-[10px] bg-background/60">
+                {listings.length}
+              </Badge>
+            </Link>
+          </Button>
+          <Button asChild size="sm" className="gap-1.5 rounded-full flex-1 min-w-0">
+            <Link to="/provider/listing/new">
+              <Plus className="h-4 w-4" />
+              <span className="text-xs font-medium truncate">New class</span>
+            </Link>
+          </Button>
+        </div>
+
         {/* Categories chip block — mirrors learner Interests */}
         <div className="rounded-xl border border-border/60 bg-card/40 backdrop-blur-sm p-3">
           <div className="flex items-center justify-between mb-2">
