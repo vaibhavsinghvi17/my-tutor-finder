@@ -44,7 +44,7 @@ function priceForMode(
     ? l.onlineIntlPriceAmount
     : (typeof l.intlPriceAmount === "number" && l.intlPriceAmount > 0 ? l.intlPriceAmount : undefined);
 
-  const intlCcy = l.intlPriceCurrency || currencyForCountry(viewerCountry);
+  
 
   if (isIntl) {
     // International price is provided in INR by the tutor.
