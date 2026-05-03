@@ -4,8 +4,8 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { CATEGORIES, CITIES, Category } from "@/lib/types";
+import { CATEGORIES, Category } from "@/lib/types";
+import { LocationFields } from "@/components/LocationFields";
 import { store, useStore } from "@/lib/store";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
@@ -47,24 +47,13 @@ const ProviderProfilePage = () => {
                 placeholder="hello@example.com"
               />
             </div>
-            <div className="space-y-1.5">
-              <Label>City</Label>
-              <Select value={provider.city || ""} onValueChange={(v) => store.updateProvider({ city: v as any })}>
-                <SelectTrigger><SelectValue placeholder="Select" /></SelectTrigger>
-                <SelectContent>
-                  {CITIES.map((c) => <SelectItem key={c} value={c}>{c}</SelectItem>)}
-                </SelectContent>
-              </Select>
-            </div>
-            <div className="space-y-1.5">
-              <Label>Area</Label>
-              <Input
-                value={provider.area}
-                onChange={(e) => store.updateProvider({ area: e.target.value.slice(0, 80) })}
-                placeholder="Indiranagar"
-              />
-            </div>
           </div>
+
+          <LocationFields
+            value={{ country: provider.country, state: provider.state, city: provider.city, area: provider.area }}
+            onChange={(v) => store.updateProvider(v)}
+            hint="Where is your studio? For online-only, just pick country & state."
+          />
 
           <div className="space-y-1.5">
             <Label>Studio / venue address</Label>
