@@ -111,8 +111,8 @@ const Discover = () => {
           <Combobox
             value={cityFilter === "all" ? "" : cityFilter}
             onChange={(v) => setCityFilter(v || "all")}
-            options={allKnownCities()}
-            placeholder="All cities"
+            options={state.learner.city ? [state.learner.city] : allKnownCities()}
+            placeholder={state.learner.city || "All cities"}
           />
         </section>
 
