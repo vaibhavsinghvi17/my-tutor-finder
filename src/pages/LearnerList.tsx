@@ -78,25 +78,7 @@ const LearnerList = () => {
       </div>
     );
   } else {
-    const items = ratings.filter((r) => r.byName === myName);
-    body = items.length === 0 ? <Empty /> : (
-      <div className="space-y-2">
-        {items.map((r) => {
-          const l = allListings.find((x) => x.id === r.listingId);
-          return (
-            <Card key={r.id} className="p-3 space-y-1">
-              <div className="flex items-center justify-between gap-2">
-                <Link to={`/listing/${r.listingId}`} className="text-sm font-semibold truncate hover:text-primary">
-                  {l?.title || "Class"}
-                </Link>
-                <StarRating value={r.stars} size="sm" />
-              </div>
-              {r.comment && <p className="text-xs text-muted-foreground line-clamp-2">{r.comment}</p>}
-            </Card>
-          );
-        })}
-      </div>
-    );
+    body = <RatingsTab myName={myName} />;
   }
 
   const Icon = meta.icon;
