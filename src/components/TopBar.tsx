@@ -79,6 +79,15 @@ export function TopBar() {
             )}
           </div>
 
+          {!isProvider && location.pathname.startsWith("/profile") && (
+            <Button asChild variant="secondary" size="sm" className="gap-1.5">
+              <Link to="/dashboard">
+                <LayoutDashboard className="h-4 w-4" />
+                <span className="text-xs font-medium hidden sm:inline">Go to dashboard</span>
+              </Link>
+            </Button>
+          )}
+
           <Button variant="outline" size="sm" onClick={switchMode} className="gap-1.5">
             {isProvider ? <GraduationCap className="h-4 w-4" /> : <Briefcase className="h-4 w-4" />}
             <span className="text-xs font-medium">Switch to {isProvider ? "Learner" : "Provider"}</span>
