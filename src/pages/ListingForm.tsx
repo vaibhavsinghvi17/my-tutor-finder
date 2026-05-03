@@ -10,9 +10,11 @@ import { Switch } from "@/components/ui/switch";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { ScheduleGrid } from "@/components/ScheduleGrid";
 import { LocationFields } from "@/components/LocationFields";
-import { AGE_GROUPS, AgeGroup, Category, Mode, PriceUnit, SlotKey } from "@/lib/types";
+import { PinCodeInput } from "@/components/PinCodeInput";
+import { LanguagesEditor } from "@/components/LanguagesEditor";
+import { AGE_GROUPS, AgeGroup, Category, Mode, PriceUnit, SeatInfo, SlotKey } from "@/lib/types";
 import { useCategories } from "@/lib/useCategories";
-import { Plus } from "lucide-react";
+import { Plus, Globe2, Users } from "lucide-react";
 import { store, useStore } from "@/lib/store";
 import { toast } from "sonner";
 
@@ -33,12 +35,16 @@ const ListingForm = () => {
   const [stateName, setStateName] = useState<string>(existing?.state ?? provider.state ?? "");
   const [city, setCity] = useState<string>(existing?.city ?? provider.city ?? "");
   const [area, setArea] = useState<string>(existing?.area ?? provider.area ?? "");
+  const [pinCode, setPinCode] = useState<string>(existing?.pinCode ?? provider.pinCode ?? "");
   const [venue, setVenue] = useState(existing?.venue ?? "");
   const [priceAmount, setPriceAmount] = useState<string>(existing?.priceAmount?.toString() ?? "");
   const [priceUnit, setPriceUnit] = useState<PriceUnit>(existing?.priceUnit ?? "session");
   const [durationMins, setDurationMins] = useState<string>(existing?.durationMins?.toString() ?? "60");
   const [trial, setTrial] = useState(existing?.trial ?? true);
   const [slots, setSlots] = useState<SlotKey[]>(existing?.slots ?? []);
+  const [seatsBySlot, setSeatsBySlot] = useState<Record<string, SeatInfo>>(existing?.seatsBySlot ?? {});
+  const [languages, setLanguages] = useState<string[]>(existing?.languages ?? provider.languages ?? []);
+  const [teachesInternationally, setTeachesInternationally] = useState<boolean>(existing?.teachesInternationally ?? false);
 
   useEffect(() => {
     if (id && !existing) {
