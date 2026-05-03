@@ -36,7 +36,11 @@ const ListingForm = () => {
   const [city, setCity] = useState<string>(existing?.city ?? provider.city ?? "");
   const [area, setArea] = useState<string>(existing?.area ?? provider.area ?? "");
   const [pinCode, setPinCode] = useState<string>(existing?.pinCode ?? provider.pinCode ?? "");
-  const [venue, setVenue] = useState(existing?.venue ?? "");
+  const venueParts = (existing?.venue ?? "").split(" | ");
+  const [venueLine1, setVenueLine1] = useState(venueParts[0] ?? "");
+  const [venueLine2, setVenueLine2] = useState(venueParts[1] ?? "");
+  const [venueLine3, setVenueLine3] = useState(venueParts[2] ?? "");
+  const venue = [venueLine1, venueLine2, venueLine3].map((s) => s.trim()).filter(Boolean).join(" | ");
   const [priceAmount, setPriceAmount] = useState<string>(existing?.priceAmount?.toString() ?? "");
   const [priceUnit, setPriceUnit] = useState<PriceUnit>(existing?.priceUnit ?? "session");
   const [intlPriceAmount, setIntlPriceAmount] = useState<string>(existing?.intlPriceAmount?.toString() ?? "");
@@ -64,7 +68,7 @@ const ListingForm = () => {
       if (!country) return toast.error("Pick a country");
       if (!city) return toast.error("Pick a city");
       if (!area.trim()) return toast.error("Pick a locality");
-      if (!venue.trim()) return toast.error("Venue address is required for offline classes");
+      if (!venue.trim()) return toast.error("Class address is required for offline classes");
     } else {
       if (!country) return toast.error("Pick a country");
     }
@@ -311,17 +315,29 @@ const ListingForm = () => {
           />
 
           {mode !== "Online" && (
-            <div className="grid sm:grid-cols-[1fr_180px] gap-3">
+            <div className="space-y-3">
               <div className="space-y-1.5">
-                <Label>Venue address <span className="text-destructive">*</span></Label>
-                <Input
-                  value={venue}
-                  onChange={(e) => setVenue(e.target.value.slice(0, 160))}
-                  placeholder="100 Ft Road, near metro"
-                  required
-                />
+                <Label>Class address <span className="text-destructive">*</span></Label>
+                <div className="space-y-2">
+                  <Input
+                    value={venueLine1}
+                    onChange={(e) => setVenueLine1(e.target.value.slice(0, 80))}
+                    placeholder="Address line 1 (building, street)"
+                    required
+                  />
+                  <Input
+                    value={venueLine2}
+                    onChange={(e) => setVenueLine2(e.target.value.slice(0, 80))}
+                    placeholder="Address line 2 (landmark, area)"
+                  />
+                  <Input
+                    value={venueLine3}
+                    onChange={(e) => setVenueLine3(e.target.value.slice(0, 80))}
+                    placeholder="Address line 3 (optional)"
+                  />
+                </div>
               </div>
-              <div className="space-y-1.5">
+              <div className="space-y-1.5 sm:max-w-xs">
                 <Label>Pin / Postal code</Label>
                 <PinCodeInput value={pinCode} onChange={setPinCode} country={country} />
               </div>
