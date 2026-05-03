@@ -9,6 +9,9 @@ import ListingDetail from "./pages/ListingDetail";
 import Requests from "./pages/Requests";
 import LearnerProfile from "./pages/LearnerProfile";
 import ProviderProfile from "./pages/ProviderProfile";
+import ProfilePicker from "./pages/ProfilePicker";
+import AdultProfileEditor from "./pages/AdultProfileEditor";
+import KidProfileEditor from "./pages/KidProfileEditor";
 import ProviderDashboard from "./pages/ProviderDashboard";
 import ListingForm from "./pages/ListingForm";
 import NotFound from "./pages/NotFound.tsx";
@@ -26,7 +29,10 @@ const App = () => (
           <Route path="/discover" element={<Discover />} />
           <Route path="/listing/:id" element={<ListingDetail />} />
           <Route path="/requests" element={<Requests />} />
+          <Route path="/profile" element={<ProfilePicker />} />
           <Route path="/profile/learner" element={<LearnerProfile />} />
+          <Route path="/profile/adult/:id" element={<AdultProfileEditor />} />
+          <Route path="/profile/kid/:id" element={<KidProfileEditor />} />
           <Route path="/profile/provider" element={<ProviderProfile />} />
           <Route path="/provider" element={<ProviderDashboard />} />
           <Route path="/provider/listing/new" element={<ListingForm />} />
