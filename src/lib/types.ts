@@ -94,12 +94,19 @@ export interface ProviderProfile {
   state: string;
   city: string;
   area: string;
+  pinCode?: string;
   address: string;
   contact: string;
   categories: Category[];
   yearsExperience?: number;
+  languages?: string[];
   socials?: SocialLinks;
   contactInfo?: ContactInfo;
+}
+
+export interface SeatInfo {
+  total: number;
+  occupied: number;
 }
 
 export type PriceUnit = "session" | "month";
@@ -112,6 +119,7 @@ export interface Listing {
   state: string;
   city: string;
   area: string;
+  pinCode?: string;
   title: string;
   description: string;
   category: Category;
@@ -124,6 +132,9 @@ export interface Listing {
   durationMins?: number;     // class duration in minutes
   trial: boolean;
   slots: SlotKey[];
+  seatsBySlot?: Record<string, SeatInfo>; // seats per slot key
+  languages?: string[];
+  teachesInternationally?: boolean; // for online/both classes
   createdAt: number;
   socials?: SocialLinks;     // optional override / for seed providers
   contactInfo?: ContactInfo; // optional override; falls back to provider's
