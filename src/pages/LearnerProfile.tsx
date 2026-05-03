@@ -147,6 +147,16 @@ const LearnerProfilePage = () => {
           )}
         </div>
 
+        {/* Quick actions */}
+        <div className="flex items-center gap-2 py-1 w-full">
+          <Button asChild size="sm" className="gap-1.5 rounded-full flex-1 min-w-0">
+            <Link to="/discover">
+              <Search className="h-4 w-4" />
+              <span className="text-xs font-medium truncate">Search for classes</span>
+            </Link>
+          </Button>
+        </div>
+
         {/* Compact tabs as dropdown */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
