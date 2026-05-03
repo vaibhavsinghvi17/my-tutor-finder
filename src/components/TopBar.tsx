@@ -5,7 +5,7 @@ import { useAuth } from "@/lib/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { allKnownCities } from "@/lib/locations";
 import { Combobox } from "@/components/Combobox";
-import { GraduationCap, Briefcase, MapPin, User, Sparkles, X, LogIn, LogOut } from "lucide-react";
+import { GraduationCap, Briefcase, MapPin, User, Sparkles, X, LogIn, LogOut, LayoutDashboard } from "lucide-react";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 
@@ -78,6 +78,15 @@ export function TopBar() {
               </Button>
             )}
           </div>
+
+          {!isProvider && location.pathname.startsWith("/profile") && (
+            <Button asChild variant="secondary" size="sm" className="gap-1.5">
+              <Link to="/dashboard">
+                <LayoutDashboard className="h-4 w-4" />
+                <span className="text-xs font-medium hidden sm:inline">Go to dashboard</span>
+              </Link>
+            </Button>
+          )}
 
           <Button variant="outline" size="sm" onClick={switchMode} className="gap-1.5">
             {isProvider ? <GraduationCap className="h-4 w-4" /> : <Briefcase className="h-4 w-4" />}
