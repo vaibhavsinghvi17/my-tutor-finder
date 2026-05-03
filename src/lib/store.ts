@@ -80,6 +80,8 @@ function load(): AppState {
           : [],
         freeBlocks: Array.isArray(parsed.learner?.freeBlocks) ? parsed.learner.freeBlocks : [],
         interests: Array.isArray(parsed.learner?.interests) ? parsed.learner.interests : [],
+        savedListings: Array.isArray(parsed.learner?.savedListings) ? parsed.learner.savedListings : [],
+        completedListings: Array.isArray(parsed.learner?.completedListings) ? parsed.learner.completedListings : [],
       },
       provider: { ...initialState.provider, ...(parsed.provider ?? {}) },
       listings: Array.isArray(parsed.listings) ? parsed.listings : [],
