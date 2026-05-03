@@ -4,6 +4,7 @@ import { ListingCard } from "@/components/ListingCard";
 import { getAllListings, store, useStore } from "@/lib/store";
 import { scoreListings } from "@/lib/suggest";
 import { CATEGORIES, Category, Mode } from "@/lib/types";
+import { useCategories } from "@/lib/useCategories";
 import { allKnownCities } from "@/lib/locations";
 import { ageFromDob } from "@/lib/timeUtils";
 import { Combobox } from "@/components/Combobox";
