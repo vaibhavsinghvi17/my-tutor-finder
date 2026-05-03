@@ -154,7 +154,9 @@ function ProfileSelector() {
           className="gap-1.5"
         >
           <Baby className="h-4 w-4" /> {k.name}
-          <Badge variant="secondary" className="ml-1 h-5 px-1.5 text-[10px]">{k.age}</Badge>
+          {ageFromDob(k.dob) !== null && (
+            <Badge variant="secondary" className="ml-1 h-5 px-1.5 text-[10px]">{ageFromDob(k.dob)}</Badge>
+          )}
         </Button>
       ))}
       <Button asChild variant="ghost" size="sm" className="gap-1">

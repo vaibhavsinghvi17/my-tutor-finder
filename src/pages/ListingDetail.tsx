@@ -37,7 +37,7 @@ const ListingDetail = () => {
   }
 
   const activeKid = learner.activeKidId ? learner.kids.find((k) => k.id === learner.activeKidId) : null;
-  const freeSlots = activeKid ? activeKid.freeSlots : learner.freeSlots;
+  const freeSlots = blocksToSlots(activeKid ? activeKid.freeBlocks : learner.freeBlocks);
   const matching = listing.slots.filter((s) => freeSlots.includes(s));
 
   function submit() {
@@ -143,7 +143,7 @@ const ListingDetail = () => {
               <label className="text-sm font-medium">Joining as</label>
               <div className="text-sm h-10 px-3 rounded-md border flex items-center bg-muted/40">
                 {activeKid
-                  ? `${activeKid.name} (age ${activeKid.age}) — parent: ${learner.name || "you"}`
+                  ? `${activeKid.name}${ageFromDob(activeKid.dob) !== null ? ` (age ${ageFromDob(activeKid.dob)})` : ""} — parent: ${learner.name || "you"}`
                   : learner.name || "Guest"}
               </div>
             </div>
