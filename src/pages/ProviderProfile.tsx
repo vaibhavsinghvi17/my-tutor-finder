@@ -144,26 +144,46 @@ const ProviderProfilePage = () => {
 
           <div className="space-y-2">
             <Label>What you teach</Label>
-            <div className="flex flex-wrap gap-2">
-              {Array.from(new Set([...categoryNames, ...provider.categories])).map((c) => {
-                const active = provider.categories.includes(c);
-                return (
-                  <button
+
+            {provider.categories.length > 0 && (
+              <div className="flex flex-wrap gap-1.5">
+                {provider.categories.map((c) => (
+                  <span
                     key={c}
-                    type="button"
-                    onClick={() => toggleCat(c)}
-                    className={cn(
-                      "px-3 py-1.5 rounded-full text-sm border transition-all",
-                      active ? "bg-primary text-primary-foreground border-primary"
-                             : "bg-background hover:bg-muted",
-                    )}
+                    className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs bg-primary text-primary-foreground"
                   >
                     {c}
-                  </button>
-                );
-              })}
-            </div>
-            <div className="flex gap-2 pt-2">
+                    <button
+                      type="button"
+                      onClick={() => toggleCat(c)}
+                      className="hover:opacity-70"
+                      aria-label={`Remove ${c}`}
+                    >
+                      <X className="h-3 w-3" />
+                    </button>
+                  </span>
+                ))}
+              </div>
+            )}
+
+            <Select
+              value=""
+              onValueChange={(v) => { if (v && !provider.categories.includes(v)) toggleCat(v); }}
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Select categories to add..." />
+              </SelectTrigger>
+              <SelectContent className="max-h-72">
+                {Array.from(new Set([...categoryNames, ...provider.categories]))
+                  .filter((c) => !provider.categories.includes(c))
+                  .sort()
+                  .map((c) => (
+                    <SelectItem key={c} value={c}>{c}</SelectItem>
+                  ))}
+              </SelectContent>
+            </Select>
+
+            <div className="flex gap-2 pt-1">
               <Input
                 placeholder="Don't see your category? Add a new one"
                 value={newCat}
