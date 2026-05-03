@@ -24,6 +24,8 @@ const initialState: AppState = {
     kids: [],
     adults: [],
     activeKidId: null,
+    savedListings: [],
+    completedListings: [],
   },
   provider: {
     businessName: "",
