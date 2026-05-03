@@ -20,10 +20,10 @@ const Onboarding = () => {
 
   return (
     <div className="min-h-screen relative overflow-hidden bg-background flex flex-col">
-      {/* animated gradient blobs (kept behind content) */}
+      {/* subtle corner glows, kept far from headline */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none -z-10">
-        <div className="absolute -top-40 -left-32 w-[420px] h-[420px] rounded-full bg-primary/20 blur-3xl animate-blob" />
-        <div className="absolute -bottom-40 -right-32 w-[420px] h-[420px] rounded-full bg-secondary/20 blur-3xl animate-blob [animation-delay:-6s]" />
+        <div className="absolute -top-48 -left-48 w-[360px] h-[360px] rounded-full bg-primary/15 blur-3xl animate-blob" />
+        <div className="absolute -bottom-48 -right-48 w-[360px] h-[360px] rounded-full bg-secondary/15 blur-3xl animate-blob [animation-delay:-6s]" />
       </div>
 
       <div className="relative container py-6 sm:py-8 flex-1 flex flex-col">
