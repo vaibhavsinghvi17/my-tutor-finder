@@ -4,7 +4,7 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { CategoryIcon, categoryGradient } from "./CategoryIcon";
 import { StarRating } from "./StarRating";
-import { MapPin, Wifi, Building2, Users, Sparkles, Clock, Bookmark, Share2, MessageCircle, Link as LinkIcon } from "lucide-react";
+import { MapPin, Wifi, Building2, Users, Sparkles, Clock, Bookmark, Share2, MessageCircle, Link as LinkIcon, Award, UsersRound } from "lucide-react";
 import { slotsToText } from "./ScheduleGrid";
 import { formatDuration, formatPrice } from "@/lib/listingUtils";
 import { store, useStore } from "@/lib/store";
@@ -21,9 +21,18 @@ interface Props {
 
 export function ListingCard({ listing, reasons = [] }: Props) {
   const allRatings = useStore((s) => s.ratings);
+  const allRequests = useStore((s) => s.requests);
+  const provider = useStore((s) => s.provider);
   const savedListings = useStore((s) => s.learner.savedListings);
   const ratings = allRatings.filter((r) => r.listingId === listing.id);
   const avg = ratings.length ? ratings.reduce((a, r) => a + r.stars, 0) / ratings.length : 0;
+  const requestCount = allRequests.filter((r) => r.listingId === listing.id).length;
+  // Unique-ish interaction count: requests + reviews + a deterministic seed for demo listings
+  const seedInteractions = listing.providerId.startsWith("seed-")
+    ? ((listing.id.charCodeAt(listing.id.length - 1) * 7) % 40) + 5
+    : 0;
+  const interactions = requestCount + ratings.length + seedInteractions;
+  const yearsExp = listing.providerId === "self" ? provider.yearsExperience : undefined;
   const priceText = formatPrice(listing);
   const durationText = formatDuration(listing.durationMins);
   const isSaved = (savedListings || []).includes(listing.id);
@@ -110,12 +119,24 @@ export function ListingCard({ listing, reasons = [] }: Props) {
             <p className="text-xs text-muted-foreground mt-0.5">{listing.providerName}</p>
           </div>
 
-          {ratings.length > 0 && (
-            <div className="flex items-center gap-1.5">
-              <StarRating value={avg} size="sm" />
-              <span className="text-xs text-muted-foreground">
-                {avg.toFixed(1)} ({ratings.length})
-              </span>
+          {(ratings.length > 0 || interactions > 0 || (yearsExp && yearsExp > 0)) && (
+            <div className="flex items-center gap-2 flex-wrap text-xs text-muted-foreground">
+              {ratings.length > 0 && (
+                <div className="flex items-center gap-1">
+                  <StarRating value={avg} size="sm" />
+                  <span>{avg.toFixed(1)} ({ratings.length})</span>
+                </div>
+              )}
+              {interactions > 0 && (
+                <span className="inline-flex items-center gap-1">
+                  <UsersRound className="h-3 w-3" /> {interactions} interested
+                </span>
+              )}
+              {yearsExp && yearsExp > 0 && (
+                <span className="inline-flex items-center gap-1 text-primary font-medium">
+                  <Award className="h-3 w-3" /> {yearsExp}+ yrs
+                </span>
+              )}
             </div>
           )}
 

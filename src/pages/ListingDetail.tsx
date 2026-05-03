@@ -14,7 +14,7 @@ import { StarRating } from "@/components/StarRating";
 import { SocialLinksRow } from "@/components/SocialLinksRow";
 import { ContactActions } from "@/components/ContactActions";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { ArrowLeft, Building2, MapPin, Wifi, Users, Sparkles, Clock, Award } from "lucide-react";
+import { ArrowLeft, Building2, MapPin, Wifi, Users, Sparkles, Clock, Award, UsersRound } from "lucide-react";
 import { SlotKey } from "@/lib/types";
 import { ageFromDob, blocksToSlots } from "@/lib/timeUtils";
 import { formatDuration, formatPrice } from "@/lib/listingUtils";
@@ -26,9 +26,15 @@ const ListingDetail = () => {
   const learner = useStore((s) => s.learner);
   const provider = useStore((s) => s.provider);
   const allRatings = useStore((s) => s.ratings);
+  const allRequests = useStore((s) => s.requests);
   const ratings = id ? allRatings.filter((r) => r.listingId === id) : [];
   const all = [...store.get().listings, ...SEED_LISTINGS];
   const listing = all.find((l) => l.id === id);
+  const requestCount = id ? allRequests.filter((r) => r.listingId === id).length : 0;
+  const seedInteractions = listing && listing.providerId.startsWith("seed-")
+    ? ((listing.id.charCodeAt(listing.id.length - 1) * 7) % 40) + 5
+    : 0;
+  const interactions = requestCount + ratings.length + seedInteractions;
 
   const [slot, setSlot] = useState<SlotKey | "">("");
   const [note, setNote] = useState("");
@@ -105,6 +111,11 @@ const ListingDetail = () => {
               {listing.providerId === "self" && provider.yearsExperience != null && provider.yearsExperience > 0 && (
                 <Badge variant="outline" className="gap-1 border-primary/40 text-primary">
                   <Award className="h-3 w-3" /> {provider.yearsExperience}+ yrs experience
+                </Badge>
+              )}
+              {interactions > 0 && (
+                <Badge variant="outline" className="gap-1">
+                  <UsersRound className="h-3 w-3" /> {interactions} interested
                 </Badge>
               )}
               {listing.trial && (
