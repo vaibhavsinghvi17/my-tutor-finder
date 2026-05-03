@@ -61,8 +61,8 @@ export function TopBar() {
               <Combobox
                 value={city}
                 onChange={(v) => store.setCity(v)}
-                options={allKnownCities()}
-                placeholder="Any city"
+                options={learner.city ? [learner.city] : allKnownCities()}
+                placeholder={learner.city || "Any city"}
               />
             </div>
             {city && (
