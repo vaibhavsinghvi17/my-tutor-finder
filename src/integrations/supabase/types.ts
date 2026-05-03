@@ -41,6 +41,39 @@ export type Database = {
         }
         Relationships: []
       }
+      messages: {
+        Row: {
+          body: string
+          created_at: string
+          id: string
+          learner_user_id: string
+          listing_id: string
+          listing_title: string | null
+          provider_user_id: string
+          sender_user_id: string
+        }
+        Insert: {
+          body: string
+          created_at?: string
+          id?: string
+          learner_user_id: string
+          listing_id: string
+          listing_title?: string | null
+          provider_user_id: string
+          sender_user_id: string
+        }
+        Update: {
+          body?: string
+          created_at?: string
+          id?: string
+          learner_user_id?: string
+          listing_id?: string
+          listing_title?: string | null
+          provider_user_id?: string
+          sender_user_id?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           avatar_url: string | null
