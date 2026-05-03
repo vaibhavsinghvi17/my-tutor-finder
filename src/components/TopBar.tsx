@@ -16,6 +16,7 @@ export function TopBar() {
   const provider = useStore((s) => s.provider);
   const location = useLocation();
   const navigate = useNavigate();
+  const { user } = useAuth();
 
   const isProvider = mode === "provider";
 
@@ -23,6 +24,12 @@ export function TopBar() {
     const next = isProvider ? "learner" : "provider";
     store.setMode(next);
     navigate(next === "provider" ? "/provider" : "/discover");
+  }
+
+  async function handleSignOut() {
+    await supabase.auth.signOut();
+    toast.success("Signed out");
+    navigate("/auth");
   }
 
   return (
