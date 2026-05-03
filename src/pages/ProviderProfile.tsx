@@ -102,15 +102,6 @@ const ProviderProfilePage = () => {
     <div className="min-h-screen">
       <TopBar />
       <main className="container py-4 space-y-4 max-w-3xl">
-        <div className="flex items-center justify-between gap-2">
-          <button
-            onClick={() => navigate("/profile")}
-            className="text-xs text-muted-foreground flex items-center gap-1 hover:text-foreground"
-          >
-            <ArrowLeft className="h-3.5 w-3.5" /> Profiles
-          </button>
-        </div>
-
         {/* Header */}
         <div className="flex items-center gap-3">
           <div className="relative">
