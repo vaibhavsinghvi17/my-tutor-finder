@@ -125,7 +125,7 @@ export const SEED_LISTINGS: Listing[] = [
     id: "seed-8",
     providerId: "seed-lingua",
     providerName: "Lingua Live",
-    city: "Online",
+    city: "Other",
     area: "Online",
     title: "Spoken French — A1 to A2",
     description: "Conversational French taught by native speakers. Live online, twice a week.",
