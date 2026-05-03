@@ -7,6 +7,7 @@ import { StarRating } from "./StarRating";
 import { MapPin, Wifi, Building2, Users, Sparkles, Clock, Bookmark, Share2, MessageCircle, Link as LinkIcon, Award, UsersRound, Globe2, Armchair } from "lucide-react";
 import { slotsToText } from "./ScheduleGrid";
 import { formatDuration, formatPrice } from "@/lib/listingUtils";
+import { useFxRates } from "@/lib/useFxRates";
 import { store, useStore } from "@/lib/store";
 import {
   DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger,
@@ -34,7 +35,8 @@ export function ListingCard({ listing, reasons = [] }: Props) {
   const interactions = requestCount + ratings.length + seedInteractions;
   const yearsExp = listing.providerId === "self" ? provider.yearsExperience : undefined;
   const viewerCountry = useStore((s) => s.learner.country);
-  const priceText = formatPrice(listing, viewerCountry);
+  const fxRates = useFxRates();
+  const priceText = formatPrice(listing, viewerCountry, fxRates);
   const durationText = formatDuration(listing.durationMins);
   const isSaved = (savedListings || []).includes(listing.id);
   const shareUrl = `${window.location.origin}/listing/${listing.id}`;

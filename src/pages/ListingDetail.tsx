@@ -18,6 +18,7 @@ import { ArrowLeft, Building2, MapPin, Wifi, Users, Sparkles, Clock, Award, User
 import { SlotKey } from "@/lib/types";
 import { ageFromDob, blocksToSlots } from "@/lib/timeUtils";
 import { formatDuration, formatPrice } from "@/lib/listingUtils";
+import { useFxRates } from "@/lib/useFxRates";
 import { toast } from "sonner";
 
 const ListingDetail = () => {
