@@ -5,7 +5,7 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { store, useStore } from "@/lib/store";
-import { Plus, Pencil, Trash2, Inbox, Building2, Wifi, MapPin, Clock, GraduationCap, BookOpen, Repeat } from "lucide-react";
+import { Plus, Pencil, Trash2, Inbox, Building2, Wifi, MapPin, Clock, GraduationCap, BookOpen, Repeat, Users, CheckCircle2 } from "lucide-react";
 import { slotsToText } from "@/components/ScheduleGrid";
 import { LearnerProfileDialog } from "@/components/LearnerProfileDialog";
 import { JoinRequest } from "@/lib/types";
@@ -59,6 +59,14 @@ const ProviderDashboard = () => {
           </p>
         </div>
 
+        {/* At-a-glance stats */}
+        <section className="grid gap-3 grid-cols-2 lg:grid-cols-4">
+          <StatTile icon={BookOpen} label="Total classes" value={listings.length} tint="primary" />
+          <StatTile icon={Inbox} label="Total requests" value={incoming.length} tint="accent"
+            sub={`${incoming.filter((r) => r.status === "Pending").length} pending`} />
+          <StatTile icon={CheckCircle2} label="Approved" value={incoming.filter((r) => r.status === "Approved").length} tint="secondary" />
+          <StatTile icon={Users} label="Students enrolled" value={new Set(incoming.filter((r) => r.status === "Approved").map((r) => r.forKidName ?? r.learnerName)).size} tint="muted" />
+        </section>
 
         <section className="grid gap-6 lg:grid-cols-3">
           <div className="lg:col-span-2 space-y-3">
@@ -199,5 +207,28 @@ const ProviderDashboard = () => {
     </div>
   );
 };
+
+function StatTile({
+  icon: Icon, label, value, sub, tint,
+}: { icon: React.ElementType; label: string; value: number; sub?: string; tint: "primary" | "accent" | "secondary" | "muted" }) {
+  const tintClass = {
+    primary: "bg-primary/10 text-primary",
+    accent: "bg-accent/15 text-accent-foreground",
+    secondary: "bg-secondary text-secondary-foreground",
+    muted: "bg-muted text-foreground",
+  }[tint];
+  return (
+    <Card className="p-4 space-y-2">
+      <div className={`h-9 w-9 rounded-lg grid place-items-center ${tintClass}`}>
+        <Icon className="h-4 w-4" />
+      </div>
+      <div>
+        <div className="text-2xl font-bold leading-none">{value}</div>
+        <div className="text-xs text-muted-foreground mt-1">{label}</div>
+        {sub && <div className="text-[10px] text-muted-foreground mt-0.5">{sub}</div>}
+      </div>
+    </Card>
+  );
+}
 
 export default ProviderDashboard;

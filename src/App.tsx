@@ -13,6 +13,7 @@ import ProfilePicker from "./pages/ProfilePicker";
 import AdultProfileEditor from "./pages/AdultProfileEditor";
 import KidProfileEditor from "./pages/KidProfileEditor";
 import ProviderDashboard from "./pages/ProviderDashboard";
+import LearnerDashboard from "./pages/LearnerDashboard";
 import ListingForm from "./pages/ListingForm";
 import Auth from "./pages/Auth";
 import NotFound from "./pages/NotFound.tsx";
@@ -29,6 +30,7 @@ const App = () => (
           <Route path="/" element={<Onboarding />} />
           <Route path="/auth" element={<Auth />} />
           <Route path="/discover" element={<Discover />} />
+          <Route path="/dashboard" element={<LearnerDashboard />} />
           <Route path="/listing/:id" element={<ListingDetail />} />
           <Route path="/requests" element={<Requests />} />
           <Route path="/profile" element={<ProfilePicker />} />
