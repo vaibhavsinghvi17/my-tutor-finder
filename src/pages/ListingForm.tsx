@@ -68,7 +68,7 @@ const ListingForm = () => {
       if (!country) return toast.error("Pick a country");
       if (!city) return toast.error("Pick a city");
       if (!area.trim()) return toast.error("Pick a locality");
-      if (!venue.trim()) return toast.error("Venue address is required for offline classes");
+      if (!venue.trim()) return toast.error("Class address is required for offline classes");
     } else {
       if (!country) return toast.error("Pick a country");
     }
