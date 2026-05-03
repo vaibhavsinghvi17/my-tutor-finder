@@ -19,8 +19,9 @@ import { Combobox } from "@/components/Combobox";
 import { AGE_GROUPS, AgeGroup, Category, Mode, PriceUnit, SeatInfo, SlotKey } from "@/lib/types";
 import { useCategories } from "@/lib/useCategories";
 import { useAuth } from "@/lib/useAuth";
-import { Plus, Globe2, Users, Wifi, MapPin, Locate } from "lucide-react";
+import { Plus, Globe2, Users, Wifi, MapPin, Locate, ShieldCheck } from "lucide-react";
 import { store, useStore } from "@/lib/store";
+import { Link } from "react-router-dom";
 import { toast } from "sonner";
 
 const ListingForm = () => {
