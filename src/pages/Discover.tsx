@@ -176,18 +176,22 @@ const Discover = () => {
         )}
 
         <Tabs value={scope} onValueChange={(v) => setScope(v as "local" | "world")}>
-          <TabsList className="w-full sm:w-auto h-auto">
-            <TabsTrigger value="local" className="gap-1.5 flex-col items-start py-2 h-auto">
-              <span className="flex items-center gap-1.5">
-                <Home className="h-3.5 w-3.5" /> Learn from the locals
+          <TabsList className="w-full h-auto grid grid-cols-2 gap-1">
+            <TabsTrigger value="local" className="flex-col items-start py-2 h-auto whitespace-normal text-left min-w-0">
+              <span className="flex items-center gap-1.5 text-xs sm:text-sm">
+                <Home className="h-3.5 w-3.5 shrink-0" /> Learn from the locals
               </span>
-              <span className="text-[10px] text-muted-foreground font-normal">Tutors in your area</span>
+              <span className="text-[10px] text-muted-foreground font-normal leading-snug break-words w-full">
+                Tutors in your area
+              </span>
             </TabsTrigger>
-            <TabsTrigger value="world" className="gap-1.5 flex-col items-start py-2 h-auto">
-              <span className="flex items-center gap-1.5">
-                <Globe2 className="h-3.5 w-3.5" /> From around the world
+            <TabsTrigger value="world" className="flex-col items-start py-2 h-auto whitespace-normal text-left min-w-0">
+              <span className="flex items-center gap-1.5 text-xs sm:text-sm">
+                <Globe2 className="h-3.5 w-3.5 shrink-0" /> From around the world
               </span>
-              <span className="text-[10px] text-muted-foreground font-normal">Learn French from a tutor in France, and more</span>
+              <span className="text-[10px] text-muted-foreground font-normal leading-snug break-words w-full">
+                Learn French from a tutor in France, and more
+              </span>
             </TabsTrigger>
           </TabsList>
         </Tabs>
