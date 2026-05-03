@@ -102,6 +102,9 @@ export interface ProviderProfile {
   languages?: string[];
   socials?: SocialLinks;
   contactInfo?: ContactInfo;
+  email?: string;
+  verifiedEmail?: string;       // last-verified email
+  verifiedWhatsapp?: string;    // last-verified WhatsApp number (digits)
 }
 
 export interface SeatInfo {
@@ -127,8 +130,10 @@ export interface Listing {
   mode: Mode;
   venue?: string;
   price?: string;            // legacy free-form (kept for backward compat)
-  priceAmount?: number;      // numeric amount
+  priceAmount?: number;      // numeric amount (home country)
   priceUnit?: PriceUnit;     // per session or per month
+  intlPriceAmount?: number;  // price shown to learners outside provider's country
+  intlPriceCurrency?: string; // ISO code, default "USD"
   durationMins?: number;     // class duration in minutes
   trial: boolean;
   slots: SlotKey[];

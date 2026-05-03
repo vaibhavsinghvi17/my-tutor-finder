@@ -39,6 +39,8 @@ const ListingForm = () => {
   const [venue, setVenue] = useState(existing?.venue ?? "");
   const [priceAmount, setPriceAmount] = useState<string>(existing?.priceAmount?.toString() ?? "");
   const [priceUnit, setPriceUnit] = useState<PriceUnit>(existing?.priceUnit ?? "session");
+  const [intlPriceAmount, setIntlPriceAmount] = useState<string>(existing?.intlPriceAmount?.toString() ?? "");
+  const [intlPriceCurrency, setIntlPriceCurrency] = useState<string>(existing?.intlPriceCurrency ?? "USD");
   const [durationMins, setDurationMins] = useState<string>(existing?.durationMins?.toString() ?? "60");
   const [trial, setTrial] = useState(existing?.trial ?? true);
   const [slots, setSlots] = useState<SlotKey[]>(existing?.slots ?? []);
@@ -79,6 +81,8 @@ const ListingForm = () => {
       venue: mode === "Online" ? undefined : venue.trim() || undefined,
       priceAmount: priceAmount ? Number(priceAmount) : undefined,
       priceUnit: priceAmount ? priceUnit : undefined,
+      intlPriceAmount: intlPriceAmount ? Number(intlPriceAmount) : undefined,
+      intlPriceCurrency: intlPriceAmount ? intlPriceCurrency : undefined,
       durationMins: durationMins ? Number(durationMins) : undefined,
       trial,
       slots,
@@ -231,6 +235,39 @@ const ListingForm = () => {
               </div>
             </div>
           </div>
+
+          {mode !== "Offline" && (
+            <div className="rounded-lg border p-3 space-y-2 bg-muted/30">
+              <div className="flex items-start gap-2">
+                <Globe2 className="h-4 w-4 mt-0.5 text-primary" />
+                <div className="flex-1">
+                  <Label className="text-sm">International price (optional)</Label>
+                  <p className="text-xs text-muted-foreground">Shown to learners outside your country. Leave blank to use your home price.</p>
+                </div>
+              </div>
+              <div className="flex gap-2">
+                <Select value={intlPriceCurrency} onValueChange={setIntlPriceCurrency}>
+                  <SelectTrigger className="w-[110px]"><SelectValue /></SelectTrigger>
+                  <SelectContent>
+                    {["USD","EUR","GBP","AUD","CAD","SGD","AED","JPY"].map((c) => (
+                      <SelectItem key={c} value={c}>{c}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <Input
+                  type="number"
+                  min="0"
+                  value={intlPriceAmount}
+                  onChange={(e) => setIntlPriceAmount(e.target.value)}
+                  placeholder="50"
+                  className="flex-1"
+                />
+                <div className="flex items-center text-xs text-muted-foreground px-2">
+                  {priceUnit === "month" ? "/ month" : "/ session"}
+                </div>
+              </div>
+            </div>
+          )}
 
           <LocationFields
             value={{ country, state: stateName, city, area }}

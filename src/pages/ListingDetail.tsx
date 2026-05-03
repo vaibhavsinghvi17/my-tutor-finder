@@ -125,7 +125,7 @@ const ListingDetail = () => {
                   <Clock className="h-3 w-3" /> {formatDuration(listing.durationMins)}
                 </Badge>
               )}
-              {formatPrice(listing) && <Badge variant="outline">{formatPrice(listing)}</Badge>}
+              {formatPrice(listing, learner.country) && <Badge variant="outline">{formatPrice(listing, learner.country)}</Badge>}
               {listing.providerId === "self" && provider.yearsExperience != null && provider.yearsExperience > 0 && (
                 <Badge variant="outline" className="gap-1 border-primary/40 text-primary">
                   <Award className="h-3 w-3" /> {provider.yearsExperience}+ yrs experience
