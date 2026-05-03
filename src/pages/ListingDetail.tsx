@@ -18,6 +18,7 @@ import { ArrowLeft, Building2, MapPin, Wifi, Users, Sparkles, Clock, Award, User
 import { SlotKey } from "@/lib/types";
 import { ageFromDob, blocksToSlots } from "@/lib/timeUtils";
 import { formatDuration, formatPrice } from "@/lib/listingUtils";
+import { useFxRates } from "@/lib/useFxRates";
 import { toast } from "sonner";
 
 const ListingDetail = () => {
@@ -25,6 +26,7 @@ const ListingDetail = () => {
   const navigate = useNavigate();
   const learner = useStore((s) => s.learner);
   const provider = useStore((s) => s.provider);
+  const fxRates = useFxRates();
   const allRatings = useStore((s) => s.ratings);
   const allRequests = useStore((s) => s.requests);
   const ratings = id ? allRatings.filter((r) => r.listingId === id) : [];
@@ -125,7 +127,7 @@ const ListingDetail = () => {
                   <Clock className="h-3 w-3" /> {formatDuration(listing.durationMins)}
                 </Badge>
               )}
-              {formatPrice(listing, learner.country) && <Badge variant="outline">{formatPrice(listing, learner.country)}</Badge>}
+              {formatPrice(listing, learner.country, fxRates) && <Badge variant="outline">{formatPrice(listing, learner.country, fxRates)}</Badge>}
               {listing.providerId === "self" && provider.yearsExperience != null && provider.yearsExperience > 0 && (
                 <Badge variant="outline" className="gap-1 border-primary/40 text-primary">
                   <Award className="h-3 w-3" /> {provider.yearsExperience}+ yrs experience
