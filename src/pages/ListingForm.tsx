@@ -152,7 +152,6 @@ const ListingForm = () => {
     }
     navigate("/provider");
   }
-  }
 
   return (
     <div className="min-h-screen">
