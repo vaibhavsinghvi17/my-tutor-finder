@@ -15,6 +15,16 @@ const Onboarding = () => {
   const [showSplash, setShowSplash] = useState(true);
   const [pendingRole, setPendingRole] = useState<"learner" | "provider" | null>(null);
   const [username, setUsername] = useState("");
+  const stateSnapshot = useStore((s) => s);
+
+  const slug = slugifyUsername(username);
+  const taken = slug.length >= 3 && isUsernameTaken(stateSnapshot, slug);
+  const tooShort = username.length > 0 && slug.length < 3;
+  const usernameError = tooShort
+    ? "Username must be at least 3 characters"
+    : taken
+    ? "That username is already taken"
+    : null;
 
   useEffect(() => {
     if (onboarded) {
@@ -32,11 +42,10 @@ const Onboarding = () => {
 
   function confirmUsername() {
     if (!pendingRole) return;
-    const u = slugifyUsername(username);
-    if (u.length < 3) { toast.error("Pick a username (3+ characters)"); return; }
-    if (isUsernameTaken(store.get(), u)) { toast.error("That username is taken"); return; }
-    if (pendingRole === "learner") store.updateLearner({ username: u });
-    else store.updateProvider({ username: u });
+    if (slug.length < 3) { toast.error("Pick a username (3+ characters)"); return; }
+    if (isUsernameTaken(store.get(), slug)) { toast.error("That username is already taken"); return; }
+    if (pendingRole === "learner") store.updateLearner({ username: slug });
+    else store.updateProvider({ username: slug });
     store.setOnboarded(pendingRole);
     navigate(pendingRole === "provider" ? "/provider" : "/dashboard");
   }
