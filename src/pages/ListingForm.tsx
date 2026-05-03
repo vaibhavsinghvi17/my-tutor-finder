@@ -46,12 +46,16 @@ const ListingForm = () => {
   const [intlPriceAmount, setIntlPriceAmount] = useState<string>(existing?.intlPriceAmount?.toString() ?? "");
   const [intlPriceCurrency, setIntlPriceCurrency] = useState<string>(existing?.intlPriceCurrency ?? "USD");
   const [onlinePriceAmount, setOnlinePriceAmount] = useState<string>(existing?.onlinePriceAmount?.toString() ?? "");
+  const [onlinePriceUnit, setOnlinePriceUnit] = useState<PriceUnit>(existing?.onlinePriceUnit ?? existing?.priceUnit ?? "session");
+  const [onlineSessionsPerMonth, setOnlineSessionsPerMonth] = useState<string>(existing?.onlineSessionsPerMonth?.toString() ?? "4");
   const [onlineIntlPriceAmount, setOnlineIntlPriceAmount] = useState<string>(existing?.onlineIntlPriceAmount?.toString() ?? "");
   const [durationMins, setDurationMins] = useState<string>(existing?.durationMins?.toString() ?? "60");
   const [sessionsPerMonth, setSessionsPerMonth] = useState<string>(existing?.sessionsPerMonth?.toString() ?? "4");
   const [trial, setTrial] = useState(existing?.trial ?? true);
   const [slots, setSlots] = useState<SlotKey[]>(existing?.slots ?? []);
+  const [onlineSlots, setOnlineSlots] = useState<SlotKey[]>(existing?.onlineSlots ?? []);
   const [seatsBySlot, setSeatsBySlot] = useState<Record<string, SeatInfo>>(existing?.seatsBySlot ?? {});
+  const [onlineSeatsBySlot, setOnlineSeatsBySlot] = useState<Record<string, SeatInfo>>(existing?.onlineSeatsBySlot ?? {});
   const [languages, setLanguages] = useState<string[]>(existing?.languages ?? provider.languages ?? []);
   const [teachesInternationally, setTeachesInternationally] = useState<boolean>(existing?.teachesInternationally ?? false);
 
