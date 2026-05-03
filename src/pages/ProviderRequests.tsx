@@ -196,7 +196,19 @@ function RequestRow({
           </div>
         )}
       </div>
-      <div className="flex items-center gap-1.5 shrink-0">{actions}</div>
+      <div className="flex items-center gap-1.5 shrink-0">
+        {r.learnerUserId && (
+          <ClassChat
+            listingId={r.listingId}
+            listingTitle={className}
+            learnerUserId={r.learnerUserId}
+            otherPartyName={r.forKidName ?? r.learnerName}
+            triggerVariant="ghost"
+            triggerLabel=""
+          />
+        )}
+        {actions}
+      </div>
     </Card>
   );
 }
