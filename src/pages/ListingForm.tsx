@@ -147,24 +147,14 @@ const ListingForm = () => {
                 placeholder="₹3,000 / month"
               />
             </div>
-            <div className="space-y-1.5">
-              <Label>City</Label>
-              <Select value={city} onValueChange={(v) => setCity(v as City)}>
-                <SelectTrigger><SelectValue placeholder="Select" /></SelectTrigger>
-                <SelectContent>
-                  {CITIES.map((c) => <SelectItem key={c} value={c}>{c}</SelectItem>)}
-                </SelectContent>
-              </Select>
-            </div>
-            <div className="space-y-1.5">
-              <Label>Area</Label>
-              <Input
-                value={area}
-                onChange={(e) => setArea(e.target.value.slice(0, 80))}
-                placeholder="Indiranagar"
-              />
-            </div>
           </div>
+
+          <LocationFields
+            value={{ country, state: stateName, city, area }}
+            onChange={(v) => { setCountry(v.country); setStateName(v.state); setCity(v.city); setArea(v.area); }}
+            showArea={mode !== "Online"}
+            hint={mode === "Online" ? "Online classes only need country & state." : "Pick the locality where the class runs."}
+          />
 
           {mode !== "Online" && (
             <div className="space-y-1.5">
