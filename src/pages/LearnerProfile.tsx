@@ -332,7 +332,7 @@ const LearnerProfilePage = () => {
         <DialogContent className="max-w-lg">
           <DialogHeader><DialogTitle>Interests</DialogTitle></DialogHeader>
           <div className="flex flex-wrap gap-1.5">
-            {Array.from(new Set([...CATEGORIES, ...learner.interests])).map((c) => {
+            {Array.from(new Set([...categoryNames, ...CATEGORIES, ...learner.interests])).map((c) => {
               const active = learner.interests.includes(c);
               return (
                 <button
