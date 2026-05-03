@@ -1,16 +1,7 @@
-export type Category =
-  | "Academics"
-  | "Music"
-  | "Dance"
-  | "Sports"
-  | "Art"
-  | "Coding"
-  | "Yoga"
-  | "Languages"
-  | "Other";
+export type Category = string;
 
-export const CATEGORIES: Category[] = [
-  "Academics", "Music", "Dance", "Sports", "Art", "Coding", "Yoga", "Languages", "Other",
+export const CATEGORIES: string[] = [
+  "Academics", "Music", "Dance", "Sports", "Art", "Coding", "Yoga", "Languages",
 ];
 
 export type Mode = "Online" | "Offline" | "Both";
