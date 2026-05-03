@@ -135,6 +135,10 @@ const Discover = () => {
 function ProfileSelector() {
   const learner = useStore((s) => s.learner);
   const activeKidId = learner.activeKidId;
+  const others = [...learner.adults, ...learner.kids];
+
+  // Hide entirely when no additional profiles exist
+  if (others.length === 0) return null;
 
   return (
     <div className="flex items-center gap-2 flex-wrap">
@@ -147,6 +151,17 @@ function ProfileSelector() {
       >
         <UserCircle2 className="h-4 w-4" /> Me
       </Button>
+      {learner.adults.map((a) => (
+        <Button
+          key={a.id}
+          variant={activeKidId === a.id ? "default" : "outline"}
+          size="sm"
+          onClick={() => store.setActiveKid(a.id)}
+          className="gap-1.5"
+        >
+          <UserCircle2 className="h-4 w-4" /> {a.name}
+        </Button>
+      ))}
       {learner.kids.map((k) => (
         <Button
           key={k.id}
@@ -162,7 +177,7 @@ function ProfileSelector() {
         </Button>
       ))}
       <Button asChild variant="ghost" size="sm" className="gap-1">
-        <Link to="/profile/learner"><Plus className="h-4 w-4" /> Add kid</Link>
+        <Link to="/profile"><Plus className="h-4 w-4" /> Add profile</Link>
       </Button>
     </div>
   );
