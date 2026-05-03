@@ -92,7 +92,7 @@ const ProviderDashboard = () => {
           </Link>
         </section>
 
-        <section className="space-y-3">
+        <section id="classes" className="space-y-3 scroll-mt-20">
           <h2 className="font-semibold">Your classes</h2>
             {listings.length === 0 ? (
               <Card className="p-8 text-center">
