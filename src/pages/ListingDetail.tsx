@@ -29,6 +29,7 @@ const ListingDetail = () => {
   const navigate = useNavigate();
   const learner = useStore((s) => s.learner);
   const provider = useStore((s) => s.provider);
+  const mode = useStore((s) => s.mode);
   const { user } = useAuth();
   const fxRates = useFxRates();
   const allRatings = useStore((s) => s.ratings);
