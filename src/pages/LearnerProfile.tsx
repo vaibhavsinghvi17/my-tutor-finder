@@ -234,7 +234,7 @@ const LearnerProfilePage = () => {
 function SummaryRow({
   icon: Icon, grad, title, empty, onEdit, children,
 }: {
-  icon: React.ComponentType<{ className?: string; strokeWidth?: number }>;
+  icon: React.ElementType;
   grad: string;
   title: string;
   empty: boolean;
