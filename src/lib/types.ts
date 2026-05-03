@@ -18,11 +18,8 @@ export type AgeGroup = "Kids" | "Teens" | "Adults" | "All";
 
 export const AGE_GROUPS: AgeGroup[] = ["Kids", "Teens", "Adults", "All"];
 
-export const CITIES = [
-  "Bengaluru", "Mumbai", "Delhi", "Hyderabad", "Chennai", "Pune", "Kolkata",
-  "Ahmedabad", "Jaipur", "Other",
-] as const;
-export type City = (typeof CITIES)[number];
+// City is now any string (free-form with autocomplete via locations.ts)
+export type City = string;
 
 export const DAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"] as const;
 export type Day = (typeof DAYS)[number];
@@ -54,7 +51,9 @@ export interface LearnerProfile {
   email: string;
   dob: string; // YYYY-MM-DD
   occupation: string;
-  city: City | "";
+  country: string;
+  state: string;
+  city: string;
   area: string;
   address: string;
   interests: Category[];
@@ -67,7 +66,9 @@ export interface LearnerProfile {
 export interface ProviderProfile {
   businessName: string;
   bio: string;
-  city: City | "";
+  country: string;
+  state: string;
+  city: string;
   area: string;
   address: string;
   contact: string;
@@ -78,7 +79,9 @@ export interface Listing {
   id: string;
   providerId: string; // "self" for current user, or seed id
   providerName: string;
-  city: City;
+  country: string;
+  state: string;
+  city: string;
   area: string;
   title: string;
   description: string;

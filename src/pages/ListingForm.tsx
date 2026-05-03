@@ -9,7 +9,8 @@ import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { ScheduleGrid } from "@/components/ScheduleGrid";
-import { AGE_GROUPS, AgeGroup, CATEGORIES, CITIES, Category, City, Mode, SlotKey } from "@/lib/types";
+import { LocationFields } from "@/components/LocationFields";
+import { AGE_GROUPS, AgeGroup, CATEGORIES, Category, Mode, SlotKey } from "@/lib/types";
 import { store, useStore } from "@/lib/store";
 import { toast } from "sonner";
 
@@ -24,8 +25,10 @@ const ListingForm = () => {
   const [category, setCategory] = useState<Category>(existing?.category ?? "Academics");
   const [ageGroup, setAgeGroup] = useState<AgeGroup>(existing?.ageGroup ?? "All");
   const [mode, setMode] = useState<Mode>(existing?.mode ?? "Offline");
-  const [city, setCity] = useState<City | "">(existing?.city ?? provider.city ?? "");
-  const [area, setArea] = useState(existing?.area ?? provider.area ?? "");
+  const [country, setCountry] = useState<string>(existing?.country ?? provider.country ?? "");
+  const [stateName, setStateName] = useState<string>(existing?.state ?? provider.state ?? "");
+  const [city, setCity] = useState<string>(existing?.city ?? provider.city ?? "");
+  const [area, setArea] = useState<string>(existing?.area ?? provider.area ?? "");
   const [venue, setVenue] = useState(existing?.venue ?? "");
   const [price, setPrice] = useState(existing?.price ?? "");
   const [trial, setTrial] = useState(existing?.trial ?? true);
@@ -41,8 +44,13 @@ const ListingForm = () => {
   function save() {
     if (!title.trim()) return toast.error("Add a title");
     if (!description.trim()) return toast.error("Add a description");
-    if (!city) return toast.error("Pick a city");
-    if (!area.trim()) return toast.error("Add an area");
+    if (mode !== "Online") {
+      if (!country) return toast.error("Pick a country");
+      if (!city) return toast.error("Pick a city");
+      if (!area.trim()) return toast.error("Pick a locality");
+    } else {
+      if (!country) return toast.error("Pick a country");
+    }
     if (slots.length === 0) return toast.error("Pick at least one class time");
 
     const data = {
@@ -51,7 +59,9 @@ const ListingForm = () => {
       category,
       ageGroup,
       mode,
-      city: city as City,
+      country,
+      state: stateName,
+      city: city || (mode === "Online" ? "Online" : ""),
       area: area.trim(),
       venue: mode === "Online" ? undefined : venue.trim() || undefined,
       price: price.trim() || undefined,
@@ -137,24 +147,14 @@ const ListingForm = () => {
                 placeholder="₹3,000 / month"
               />
             </div>
-            <div className="space-y-1.5">
-              <Label>City</Label>
-              <Select value={city} onValueChange={(v) => setCity(v as City)}>
-                <SelectTrigger><SelectValue placeholder="Select" /></SelectTrigger>
-                <SelectContent>
-                  {CITIES.map((c) => <SelectItem key={c} value={c}>{c}</SelectItem>)}
-                </SelectContent>
-              </Select>
-            </div>
-            <div className="space-y-1.5">
-              <Label>Area</Label>
-              <Input
-                value={area}
-                onChange={(e) => setArea(e.target.value.slice(0, 80))}
-                placeholder="Indiranagar"
-              />
-            </div>
           </div>
+
+          <LocationFields
+            value={{ country, state: stateName, city, area }}
+            onChange={(v) => { setCountry(v.country); setStateName(v.state); setCity(v.city); setArea(v.area); }}
+            showArea={mode !== "Online"}
+            hint={mode === "Online" ? "Online classes only need country & state." : "Pick the locality where the class runs."}
+          />
 
           {mode !== "Online" && (
             <div className="space-y-1.5">

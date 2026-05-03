@@ -7,7 +7,8 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { FreeTimeEditor } from "@/components/FreeTimeEditor";
-import { CATEGORIES, CITIES, Category, FreeTimeBlock, Mode } from "@/lib/types";
+import { CATEGORIES, Category, FreeTimeBlock, Mode } from "@/lib/types";
+import { LocationFields } from "@/components/LocationFields";
 import { store, useStore } from "@/lib/store";
 import { ageFromDob } from "@/lib/timeUtils";
 import { Plus, Trash2, Baby, UserCircle2, Clock, MapPin } from "lucide-react";
@@ -91,25 +92,11 @@ const LearnerProfilePage = () => {
 
         <Card className="p-5 space-y-4">
           <h2 className="font-semibold flex items-center gap-2"><MapPin className="h-4 w-4" /> Where you are</h2>
-          <div className="grid sm:grid-cols-2 gap-4">
-            <div className="space-y-1.5">
-              <Label>City</Label>
-              <Select value={learner.city || ""} onValueChange={(v) => store.updateLearner({ city: v as any })}>
-                <SelectTrigger><SelectValue placeholder="Select your city" /></SelectTrigger>
-                <SelectContent>
-                  {CITIES.map((c) => <SelectItem key={c} value={c}>{c}</SelectItem>)}
-                </SelectContent>
-              </Select>
-            </div>
-            <div className="space-y-1.5">
-              <Label>Area / neighbourhood</Label>
-              <Input
-                value={learner.area}
-                onChange={(e) => store.updateLearner({ area: e.target.value.slice(0, 80) })}
-                placeholder="Indiranagar"
-              />
-            </div>
-          </div>
+          <LocationFields
+            value={{ country: learner.country, state: learner.state, city: learner.city, area: learner.area }}
+            onChange={(v) => store.updateLearner(v)}
+            hint="Pick country → state → city. If yours isn't listed, type to add it."
+          />
           <div className="space-y-1.5">
             <Label>Address <span className="text-muted-foreground font-normal">(helps providers know how far you are)</span></Label>
             <Textarea

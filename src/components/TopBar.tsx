@@ -1,13 +1,13 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { store, useStore } from "@/lib/store";
-import { CITIES } from "@/lib/types";
+import { allKnownCities } from "@/lib/locations";
 import {
   DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel,
   DropdownMenuSeparator, DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { GraduationCap, Briefcase, MapPin, User, Sparkles } from "lucide-react";
+import { Combobox } from "@/components/Combobox";
+import { GraduationCap, Briefcase, MapPin, User, Sparkles, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export function TopBar() {
@@ -55,19 +55,21 @@ export function TopBar() {
         </nav>
 
         <div className="ml-auto flex items-center gap-2">
-          <div className="hidden sm:flex items-center gap-1.5 text-sm">
-            <MapPin className="h-4 w-4 text-muted-foreground" />
-            <Select value={city || "any"} onValueChange={(v) => store.setCity(v === "any" ? "" : (v as any))}>
-              <SelectTrigger className="h-9 w-[140px] border-0 bg-muted">
-                <SelectValue placeholder="City" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="any">Any city</SelectItem>
-                {CITIES.map((c) => (
-                  <SelectItem key={c} value={c}>{c}</SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+          <div className="hidden sm:flex items-center gap-1.5 text-sm w-[200px]">
+            <MapPin className="h-4 w-4 text-muted-foreground shrink-0" />
+            <div className="flex-1">
+              <Combobox
+                value={city}
+                onChange={(v) => store.setCity(v)}
+                options={allKnownCities()}
+                placeholder="Any city"
+              />
+            </div>
+            {city && (
+              <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => store.setCity("")} title="Clear">
+                <X className="h-3.5 w-3.5" />
+              </Button>
+            )}
           </div>
 
           <Button variant="outline" size="sm" onClick={switchMode} className="gap-1.5">

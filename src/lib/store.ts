@@ -13,6 +13,8 @@ const initialState: AppState = {
     email: "",
     dob: "",
     occupation: "",
+    country: "",
+    state: "",
     city: "",
     area: "",
     address: "",
@@ -25,6 +27,8 @@ const initialState: AppState = {
   provider: {
     businessName: "",
     bio: "",
+    country: "",
+    state: "",
     city: "",
     area: "",
     address: "",
@@ -40,7 +44,31 @@ function load(): AppState {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (!raw) return initialState;
-    return { ...initialState, ...JSON.parse(raw) };
+    const parsed = JSON.parse(raw);
+    return {
+      ...initialState,
+      ...parsed,
+      learner: {
+        ...initialState.learner,
+        ...(parsed.learner ?? {}),
+        kids: Array.isArray(parsed.learner?.kids)
+          ? parsed.learner.kids.map((k: any) => ({
+              id: k.id,
+              name: k.name ?? "",
+              dob: k.dob ?? "",
+              school: k.school ?? "",
+              schoolClass: k.schoolClass ?? "",
+              interests: Array.isArray(k.interests) ? k.interests : [],
+              freeBlocks: Array.isArray(k.freeBlocks) ? k.freeBlocks : [],
+            }))
+          : [],
+        freeBlocks: Array.isArray(parsed.learner?.freeBlocks) ? parsed.learner.freeBlocks : [],
+        interests: Array.isArray(parsed.learner?.interests) ? parsed.learner.interests : [],
+      },
+      provider: { ...initialState.provider, ...(parsed.provider ?? {}) },
+      listings: Array.isArray(parsed.listings) ? parsed.listings : [],
+      requests: Array.isArray(parsed.requests) ? parsed.requests : [],
+    };
   } catch {
     return initialState;
   }
