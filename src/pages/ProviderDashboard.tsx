@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import { TopBar } from "@/components/TopBar";
 import { Card } from "@/components/ui/card";
@@ -6,9 +7,12 @@ import { Badge } from "@/components/ui/badge";
 import { store, useStore } from "@/lib/store";
 import { Plus, Pencil, Trash2, Inbox, Building2, Wifi } from "lucide-react";
 import { slotsToText } from "@/components/ScheduleGrid";
+import { LearnerProfileDialog } from "@/components/LearnerProfileDialog";
+import { JoinRequest } from "@/lib/types";
 import { toast } from "sonner";
 
 const ProviderDashboard = () => {
+  const [viewing, setViewing] = useState<JoinRequest | null>(null);
   const listings = useStore((s) => s.listings);
   const requests = useStore((s) => s.requests);
   const provider = useStore((s) => s.provider);
@@ -101,7 +105,13 @@ const ProviderDashboard = () => {
                 return (
                   <Card key={r.id} className="p-4 space-y-2">
                     <div className="text-sm">
-                      <div className="font-medium">{r.forKidName ?? r.learnerName}</div>
+                      <button
+                        type="button"
+                        onClick={() => setViewing(r)}
+                        className="font-medium text-left hover:text-primary hover:underline transition-colors"
+                      >
+                        {r.forKidName ?? r.learnerName}
+                      </button>
                       <div className="text-xs text-muted-foreground">
                         {listing?.title} • {slotsToText([r.slot])}
                       </div>
@@ -143,6 +153,7 @@ const ProviderDashboard = () => {
           </div>
         </section>
       </main>
+      <LearnerProfileDialog request={viewing} onOpenChange={(o) => !o && setViewing(null)} />
     </div>
   );
 };
