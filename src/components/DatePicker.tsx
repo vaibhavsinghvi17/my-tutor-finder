@@ -28,9 +28,7 @@ function fromIso(s: string): Date | undefined {
   return isValid(d) ? d : undefined;
 }
 
-function toIso(d: Date): string {
-  return format(d, "yyyy-MM-dd");
-}
+const toIso = (d: Date) => format(d, "yyyy-MM-dd");
 
 export function DatePicker({
   value, onChange, placeholder = "Pick a date",
@@ -40,6 +38,22 @@ export function DatePicker({
   const date = fromIso(value);
   const minDate = fromIso(min || "");
   const maxDate = fromIso(max || "");
+
+  const today = new Date();
+  const fromYear = minDate ? minDate.getFullYear() : 1920;
+  const toYear = maxDate ? maxDate.getFullYear() : today.getFullYear() + 10;
+
+  const [viewMonth, setViewMonth] = React.useState<Date>(date ?? maxDate ?? today);
+  React.useEffect(() => {
+    if (open) setViewMonth(date ?? maxDate ?? today);
+  }, [open]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const years: number[] = [];
+  for (let y = toYear; y >= fromYear; y--) years.push(y);
+  const months = [
+    "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+    "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
+  ];
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -56,13 +70,37 @@ export function DatePicker({
           )}
         >
           <CalendarIcon className="mr-2 h-4 w-4 shrink-0" />
-          <span className="truncate">{date ? format(date, "PPP") : placeholder}</span>
+          <span className="truncate text-sm">{date ? format(date, "d MMM yyyy") : placeholder}</span>
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-auto p-0 bg-popover z-50" align="start">
+      <PopoverContent className="w-auto p-2 bg-popover z-50" align="start">
+        <div className="flex items-center gap-1.5 px-1 pb-2">
+          <select
+            value={viewMonth.getMonth()}
+            onChange={(e) => {
+              const m = Number(e.target.value);
+              setViewMonth(new Date(viewMonth.getFullYear(), m, 1));
+            }}
+            className="h-7 rounded-md border border-input bg-background px-1.5 text-xs"
+          >
+            {months.map((m, i) => <option key={m} value={i}>{m}</option>)}
+          </select>
+          <select
+            value={viewMonth.getFullYear()}
+            onChange={(e) => {
+              const y = Number(e.target.value);
+              setViewMonth(new Date(y, viewMonth.getMonth(), 1));
+            }}
+            className="h-7 rounded-md border border-input bg-background px-1.5 text-xs"
+          >
+            {years.map((y) => <option key={y} value={y}>{y}</option>)}
+          </select>
+        </div>
         <Calendar
           mode="single"
           selected={date}
+          month={viewMonth}
+          onMonthChange={setViewMonth}
           onSelect={(d) => {
             if (d) {
               onChange(toIso(d));
@@ -71,18 +109,60 @@ export function DatePicker({
               onChange("");
             }
           }}
-          defaultMonth={date ?? maxDate ?? undefined}
-          captionLayout="dropdown-buttons"
-          fromYear={1920}
-          toYear={maxDate ? maxDate.getFullYear() : new Date().getFullYear() + 10}
           disabled={(d) => {
             if (minDate && d < minDate) return true;
             if (maxDate && d > maxDate) return true;
             return false;
           }}
+          showOutsideDays={false}
           initialFocus
-          className={cn("p-3 pointer-events-auto")}
+          className={cn("p-0 pointer-events-auto")}
+          classNames={{
+            months: "flex flex-col",
+            month: "space-y-1",
+            caption: "hidden",
+            table: "w-full border-collapse",
+            head_row: "flex",
+            head_cell: "text-muted-foreground rounded-md w-7 font-normal text-[0.65rem]",
+            row: "flex w-full mt-0.5",
+            cell: "h-7 w-7 text-center text-xs p-0 relative [&:has([aria-selected])]:bg-accent first:[&:has([aria-selected])]:rounded-l-md last:[&:has([aria-selected])]:rounded-r-md focus-within:relative focus-within:z-20",
+            day: "h-7 w-7 p-0 font-normal rounded-md hover:bg-accent hover:text-accent-foreground aria-selected:opacity-100 text-xs",
+            day_selected: "bg-primary text-primary-foreground hover:bg-primary hover:text-primary-foreground focus:bg-primary",
+            day_today: "bg-accent text-accent-foreground",
+            day_disabled: "text-muted-foreground opacity-40",
+            day_hidden: "invisible",
+          }}
         />
+        {(date || !value) && (
+          <div className="flex items-center justify-between gap-2 pt-2 border-t mt-2">
+            <Button
+              type="button"
+              variant="ghost"
+              size="sm"
+              className="h-7 text-xs"
+              onClick={() => {
+                const t = new Date();
+                if (minDate && t < minDate) return;
+                if (maxDate && t > maxDate) return;
+                onChange(toIso(t));
+                setOpen(false);
+              }}
+            >
+              Today
+            </Button>
+            {date && (
+              <Button
+                type="button"
+                variant="ghost"
+                size="sm"
+                className="h-7 text-xs text-muted-foreground"
+                onClick={() => { onChange(""); setOpen(false); }}
+              >
+                Clear
+              </Button>
+            )}
+          </div>
+        )}
       </PopoverContent>
     </Popover>
   );
