@@ -14,7 +14,7 @@ import { PinCodeInput } from "@/components/PinCodeInput";
 import { LanguagesEditor } from "@/components/LanguagesEditor";
 import { AGE_GROUPS, AgeGroup, Category, Mode, PriceUnit, SeatInfo, SlotKey } from "@/lib/types";
 import { useCategories } from "@/lib/useCategories";
-import { Plus, Globe2, Users } from "lucide-react";
+import { Plus, Globe2, Users, Wifi, Building2 } from "lucide-react";
 import { store, useStore } from "@/lib/store";
 import { toast } from "sonner";
 
