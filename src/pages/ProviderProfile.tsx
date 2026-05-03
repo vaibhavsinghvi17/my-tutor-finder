@@ -28,12 +28,32 @@ const SOCIAL_FIELDS: { key: keyof SocialLinks; icon: React.ComponentType<{ class
 
 const ProviderProfilePage = () => {
   const provider = useStore((s) => s.provider);
+  const { names: categoryNames, addCategory } = useCategories();
+  const [newCat, setNewCat] = useState("");
+  const contactInfo: ContactInfo = provider.contactInfo ?? {};
+
+  function setContact(patch: Partial<ContactInfo>) {
+    store.updateProvider({ contactInfo: { ...contactInfo, ...patch } });
+  }
 
   function toggleCat(c: Category) {
     const has = provider.categories.includes(c);
     store.updateProvider({
       categories: has ? provider.categories.filter((x) => x !== c) : [...provider.categories, c],
     });
+  }
+
+  async function handleAddCategory() {
+    const v = newCat.trim();
+    if (!v) return;
+    const created = await addCategory(v, provider.businessName);
+    if (created) {
+      if (!provider.categories.includes(created.name)) {
+        store.updateProvider({ categories: [...provider.categories, created.name] });
+      }
+      setNewCat("");
+      toast.success(`"${created.name}" added to global categories`);
+    }
   }
 
   return (
