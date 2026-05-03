@@ -27,6 +27,7 @@ const ListingForm = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const provider = useStore((s) => s.provider);
+  const { user } = useAuth();
   const existing = useStore((s) => id ? s.listings.find((l) => l.id === id) : undefined);
   const { names: categoryNames, addCategory } = useCategories();
   const [newCat, setNewCat] = useState("");
