@@ -46,8 +46,6 @@ function SignOutFooter() {
   );
 }
 
-type Section = "about" | "address" | "time" | null;
-
 const LearnerProfilePage = () => {
   const learner = useStore((s) => s.learner);
   const requests = useStore((s) => s.requests);
@@ -55,7 +53,6 @@ const LearnerProfilePage = () => {
   const { names: categoryNames, addCategory } = useCategories();
   const age = ageFromDob(learner.dob);
   const navigate = useNavigate();
-  const [open, setOpen] = useState<Section>(null);
   const [interestsOpen, setInterestsOpen] = useState(false);
   const [customInterest, setCustomInterest] = useState("");
   const fileRef = useRef<HTMLInputElement>(null);
