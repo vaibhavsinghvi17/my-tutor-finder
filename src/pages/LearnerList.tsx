@@ -131,10 +131,15 @@ function Row({ to, title, subtitle, right }: { to: string; title: string; subtit
   );
 }
 
-function Empty() {
+function Empty({ cta }: { cta?: { to: string; label: string } }) {
   return (
-    <Card className="p-10 text-center">
+    <Card className="p-10 text-center space-y-4">
       <p className="text-sm text-muted-foreground">Nothing to show here yet.</p>
+      {cta && (
+        <Button asChild size="sm" className="rounded-full">
+          <Link to={cta.to}>{cta.label}</Link>
+        </Button>
+      )}
     </Card>
   );
 }
