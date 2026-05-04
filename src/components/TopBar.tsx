@@ -88,10 +88,18 @@ export function TopBar() {
             </Button>
           )}
 
-          <Button variant="outline" size="sm" onClick={switchMode} className="gap-1.5 px-2 sm:px-3 shrink-0">
-            {isProvider ? <GraduationCap className="h-4 w-4" /> : <Briefcase className="h-4 w-4" />}
-            <span className="text-xs font-medium hidden sm:inline">Switch to {isProvider ? "Learner" : "Provider"}</span>
-          </Button>
+          <div className="flex flex-col items-end gap-0.5 shrink-0">
+            <span className="text-[10px] leading-none text-muted-foreground flex items-center gap-1">
+              {isProvider ? <Briefcase className="h-3 w-3" /> : <GraduationCap className="h-3 w-3" />}
+              Logged in as <span className="font-semibold text-foreground">{isProvider ? "Tutor" : "Learner"}</span>
+            </span>
+            <button
+              onClick={switchMode}
+              className="text-[10px] leading-none font-medium text-primary hover:underline transition-colors"
+            >
+              Switch to {isProvider ? "Learner" : "Tutor"} →
+            </button>
+          </div>
 
           <Button
             variant="ghost"
