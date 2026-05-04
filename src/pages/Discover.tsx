@@ -217,7 +217,7 @@ const Discover = () => {
                 : "border-accent/40 bg-card hover:border-accent/70",
             )}
           >
-            <span className="flex items-center gap-1.5 text-xs sm:text-sm font-semibold text-accent-foreground">
+            <span className="flex items-center gap-1.5 text-xs sm:text-sm font-semibold" style={{ color: "hsl(140 60% 22%)" }}>
               <Globe2 className="h-3.5 w-3.5 shrink-0" /> From around the world
             </span>
             <span className="block text-[10px] text-muted-foreground leading-snug mt-1">
