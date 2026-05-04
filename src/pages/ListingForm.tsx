@@ -573,6 +573,14 @@ const ListingForm = () => {
           </Button>
         </div>
       </main>
+      <VerifyProfileDialog
+        open={verifyOpen}
+        onOpenChange={(v) => {
+          setVerifyOpen(v);
+          if (!v && !verified) navigate("/provider");
+        }}
+        role="provider"
+      />
     </div>
   );
 };
