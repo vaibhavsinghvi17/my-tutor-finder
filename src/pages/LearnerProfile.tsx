@@ -27,6 +27,7 @@ import { cn } from "@/lib/utils";
 import { UsernameInput } from "@/components/UsernameInput";
 import { InterestPicker } from "@/components/InterestPicker";
 import { VerifyContact } from "@/components/VerifyContact";
+import { PinCodeInput } from "@/components/PinCodeInput";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/useAuth";
 
@@ -159,6 +160,22 @@ const LearnerProfilePage = () => {
           </div>
         </div>
 
+        {(!learner.city || !learner.pinCode) && (
+          <div className="rounded-xl border border-destructive/30 bg-destructive/5 p-3 text-xs flex items-start gap-2">
+            <ShieldAlert className="h-4 w-4 text-destructive mt-0.5 shrink-0" />
+            <div className="flex-1">
+              <div className="font-medium text-destructive">Complete your address</div>
+              <div className="text-muted-foreground">
+                {!learner.city && !learner.pinCode
+                  ? "City and Pin code are required to find classes near you."
+                  : !learner.city
+                    ? "City is required to find classes near you."
+                    : "Pin code is required to find classes near you."}
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* Interests directly under name */}
         <div className="rounded-xl border border-border/60 bg-card/40 backdrop-blur-sm p-3">
           <div className="flex items-center justify-between mb-2">
@@ -266,10 +283,20 @@ const LearnerProfilePage = () => {
             </AccordionTrigger>
             <AccordionContent className="px-3 pb-3">
               <div className="space-y-3">
+                <p className="text-[11px] text-muted-foreground">
+                  <span className="text-destructive">*</span> City and Pin code are required so we can show classes near you.
+                </p>
                 <LocationFields
                   value={{ country: learner.country, state: learner.state, city: learner.city, area: learner.area }}
                   onChange={(v) => store.updateLearner(v)}
                 />
+                <Field label="Pin / Postal code *">
+                  <PinCodeInput
+                    value={learner.pinCode ?? ""}
+                    onChange={(v) => store.updateLearner({ pinCode: v })}
+                    country={learner.country}
+                  />
+                </Field>
                 <div className="pt-2 border-t">
                   <AddressFields value={learner.address} onChange={(v) => store.updateLearner({ address: v })} />
                 </div>
@@ -330,6 +357,8 @@ const LearnerProfilePage = () => {
             value={learner.preferredMode === "Any" ? "Online / Offline" : learner.preferredMode} />
           <SummaryRow icon={MapPin} label="City"
             value={[learner.area, learner.city].filter(Boolean).join(", ") || "—"} />
+          <SummaryRow icon={MapPin} label="Pin / Postal code"
+            value={learner.pinCode || "—"} />
           <div className="p-3 flex items-start gap-2">
             <Clock className="h-4 w-4 mt-0.5 text-muted-foreground shrink-0" />
             <div className="flex-1 min-w-0">

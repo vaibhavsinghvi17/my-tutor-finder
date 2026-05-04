@@ -156,6 +156,23 @@ const ProviderProfilePage = () => {
           </div>
         </div>
 
+
+        {(!provider.city || !provider.pinCode) && (
+          <div className="rounded-xl border border-destructive/30 bg-destructive/5 p-3 text-xs flex items-start gap-2">
+            <MapPin className="h-4 w-4 text-destructive mt-0.5 shrink-0" />
+            <div className="flex-1">
+              <div className="font-medium text-destructive">Complete your studio address</div>
+              <div className="text-muted-foreground">
+                {!provider.city && !provider.pinCode
+                  ? "City and Pin code are required so learners nearby can discover your classes."
+                  : !provider.city
+                    ? "City is required so learners nearby can discover your classes."
+                    : "Pin code is required so learners nearby can discover your classes."}
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* Quick action tray */}
         <div className="flex items-center gap-2 py-1 w-full">
           <Button asChild variant="secondary" size="sm" className="gap-1.5 rounded-full flex-1 min-w-0">
@@ -371,12 +388,15 @@ const ProviderProfilePage = () => {
         <DialogContent className="max-w-lg">
           <DialogHeader><DialogTitle>Studio address</DialogTitle></DialogHeader>
           <div className="space-y-3 max-h-[65vh] overflow-y-auto pr-1">
+            <p className="text-[11px] text-muted-foreground">
+              <span className="text-destructive">*</span> City and Pin code are required so learners nearby can find your classes.
+            </p>
             <LocationFields
               value={{ country: provider.country, state: provider.state, city: provider.city, area: provider.area }}
               onChange={(v) => store.updateProvider(v)}
               hint="Where is your studio? For online-only, just pick country & state."
             />
-            <Field label="Pin / Postal code">
+            <Field label="Pin / Postal code *">
               <PinCodeInput
                 value={provider.pinCode ?? ""}
                 onChange={(v) => store.updateProvider({ pinCode: v })}
