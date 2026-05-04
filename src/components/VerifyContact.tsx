@@ -76,7 +76,7 @@ export function VerifyContact({ kind, value, verifiedValue, onVerified }: Props)
         <DialogContent>
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
-              <Icon className="h-4 w-4" /> Verify your {kind === "email" ? "email" : "WhatsApp number"}
+              <Icon className="h-4 w-4" /> Verify your {label}
             </DialogTitle>
             <DialogDescription>
               Enter the 6-digit code we sent to <span className="font-medium">{value}</span>.
