@@ -266,37 +266,6 @@ const Discover = () => {
           )}
         </section>
 
-        {(() => {
-          const activeAdult = state.learner.activeKidId ? state.learner.adults.find((a) => a.id === state.learner.activeKidId) : null;
-          const activeKidP = state.learner.activeKidId ? state.learner.kids.find((k) => k.id === state.learner.activeKidId) : null;
-          const myInterests = activeAdult?.interests || activeKidP?.interests || state.learner.interests || [];
-          if (myInterests.length === 0) return null;
-          const opts: Array<{ v: typeof viewMode; label: string }> = [
-            { v: "interests", label: "Based on your interests" },
-            { v: "all", label: "All classes" },
-            { v: "everything", label: "Show everything" },
-          ];
-          return (
-            <div className="space-y-2">
-              <p className="text-xs text-muted-foreground font-medium">Classes Shown</p>
-              <div className="inline-flex flex-wrap gap-1.5 rounded-full border bg-card p-1">
-                {opts.map((o) => (
-                  <button
-                    key={o.v}
-                    type="button"
-                    onClick={() => setViewMode(o.v)}
-                    className={cn(
-                      "px-3 py-1.5 rounded-full text-xs font-medium transition-colors",
-                      viewMode === o.v ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground",
-                    )}
-                  >
-                    {o.label}
-                  </button>
-                ))}
-              </div>
-            </div>
-          );
-        })()}
 
         <div className="flex flex-wrap items-center gap-2">
           <DropdownMenu>
