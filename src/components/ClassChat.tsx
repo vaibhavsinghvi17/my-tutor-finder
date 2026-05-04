@@ -41,6 +41,7 @@ export function ClassChat({
 }: Props) {
   const { user } = useAuth();
   const [open, setOpen] = useState(false);
+  const [expanded, setExpanded] = useState(false);
   const [messages, setMessages] = useState<Msg[]>([]);
   const [body, setBody] = useState("");
   const [sending, setSending] = useState(false);
