@@ -109,6 +109,16 @@ const Discover = () => {
       scoredList = scoredList.filter((s) =>
         s.listing.teachesInternationally === true || s.listing.mode === "Online" || s.listing.mode === "Both",
       );
+    // Smart filter by current profile interests
+    const activeAdult = state.learner.activeKidId ? state.learner.adults.find((a) => a.id === state.learner.activeKidId) : null;
+    const activeKidP = state.learner.activeKidId ? state.learner.kids.find((k) => k.id === state.learner.activeKidId) : null;
+    const myInterests = (activeAdult?.interests || activeKidP?.interests || state.learner.interests || []).map((x) => x.toLowerCase());
+    if (interestsOnly && myInterests.length > 0) {
+      scoredList = scoredList.filter((s) => {
+        const cat = s.listing.category?.toLowerCase() || "";
+        const title = s.listing.title?.toLowerCase() || "";
+        return myInterests.some((i) => cat.includes(i) || i.includes(cat) || title.includes(i));
+      });
     }
 
     if (sortBy === "price-asc" || sortBy === "price-desc") {
