@@ -7,7 +7,8 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { FreeTimeEditor } from "@/components/FreeTimeEditor";
 import { DatePicker } from "@/components/DatePicker";
-import { CATEGORIES, Category, FreeTimeBlock } from "@/lib/types";
+import { Category, FreeTimeBlock } from "@/lib/types";
+import { InterestPicker } from "@/components/InterestPicker";
 import { store, useStore } from "@/lib/store";
 import { ageFromDob } from "@/lib/timeUtils";
 import { ArrowLeft, Trash2, Clock } from "lucide-react";
@@ -91,21 +92,7 @@ const AdultProfileEditor = () => {
 
           <div className="space-y-2">
             <Label>Interests</Label>
-            <div className="flex flex-wrap gap-2">
-              {CATEGORIES.map((c) => (
-                <button
-                  key={c}
-                  type="button"
-                  onClick={() => toggle(c)}
-                  className={cn(
-                    "px-3 py-1.5 rounded-full text-sm border transition-all",
-                    interests.includes(c) ? "bg-primary text-primary-foreground border-primary" : "bg-background hover:bg-muted",
-                  )}
-                >
-                  {c}
-                </button>
-              ))}
-            </div>
+            <InterestPicker value={interests} onChange={(v) => setInterests(v as Category[])} />
           </div>
 
           <div className="space-y-2">
