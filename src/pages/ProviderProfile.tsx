@@ -29,10 +29,30 @@ import { store, useStore } from "@/lib/store";
 import {
   ArrowLeft, Camera, ChevronDown, Pencil, Plus, X, MapPin, Phone, MessageCircle,
   Briefcase, BookOpen, Award, Languages as LanguagesIcon, Trash2,
-  Instagram, Facebook, Youtube, Twitter, Linkedin, Globe, Share2,
+  Instagram, Facebook, Youtube, Twitter, Linkedin, Globe, Share2, LogOut,
 } from "lucide-react";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/lib/useAuth";
+
+function SignOutFooter() {
+  const { user } = useAuth();
+  const navigate = useNavigate();
+  if (!user) return null;
+  async function handleSignOut() {
+    await supabase.auth.signOut();
+    toast.success("Signed out");
+    navigate("/auth");
+  }
+  return (
+    <div className="pt-6 pb-4 flex justify-center">
+      <Button variant="outline" size="sm" onClick={handleSignOut} className="gap-2 text-destructive hover:text-destructive">
+        <LogOut className="h-4 w-4" /> Sign out
+      </Button>
+    </div>
+  );
+}
 
 type Section = "about" | "address" | "contact" | "socials" | null;
 
@@ -296,6 +316,8 @@ const ProviderProfilePage = () => {
             <SocialLinksRow socials={provider.socials} size="sm" />
           </ProviderSection>
         )}
+
+        <SignOutFooter />
       </main>
 
       {/* === Edit dialogs === */}
