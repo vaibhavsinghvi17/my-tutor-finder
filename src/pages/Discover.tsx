@@ -109,6 +109,8 @@ const Discover = () => {
       scoredList = scoredList.filter((s) =>
         s.listing.teachesInternationally === true || s.listing.mode === "Online" || s.listing.mode === "Both",
       );
+    }
+
     // Smart filter by current profile interests
     const activeAdult = state.learner.activeKidId ? state.learner.adults.find((a) => a.id === state.learner.activeKidId) : null;
     const activeKidP = state.learner.activeKidId ? state.learner.kids.find((k) => k.id === state.learner.activeKidId) : null;
