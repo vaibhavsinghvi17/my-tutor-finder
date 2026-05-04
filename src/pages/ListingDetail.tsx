@@ -1,5 +1,7 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
+import { VerifyProfileDialog } from "@/components/VerifyProfileDialog";
+import { isLearnerVerified, isProviderVerified } from "@/lib/profileComplete";
 import { TopBar } from "@/components/TopBar";
 import { store, useStore } from "@/lib/store";
 import { distanceKmBetween, formatDistance } from "@/lib/distance";
@@ -61,32 +63,12 @@ const ListingDetail = () => {
     );
   }
 
-  const profileComplete = mode === "provider"
-    ? !!(provider.businessName?.trim() && provider.city?.trim())
-    : !!(learner.name?.trim() && learner.city?.trim());
+  const verified = mode === "provider" ? isProviderVerified(provider) : isLearnerVerified(learner);
+  const [verifyOpen, setVerifyOpen] = useState(!verified);
 
-  if (!profileComplete) {
-    const dest = mode === "provider" ? "/profile/provider" : "/profile/learner";
-    return (
-      <div className="min-h-screen">
-        <TopBar />
-        <div className="container py-16 max-w-md mx-auto text-center space-y-4">
-          <div className="h-14 w-14 mx-auto rounded-2xl bg-gradient-primary grid place-items-center text-primary-foreground shadow-elegant">
-            <Sparkles className="h-6 w-6" />
-          </div>
-          <h1 className="text-xl font-semibold">Finish your profile to continue</h1>
-          <p className="text-sm text-muted-foreground">
-            Add a few quick details so providers know who's reaching out and we can tailor classes for you.
-            You can keep browsing listings, but opening a class needs a complete profile.
-          </p>
-          <div className="flex gap-2 justify-center pt-2">
-            <Button variant="outline" onClick={() => navigate(-1)}>Back</Button>
-            <Button onClick={() => navigate(dest)}>Complete profile</Button>
-          </div>
-        </div>
-      </div>
-    );
-  }
+  useEffect(() => {
+    setVerifyOpen(!verified);
+  }, [verified]);
 
   const activeKid = learner.activeKidId ? learner.kids.find((k) => k.id === learner.activeKidId) : null;
   const freeSlots = blocksToSlots(activeKid ? activeKid.freeBlocks : learner.freeBlocks);
@@ -94,6 +76,10 @@ const ListingDetail = () => {
   const matching = allSlots.filter((s) => freeSlots.includes(s));
 
   function submit() {
+    if (!verified) {
+      setVerifyOpen(true);
+      return;
+    }
     if (!slot) {
       toast.error("Pick a class slot first.");
       return;
@@ -459,6 +445,14 @@ const ListingDetail = () => {
           </Card>
         )}
       </main>
+      <VerifyProfileDialog
+        open={verifyOpen}
+        onOpenChange={(v) => {
+          setVerifyOpen(v);
+          if (!v && !verified) navigate(-1);
+        }}
+        role={mode === "provider" ? "provider" : "learner"}
+      />
     </div>
   );
 };

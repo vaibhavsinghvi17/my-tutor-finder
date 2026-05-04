@@ -112,6 +112,8 @@ export interface ProviderProfile {
   email?: string;
   verifiedEmail?: string;       // last-verified email
   verifiedWhatsapp?: string;    // last-verified WhatsApp number (digits)
+  phone?: string;               // SMS phone number (with country code)
+  verifiedPhone?: string;       // last-verified SMS phone number
   avatarDataUrl?: string;
 }
 
