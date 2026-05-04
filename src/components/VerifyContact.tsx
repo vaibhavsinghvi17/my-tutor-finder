@@ -2,13 +2,13 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Mail, MessageCircle, ShieldCheck, ShieldAlert } from "lucide-react";
+import { Mail, MessageCircle, Phone, ShieldCheck, ShieldAlert } from "lucide-react";
 import { toast } from "sonner";
 import {
   Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter,
 } from "@/components/ui/dialog";
 
-type Kind = "email" | "whatsapp";
+type Kind = "email" | "whatsapp" | "phone";
 
 interface Props {
   kind: Kind;
