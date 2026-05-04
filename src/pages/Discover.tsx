@@ -58,7 +58,7 @@ const Discover = () => {
   const [sortBy, setSortBy] = useState<SortOption>("recommended");
   const [timeOfDay, setTimeOfDay] = useState<TimeOfDay>("all");
   const [scope, setScope] = useState<"local" | "world">("local");
-  const [interestsOnly, setInterestsOnly] = useState(true);
+  const [viewMode, setViewMode] = useState<"interests" | "all" | "everything">("interests");
 
   const allListings = getAllListings();
   const allCategories = Array.from(new Set([...categoryNames, ...CATEGORIES])).sort();
@@ -116,13 +116,15 @@ const Discover = () => {
     const activeAdult = state.learner.activeKidId ? state.learner.adults.find((a) => a.id === state.learner.activeKidId) : null;
     const activeKidP = state.learner.activeKidId ? state.learner.kids.find((k) => k.id === state.learner.activeKidId) : null;
     const myInterests = (activeAdult?.interests || activeKidP?.interests || state.learner.interests || []).map((x) => x.toLowerCase());
-    if (interestsOnly && myInterests.length > 0) {
+    if (viewMode === "interests" && myInterests.length > 0) {
       scoredList = scoredList.filter((s) => {
         const cat = s.listing.category?.toLowerCase() || "";
         const title = s.listing.title?.toLowerCase() || "";
         return myInterests.some((i) => cat.includes(i) || i.includes(cat) || title.includes(i));
       });
     }
+    // "all" and "everything" both show all classes; "everything" intent: explicit show-all
+    // (kept separate so user can express intent; both behave the same for filtering)
 
     if (sortBy === "price-asc" || sortBy === "price-desc") {
       scoredList = [...scoredList].sort((a, b) => {
@@ -140,7 +142,7 @@ const Discover = () => {
     }
     return scoredList;
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [state, query, category, mode, pinFilter, sortBy, timeOfDay, scope, ratings, requests, interestsOnly]);
+  }, [state, query, category, mode, pinFilter, sortBy, timeOfDay, scope, ratings, requests, viewMode]);
 
   const activeKid = state.learner.activeKidId
     ? state.learner.kids.find((k) => k.id === state.learner.activeKidId)
@@ -264,24 +266,8 @@ const Discover = () => {
           )}
         </section>
 
+
         <div className="flex flex-wrap items-center gap-2">
-          {(() => {
-            const activeAdult = state.learner.activeKidId ? state.learner.adults.find((a) => a.id === state.learner.activeKidId) : null;
-            const activeKidP = state.learner.activeKidId ? state.learner.kids.find((k) => k.id === state.learner.activeKidId) : null;
-            const myInterests = activeAdult?.interests || activeKidP?.interests || state.learner.interests || [];
-            if (myInterests.length === 0) return null;
-            return (
-              <Button
-                size="sm"
-                variant={interestsOnly ? "default" : "outline"}
-                onClick={() => setInterestsOnly((v) => !v)}
-                className="gap-1.5 rounded-full text-xs"
-              >
-                {interestsOnly ? <Check className="h-3.5 w-3.5" /> : null}
-                {interestsOnly ? "Matching your interests" : "All classes"}
-              </Button>
-            );
-          })()}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="outline" size="sm" className="gap-1.5 rounded-full">
@@ -340,6 +326,42 @@ const Discover = () => {
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
+
+        {(() => {
+          const activeAdult = state.learner.activeKidId ? state.learner.adults.find((a) => a.id === state.learner.activeKidId) : null;
+          const activeKidP = state.learner.activeKidId ? state.learner.kids.find((k) => k.id === state.learner.activeKidId) : null;
+          const myInterests = activeAdult?.interests || activeKidP?.interests || state.learner.interests || [];
+          const hasInterests = myInterests.length > 0;
+          const opts: Array<{ v: typeof viewMode; label: string; disabled?: boolean }> = [
+            { v: "interests", label: "Based on your interests", disabled: !hasInterests },
+            { v: "all", label: "All classes" },
+            { v: "everything", label: "Show everything" },
+          ];
+          return (
+            <div className="space-y-2 pt-1">
+              <p className="text-xs text-muted-foreground font-medium uppercase tracking-wide">Classes Shown</p>
+              <div className="inline-flex flex-wrap gap-1.5 rounded-full border bg-card p-1">
+                {opts.map((o) => (
+                  <button
+                    key={o.v}
+                    type="button"
+                    disabled={o.disabled}
+                    onClick={() => setViewMode(o.v)}
+                    className={cn(
+                      "px-3 py-1.5 rounded-full text-xs font-medium transition-colors",
+                      viewMode === o.v
+                        ? "bg-primary text-primary-foreground"
+                        : "text-muted-foreground hover:text-foreground",
+                      o.disabled && "opacity-40 cursor-not-allowed",
+                    )}
+                  >
+                    {o.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+          );
+        })()}
 
         {scored.length === 0 ? (
           <div className="text-center py-16 text-muted-foreground">
