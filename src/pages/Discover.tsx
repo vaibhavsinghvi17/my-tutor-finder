@@ -58,7 +58,7 @@ const Discover = () => {
   const [sortBy, setSortBy] = useState<SortOption>("recommended");
   const [timeOfDay, setTimeOfDay] = useState<TimeOfDay>("all");
   const [scope, setScope] = useState<"local" | "world">("local");
-  const [viewMode, setViewMode] = useState<"interests" | "all" | "everything">("interests");
+  const [viewMode, setViewMode] = useState<"interests" | "all">("interests");
 
   const allListings = getAllListings();
   const allCategories = Array.from(new Set([...categoryNames, ...CATEGORIES])).sort();
