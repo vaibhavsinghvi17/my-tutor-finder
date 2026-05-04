@@ -388,12 +388,15 @@ const ProviderProfilePage = () => {
         <DialogContent className="max-w-lg">
           <DialogHeader><DialogTitle>Studio address</DialogTitle></DialogHeader>
           <div className="space-y-3 max-h-[65vh] overflow-y-auto pr-1">
+            <p className="text-[11px] text-muted-foreground">
+              <span className="text-destructive">*</span> City and Pin code are required so learners nearby can find your classes.
+            </p>
             <LocationFields
               value={{ country: provider.country, state: provider.state, city: provider.city, area: provider.area }}
               onChange={(v) => store.updateProvider(v)}
               hint="Where is your studio? For online-only, just pick country & state."
             />
-            <Field label="Pin / Postal code">
+            <Field label="Pin / Postal code *">
               <PinCodeInput
                 value={provider.pinCode ?? ""}
                 onChange={(v) => store.updateProvider({ pinCode: v })}
