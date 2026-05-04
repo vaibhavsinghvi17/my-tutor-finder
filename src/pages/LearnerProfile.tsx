@@ -27,6 +27,7 @@ import { cn } from "@/lib/utils";
 import { UsernameInput } from "@/components/UsernameInput";
 import { InterestPicker } from "@/components/InterestPicker";
 import { VerifyContact } from "@/components/VerifyContact";
+import { PinCodeInput } from "@/components/PinCodeInput";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/useAuth";
 
