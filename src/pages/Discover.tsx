@@ -265,6 +265,23 @@ const Discover = () => {
         </section>
 
         <div className="flex flex-wrap items-center gap-2">
+          {(() => {
+            const activeAdult = state.learner.activeKidId ? state.learner.adults.find((a) => a.id === state.learner.activeKidId) : null;
+            const activeKidP = state.learner.activeKidId ? state.learner.kids.find((k) => k.id === state.learner.activeKidId) : null;
+            const myInterests = activeAdult?.interests || activeKidP?.interests || state.learner.interests || [];
+            if (myInterests.length === 0) return null;
+            return (
+              <Button
+                size="sm"
+                variant={interestsOnly ? "default" : "outline"}
+                onClick={() => setInterestsOnly((v) => !v)}
+                className="gap-1.5 rounded-full text-xs"
+              >
+                {interestsOnly ? <Check className="h-3.5 w-3.5" /> : null}
+                {interestsOnly ? "Matching your interests" : "All classes"}
+              </Button>
+            );
+          })()}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="outline" size="sm" className="gap-1.5 rounded-full">
