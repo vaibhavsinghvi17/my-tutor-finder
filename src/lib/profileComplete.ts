@@ -1,23 +1,26 @@
 import { AppState, LearnerProfile, ProviderProfile } from "./types";
 
 /**
- * Minimum required for a learner to be considered "set up": name + city.
- * This is intentionally lightweight so users aren't forced to fill the entire form,
- * but enough that listings can be opened with a real identity & locality.
+ * "Verified" learner = has name + verified phone (mobile OTP).
+ * Required to open class details, send requests, etc.
  */
-export function isLearnerProfileComplete(l: LearnerProfile): boolean {
-  return !!(l.name?.trim() && l.city?.trim());
+export function isLearnerVerified(l: LearnerProfile): boolean {
+  return !!(l.name?.trim() && l.phone?.trim() && l.verifiedPhone === l.phone);
 }
 
 /**
- * Minimum required for a provider to be considered "set up": business name + city.
+ * "Verified" provider = has business name + verified phone.
+ * Required to publish a class.
  */
-export function isProviderProfileComplete(p: ProviderProfile): boolean {
-  return !!(p.businessName?.trim() && p.city?.trim());
+export function isProviderVerified(p: ProviderProfile): boolean {
+  return !!(p.businessName?.trim() && p.phone?.trim() && p.verifiedPhone === p.phone);
 }
 
-export function isCurrentProfileComplete(s: AppState): boolean {
-  return s.mode === "provider"
-    ? isProviderProfileComplete(s.provider)
-    : isLearnerProfileComplete(s.learner);
+export function isCurrentProfileVerified(s: AppState): boolean {
+  return s.mode === "provider" ? isProviderVerified(s.provider) : isLearnerVerified(s.learner);
 }
+
+// Backwards-compatible aliases (older imports).
+export const isLearnerProfileComplete = isLearnerVerified;
+export const isProviderProfileComplete = isProviderVerified;
+export const isCurrentProfileComplete = isCurrentProfileVerified;
