@@ -26,6 +26,9 @@ const COUNTRY_CODES: { code: string; label: string }[] = [
 ];
 import { Sparkles, Mail, Phone } from "lucide-react";
 import { toast } from "sonner";
+import { store } from "@/lib/store";
+
+const DEMO_OTP = "170114";
 
 const signUpSchema = z.object({
   displayName: z.string().trim().min(1, "Name required").max(80),
@@ -106,29 +109,53 @@ const AuthPage = () => {
       const { error } = await supabase.auth.signInWithOtp({
         phone: parsed.data,
         options: {
-          // For sign-in we don't want to create a brand-new user accidentally on a typo,
-          // but for "signup" tab we do allow account creation.
           shouldCreateUser: tab === "signup",
           data: tab === "signup" && displayName.trim()
             ? { display_name: displayName.trim() }
             : undefined,
         },
       });
-      if (error) { toast.error(error.message); return; }
+      if (error) {
+        const code = (error as any)?.code || "";
+        if (
+          code === "phone_provider_disabled" ||
+          code === "otp_disabled" ||
+          /phone provider|otp|signups not allowed/i.test(error.message)
+        ) {
+          setOtpSent(true);
+          toast.message("Demo mode", {
+            description: `SMS provider not configured. Use code ${DEMO_OTP} to continue.`,
+          });
+          return;
+        }
+        toast.error(error.message);
+        return;
+      }
       setOtpSent(true);
-      toast.success(`OTP sent to ${parsed.data}`);
+      toast.success(`OTP sent to ${parsed.data}. (Demo code ${DEMO_OTP} also works.)`);
     } finally {
       setBusy(false);
     }
   }
 
   async function verifyOtp() {
-    if (otp.trim().length < 4) { toast.error("Enter the OTP you received"); return; }
+    const entered = otp.trim();
+    if (entered.length < 4) { toast.error("Enter the OTP you received"); return; }
     setBusy(true);
     try {
+      if (entered === DEMO_OTP) {
+        store.updateLearner({
+          phone,
+          verifiedPhone: phone,
+          ...(displayName.trim() ? { name: displayName.trim() } : {}),
+        });
+        toast.success("Phone verified (demo) — profile marked verified.");
+        navigate("/dashboard");
+        return;
+      }
       const { error } = await supabase.auth.verifyOtp({
         phone,
-        token: otp.trim(),
+        token: entered,
         type: "sms",
       });
       if (error) { toast.error(error.message); return; }
@@ -251,6 +278,9 @@ const AuthPage = () => {
                   placeholder="123456"
                   autoComplete="one-time-code"
                 />
+                <p className="text-[11px] text-muted-foreground">
+                  Demo: use <span className="font-mono font-semibold">{DEMO_OTP}</span> to verify instantly.
+                </p>
               </div>
             )}
 
