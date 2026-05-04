@@ -62,6 +62,7 @@ export interface LearnerProfile {
   city: string;
   area: string;
   address: string;
+  pinCode?: string; // postal/PIN code — used for proximity-based class discovery
   homePin?: string; // Google Maps URL or "lat,lng" — used to compute distance to classes
   interests: Category[];
   preferredMode: Mode | "Any";
