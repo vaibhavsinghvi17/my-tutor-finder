@@ -97,6 +97,7 @@ const ListingForm = () => {
   }, [id, existing, navigate]);
 
   function save(asDraft = false) {
+    if (!verified) { setVerifyOpen(true); return; }
     if (!title.trim()) return toast.error("Add a title");
     if (!asDraft) {
       if (!description.trim()) return toast.error("Add a description");
