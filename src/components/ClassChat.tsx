@@ -5,7 +5,7 @@ import { useAuth } from "@/lib/useAuth";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
-import { MessageCircle, Send, LogIn } from "lucide-react";
+import { MessageCircle, Send, LogIn, X, Maximize2, Minimize2 } from "lucide-react";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 
