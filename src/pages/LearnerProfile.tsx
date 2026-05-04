@@ -20,11 +20,13 @@ import { ageFromDob, blockSummary } from "@/lib/timeUtils";
 import {
   ArrowLeft, UserCircle2, MapPin, Clock, Pencil, Plus, Camera,
   ChevronDown, Bookmark, Hourglass, Star, GraduationCap, Search, Locate, LogOut,
+  ShieldCheck, ShieldAlert, Phone,
 } from "lucide-react";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { UsernameInput } from "@/components/UsernameInput";
 import { InterestPicker } from "@/components/InterestPicker";
+import { VerifyContact } from "@/components/VerifyContact";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/useAuth";
 
@@ -130,7 +132,24 @@ const LearnerProfilePage = () => {
             <input ref={fileRef} type="file" accept="image/*" hidden onChange={onPickFile} />
           </div>
           <div className="min-w-0 flex-1">
-            <h1 className="text-lg font-bold leading-tight truncate">{learner.name || "Your profile"}</h1>
+            <div className="flex items-center gap-1.5 flex-wrap">
+              <h1 className="text-lg font-bold leading-tight truncate">{learner.name || "Your profile"}</h1>
+              {(() => {
+                const phoneVerified = !!learner.phone && learner.verifiedPhone === learner.phone;
+                if (phoneVerified) {
+                  return (
+                    <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full text-[10px] font-medium bg-success/10 text-success border border-success/30">
+                      <ShieldCheck className="h-3 w-3" /> Verified
+                    </span>
+                  );
+                }
+                return (
+                  <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full text-[10px] font-medium bg-destructive/10 text-destructive border border-destructive/30">
+                    <ShieldAlert className="h-3 w-3" /> Profile not verified
+                  </span>
+                );
+              })()}
+            </div>
             <p className="text-xs text-muted-foreground truncate">
               {learner.username && <span className="text-primary">@{learner.username}</span>}
               {learner.username && (age !== null || learner.occupation) && " • "}
@@ -199,6 +218,24 @@ const LearnerProfilePage = () => {
                 </Field>
                 <Field label="Email">
                   <Input type="email" value={learner.email} onChange={(e) => store.updateLearner({ email: e.target.value.slice(0, 120) })} className="h-9" />
+                </Field>
+                <Field label="Phone (for SMS verification)">
+                  <div className="flex gap-2">
+                    <Input
+                      type="tel"
+                      inputMode="tel"
+                      value={learner.phone ?? ""}
+                      onChange={(e) => store.updateLearner({ phone: e.target.value.slice(0, 20) })}
+                      placeholder="+91 98765 43210"
+                      className="h-9"
+                    />
+                    <VerifyContact
+                      kind="phone"
+                      value={learner.phone ?? ""}
+                      verifiedValue={learner.verifiedPhone}
+                      onVerified={() => store.updateLearner({ verifiedPhone: learner.phone })}
+                    />
+                  </div>
                 </Field>
                 <Field label={`Date of birth${age !== null ? ` • age ${age}` : ""}`}>
                   <DatePicker value={learner.dob} max={new Date().toISOString().split("T")[0]} onChange={(v) => store.updateLearner({ dob: v })} placeholder="Pick date of birth" triggerClassName="h-9" />

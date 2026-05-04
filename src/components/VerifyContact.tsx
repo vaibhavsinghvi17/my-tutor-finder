@@ -2,13 +2,13 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Mail, MessageCircle, ShieldCheck, ShieldAlert } from "lucide-react";
+import { Mail, MessageCircle, Phone, ShieldCheck, ShieldAlert } from "lucide-react";
 import { toast } from "sonner";
 import {
   Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter,
 } from "@/components/ui/dialog";
 
-type Kind = "email" | "whatsapp";
+type Kind = "email" | "whatsapp" | "phone";
 
 interface Props {
   kind: Kind;
@@ -29,9 +29,11 @@ export function VerifyContact({ kind, value, verifiedValue, onVerified }: Props)
 
   const isVerified = !!value && !!verifiedValue && value.trim() === verifiedValue.trim();
 
+  const label = kind === "email" ? "email" : kind === "phone" ? "phone number" : "WhatsApp number";
+
   function start() {
     if (!value.trim()) {
-      toast.error(`Enter a ${kind === "email" ? "email" : "WhatsApp number"} first`);
+      toast.error(`Enter a ${label} first`);
       return;
     }
     const c = String(Math.floor(100000 + Math.random() * 900000));
@@ -41,7 +43,7 @@ export function VerifyContact({ kind, value, verifiedValue, onVerified }: Props)
     toast.success(
       kind === "email"
         ? `Verification code sent to ${value}`
-        : `Verification code sent to WhatsApp ${value}`,
+        : `OTP sent via SMS to ${value}`,
       { description: `Demo code: ${c}` },
     );
   }
@@ -50,13 +52,13 @@ export function VerifyContact({ kind, value, verifiedValue, onVerified }: Props)
     if (entered.trim() === code) {
       onVerified();
       setOpen(false);
-      toast.success(`${kind === "email" ? "Email" : "WhatsApp"} verified`);
+      toast.success(`${kind === "email" ? "Email" : kind === "phone" ? "Phone" : "WhatsApp"} verified`);
     } else {
       toast.error("Incorrect code");
     }
   }
 
-  const Icon = kind === "email" ? Mail : MessageCircle;
+  const Icon = kind === "email" ? Mail : kind === "phone" ? Phone : MessageCircle;
 
   return (
     <>
@@ -74,7 +76,7 @@ export function VerifyContact({ kind, value, verifiedValue, onVerified }: Props)
         <DialogContent>
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
-              <Icon className="h-4 w-4" /> Verify your {kind === "email" ? "email" : "WhatsApp number"}
+              <Icon className="h-4 w-4" /> Verify your {label}
             </DialogTitle>
             <DialogDescription>
               Enter the 6-digit code we sent to <span className="font-medium">{value}</span>.
