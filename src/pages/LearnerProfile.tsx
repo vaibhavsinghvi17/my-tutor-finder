@@ -160,6 +160,22 @@ const LearnerProfilePage = () => {
           </div>
         </div>
 
+        {(!learner.city || !learner.pinCode) && (
+          <div className="rounded-xl border border-destructive/30 bg-destructive/5 p-3 text-xs flex items-start gap-2">
+            <ShieldAlert className="h-4 w-4 text-destructive mt-0.5 shrink-0" />
+            <div className="flex-1">
+              <div className="font-medium text-destructive">Complete your address</div>
+              <div className="text-muted-foreground">
+                {!learner.city && !learner.pinCode
+                  ? "City and Pin code are required to find classes near you."
+                  : !learner.city
+                    ? "City is required to find classes near you."
+                    : "Pin code is required to find classes near you."}
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* Interests directly under name */}
         <div className="rounded-xl border border-border/60 bg-card/40 backdrop-blur-sm p-3">
           <div className="flex items-center justify-between mb-2">
