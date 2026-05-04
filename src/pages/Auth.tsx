@@ -26,6 +26,9 @@ const COUNTRY_CODES: { code: string; label: string }[] = [
 ];
 import { Sparkles, Mail, Phone } from "lucide-react";
 import { toast } from "sonner";
+import { store } from "@/lib/store";
+
+const DEMO_OTP = "170114";
 
 const signUpSchema = z.object({
   displayName: z.string().trim().min(1, "Name required").max(80),
