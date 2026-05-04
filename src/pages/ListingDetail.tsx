@@ -76,6 +76,10 @@ const ListingDetail = () => {
   const matching = allSlots.filter((s) => freeSlots.includes(s));
 
   function submit() {
+    if (!verified) {
+      setVerifyOpen(true);
+      return;
+    }
     if (!slot) {
       toast.error("Pick a class slot first.");
       return;
