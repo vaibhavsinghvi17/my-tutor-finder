@@ -180,25 +180,115 @@ const LearnerProfilePage = () => {
           </Button>
         </div>
 
-        {/* Compact tabs as dropdown */}
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="outline" size="sm" className="gap-1.5">
-              <Pencil className="h-3.5 w-3.5" /> Edit details <ChevronDown className="h-3.5 w-3.5" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="start" className="bg-popover">
-            <DropdownMenuItem onClick={() => setOpen("about")}>
-              <UserCircle2 className="h-4 w-4 mr-2" /> About
-            </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => setOpen("address")}>
-              <MapPin className="h-4 w-4 mr-2" /> Address
-            </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => setOpen("time")}>
-              <Clock className="h-4 w-4 mr-2" /> Free time
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+        {/* Edit details accordion */}
+        <Accordion type="single" collapsible className="rounded-xl border border-border/60 bg-card/40 backdrop-blur-sm overflow-hidden">
+          <AccordionItem value="about" className="border-b border-border/60">
+            <AccordionTrigger className="px-3 py-3 hover:no-underline">
+              <span className="flex items-center gap-2 text-sm font-medium">
+                <UserCircle2 className="h-4 w-4 text-primary" /> About you
+              </span>
+            </AccordionTrigger>
+            <AccordionContent className="px-3 pb-3">
+              <div className="grid sm:grid-cols-2 gap-3">
+                <Field label="Username">
+                  <UsernameInput
+                    value={learner.username ?? ""}
+                    onChange={(v) => store.updateLearner({ username: v })}
+                    ownerKey={`learner:${learner.name}`}
+                  />
+                </Field>
+                <Field label="Name">
+                  <Input value={learner.name} onChange={(e) => store.updateLearner({ name: e.target.value.slice(0, 80) })} className="h-9" />
+                </Field>
+                <Field label="Email">
+                  <Input type="email" value={learner.email} onChange={(e) => store.updateLearner({ email: e.target.value.slice(0, 120) })} className="h-9" />
+                </Field>
+                <Field label={`Date of birth${age !== null ? ` • age ${age}` : ""}`}>
+                  <DatePicker value={learner.dob} max={new Date().toISOString().split("T")[0]} onChange={(v) => store.updateLearner({ dob: v })} placeholder="Pick date of birth" triggerClassName="h-9" />
+                </Field>
+                <Field label="Occupation (optional)">
+                  <Input value={learner.occupation} onChange={(e) => store.updateLearner({ occupation: e.target.value.slice(0, 80) })} className="h-9" />
+                </Field>
+                <Field label="Preferred mode">
+                  <Select value={learner.preferredMode} onValueChange={(v) => store.updateLearner({ preferredMode: v as Mode | "Any" })}>
+                    <SelectTrigger className="h-9"><SelectValue /></SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="Any">No preference</SelectItem>
+                      <SelectItem value="Online">Online</SelectItem>
+                      <SelectItem value="Offline">Offline</SelectItem>
+                      <SelectItem value="Both">Either works</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </Field>
+              </div>
+            </AccordionContent>
+          </AccordionItem>
+
+          <AccordionItem value="address" className="border-b border-border/60">
+            <AccordionTrigger className="px-3 py-3 hover:no-underline">
+              <span className="flex items-center gap-2 text-sm font-medium">
+                <MapPin className="h-4 w-4 text-primary" /> Address
+              </span>
+            </AccordionTrigger>
+            <AccordionContent className="px-3 pb-3">
+              <div className="space-y-3">
+                <LocationFields
+                  value={{ country: learner.country, state: learner.state, city: learner.city, area: learner.area }}
+                  onChange={(v) => store.updateLearner(v)}
+                />
+                <div className="pt-2 border-t">
+                  <AddressFields value={learner.address} onChange={(v) => store.updateLearner({ address: v })} />
+                </div>
+                <div className="pt-2 border-t space-y-1.5">
+                  <Label className="flex items-center gap-1.5"><MapPin className="h-3.5 w-3.5 text-primary" /> Home location pin (optional)</Label>
+                  <Input
+                    value={learner.homePin ?? ""}
+                    onChange={(e) => store.updateLearner({ homePin: e.target.value.slice(0, 300) })}
+                    placeholder="Paste Google Maps link or lat,lng"
+                  />
+                  <div className="flex flex-wrap gap-2">
+                    <Button
+                      type="button" variant="outline" size="sm" className="gap-1.5"
+                      onClick={() => {
+                        if (!navigator.geolocation) return toast.error("Geolocation not supported");
+                        toast.info("Getting your current location…");
+                        navigator.geolocation.getCurrentPosition(
+                          (pos) => {
+                            const { latitude, longitude } = pos.coords;
+                            store.updateLearner({ homePin: `https://www.google.com/maps?q=${latitude},${longitude}` });
+                            toast.success("Home pin saved");
+                          },
+                          (err) => toast.error(err.message || "Could not get location"),
+                          { enableHighAccuracy: true, timeout: 10000 },
+                        );
+                      }}
+                    >
+                      <Locate className="h-3.5 w-3.5" /> Use current location
+                    </Button>
+                    {learner.homePin && (
+                      <Button type="button" variant="ghost" size="sm" onClick={() => store.updateLearner({ homePin: "" })}>Clear pin</Button>
+                    )}
+                  </div>
+                  <p className="text-xs text-muted-foreground">Used to show how far classes are from your home.</p>
+                </div>
+              </div>
+            </AccordionContent>
+          </AccordionItem>
+
+          <AccordionItem value="time" className="border-b-0">
+            <AccordionTrigger className="px-3 py-3 hover:no-underline">
+              <span className="flex items-center gap-2 text-sm font-medium">
+                <Clock className="h-4 w-4 text-primary" /> Free time
+              </span>
+            </AccordionTrigger>
+            <AccordionContent className="px-3 pb-3">
+              <FreeTimeEditor
+                value={learner.freeBlocks}
+                onChange={(v: FreeTimeBlock[]) => store.updateLearner({ freeBlocks: v })}
+              />
+            </AccordionContent>
+          </AccordionItem>
+        </Accordion>
 
         {/* Quick summary lines */}
         <div className="rounded-xl border border-border/60 bg-card/40 backdrop-blur-sm divide-y divide-border/50 overflow-hidden text-sm">
