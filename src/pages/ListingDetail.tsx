@@ -1,5 +1,7 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
+import { VerifyProfileDialog } from "@/components/VerifyProfileDialog";
+import { isLearnerVerified, isProviderVerified } from "@/lib/profileComplete";
 import { TopBar } from "@/components/TopBar";
 import { store, useStore } from "@/lib/store";
 import { distanceKmBetween, formatDistance } from "@/lib/distance";
