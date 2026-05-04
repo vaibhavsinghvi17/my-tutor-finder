@@ -445,6 +445,14 @@ const ListingDetail = () => {
           </Card>
         )}
       </main>
+      <VerifyProfileDialog
+        open={verifyOpen}
+        onOpenChange={(v) => {
+          setVerifyOpen(v);
+          if (!v && !verified) navigate(-1);
+        }}
+        role={mode === "provider" ? "provider" : "learner"}
+      />
     </div>
   );
 };
