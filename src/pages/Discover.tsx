@@ -327,6 +327,42 @@ const Discover = () => {
           </DropdownMenu>
         </div>
 
+        {(() => {
+          const activeAdult = state.learner.activeKidId ? state.learner.adults.find((a) => a.id === state.learner.activeKidId) : null;
+          const activeKidP = state.learner.activeKidId ? state.learner.kids.find((k) => k.id === state.learner.activeKidId) : null;
+          const myInterests = activeAdult?.interests || activeKidP?.interests || state.learner.interests || [];
+          const hasInterests = myInterests.length > 0;
+          const opts: Array<{ v: typeof viewMode; label: string; disabled?: boolean }> = [
+            { v: "interests", label: "Based on your interests", disabled: !hasInterests },
+            { v: "all", label: "All classes" },
+            { v: "everything", label: "Show everything" },
+          ];
+          return (
+            <div className="space-y-2 pt-1">
+              <p className="text-xs text-muted-foreground font-medium uppercase tracking-wide">Classes Shown</p>
+              <div className="inline-flex flex-wrap gap-1.5 rounded-full border bg-card p-1">
+                {opts.map((o) => (
+                  <button
+                    key={o.v}
+                    type="button"
+                    disabled={o.disabled}
+                    onClick={() => setViewMode(o.v)}
+                    className={cn(
+                      "px-3 py-1.5 rounded-full text-xs font-medium transition-colors",
+                      viewMode === o.v
+                        ? "bg-primary text-primary-foreground"
+                        : "text-muted-foreground hover:text-foreground",
+                      o.disabled && "opacity-40 cursor-not-allowed",
+                    )}
+                  >
+                    {o.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+          );
+        })()}
+
         {scored.length === 0 ? (
           <div className="text-center py-16 text-muted-foreground">
             <p>No classes match your filters yet.</p>
