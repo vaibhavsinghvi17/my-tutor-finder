@@ -219,6 +219,24 @@ const LearnerProfilePage = () => {
                 <Field label="Email">
                   <Input type="email" value={learner.email} onChange={(e) => store.updateLearner({ email: e.target.value.slice(0, 120) })} className="h-9" />
                 </Field>
+                <Field label="Phone (for SMS verification)">
+                  <div className="flex gap-2">
+                    <Input
+                      type="tel"
+                      inputMode="tel"
+                      value={learner.phone ?? ""}
+                      onChange={(e) => store.updateLearner({ phone: e.target.value.slice(0, 20) })}
+                      placeholder="+91 98765 43210"
+                      className="h-9"
+                    />
+                    <VerifyContact
+                      kind="phone"
+                      value={learner.phone ?? ""}
+                      verifiedValue={learner.verifiedPhone}
+                      onVerified={() => store.updateLearner({ verifiedPhone: learner.phone })}
+                    />
+                  </div>
+                </Field>
                 <Field label={`Date of birth${age !== null ? ` • age ${age}` : ""}`}>
                   <DatePicker value={learner.dob} max={new Date().toISOString().split("T")[0]} onChange={(v) => store.updateLearner({ dob: v })} placeholder="Pick date of birth" triggerClassName="h-9" />
                 </Field>
