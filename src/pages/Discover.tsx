@@ -58,7 +58,7 @@ const Discover = () => {
   const [sortBy, setSortBy] = useState<SortOption>("recommended");
   const [timeOfDay, setTimeOfDay] = useState<TimeOfDay>("all");
   const [scope, setScope] = useState<"local" | "world">("local");
-  const [viewMode, setViewMode] = useState<"interests" | "all" | "everything">("interests");
+  const [viewMode, setViewMode] = useState<"interests" | "all">("interests");
 
   const allListings = getAllListings();
   const allCategories = Array.from(new Set([...categoryNames, ...CATEGORIES])).sort();
@@ -335,7 +335,6 @@ const Discover = () => {
           const opts: Array<{ v: typeof viewMode; label: string; disabled?: boolean }> = [
             { v: "interests", label: "Based on your interests", disabled: !hasInterests },
             { v: "all", label: "All classes" },
-            { v: "everything", label: "Show everything" },
           ];
           return (
             <div className="space-y-2 pt-1">
