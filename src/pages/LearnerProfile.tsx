@@ -406,38 +406,15 @@ const LearnerProfilePage = () => {
       <Dialog open={interestsOpen} onOpenChange={setInterestsOpen}>
         <DialogContent className="max-w-lg">
           <DialogHeader><DialogTitle>Interests</DialogTitle></DialogHeader>
-          <div className="flex flex-wrap gap-1.5">
-            {Array.from(new Set([...categoryNames, ...CATEGORIES, ...learner.interests])).map((c) => {
-              const active = learner.interests.includes(c);
-              return (
-                <button
-                  key={c}
-                  type="button"
-                  onClick={() =>
-                    store.updateLearner({
-                      interests: active ? learner.interests.filter((x) => x !== c) : [...learner.interests, c],
-                    })
-                  }
-                  className={cn(
-                    "px-3 py-1.5 rounded-full text-sm border transition-all",
-                    active ? "bg-primary text-primary-foreground border-primary" : "bg-background hover:bg-muted",
-                  )}
-                >
-                  {c}
-                </button>
-              );
-            })}
-          </div>
-          <div className="flex gap-2 pt-2 border-t">
-            <Input
-              placeholder="Add your own interest"
-              value={customInterest}
-              onChange={(e) => setCustomInterest(e.target.value.slice(0, 30))}
-              onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); addCustomInterest(); } }}
-              className="h-9"
-            />
-            <Button type="button" size="sm" onClick={addCustomInterest}>Add</Button>
-          </div>
+          <InterestPicker
+            value={learner.interests}
+            onChange={(next) => store.updateLearner({ interests: next })}
+            extra={Array.from(new Set([...categoryNames, ...CATEGORIES, ...learner.interests]))}
+            onAddCustom={async (name) => {
+              const created = await addCategory(name, learner.name);
+              if (created) toast.success(`"${created.name}" added`);
+            }}
+          />
           <DialogFooter>
             <Button onClick={() => { setInterestsOpen(false); toast.success("Saved"); }}>Done</Button>
           </DialogFooter>
