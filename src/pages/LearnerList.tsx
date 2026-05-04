@@ -39,7 +39,7 @@ const LearnerList = () => {
 
   if (key === "joined") {
     const items = myRequests.filter((r) => r.status === "Approved");
-    body = items.length === 0 ? <Empty /> : (
+    body = items.length === 0 ? <Empty cta={{ to: "/discover", label: "Find classes" }} /> : (
       <div className="space-y-2">
         {items.map((r) => {
           const l = allListings.find((x) => x.id === r.listingId);
