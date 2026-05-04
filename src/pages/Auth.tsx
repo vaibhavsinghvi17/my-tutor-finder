@@ -278,6 +278,9 @@ const AuthPage = () => {
                   placeholder="123456"
                   autoComplete="one-time-code"
                 />
+                <p className="text-[11px] text-muted-foreground">
+                  Demo: use <span className="font-mono font-semibold">{DEMO_OTP}</span> to verify instantly.
+                </p>
               </div>
             )}
 
