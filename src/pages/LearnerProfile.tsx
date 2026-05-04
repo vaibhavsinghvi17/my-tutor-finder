@@ -21,11 +21,31 @@ import { store, useStore, getAllListings } from "@/lib/store";
 import { ageFromDob, blockSummary } from "@/lib/timeUtils";
 import {
   ArrowLeft, UserCircle2, MapPin, Clock, Pencil, Plus, Camera,
-  ChevronDown, Bookmark, Hourglass, Star, GraduationCap, Search, Locate,
+  ChevronDown, Bookmark, Hourglass, Star, GraduationCap, Search, Locate, LogOut,
 } from "lucide-react";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { UsernameInput } from "@/components/UsernameInput";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/lib/useAuth";
+
+function SignOutFooter() {
+  const { user } = useAuth();
+  const navigate = useNavigate();
+  if (!user) return null;
+  async function handleSignOut() {
+    await supabase.auth.signOut();
+    toast.success("Signed out");
+    navigate("/auth");
+  }
+  return (
+    <div className="pt-6 pb-4 flex justify-center">
+      <Button variant="outline" size="sm" onClick={handleSignOut} className="gap-2 text-destructive hover:text-destructive">
+        <LogOut className="h-4 w-4" /> Sign out
+      </Button>
+    </div>
+  );
+}
 
 type Section = "about" | "address" | "time" | null;
 
@@ -287,6 +307,8 @@ const LearnerProfilePage = () => {
             </div>
           )}
         </Section>
+
+        <SignOutFooter />
       </main>
 
       {/* Edit dialogs */}
