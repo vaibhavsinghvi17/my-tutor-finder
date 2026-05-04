@@ -7,6 +7,23 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+
+const COUNTRY_CODES: { code: string; label: string }[] = [
+  { code: "+91", label: "🇮🇳 +91" },
+  { code: "+1", label: "🇺🇸 +1" },
+  { code: "+44", label: "🇬🇧 +44" },
+  { code: "+61", label: "🇦🇺 +61" },
+  { code: "+971", label: "🇦🇪 +971" },
+  { code: "+65", label: "🇸🇬 +65" },
+  { code: "+49", label: "🇩🇪 +49" },
+  { code: "+33", label: "🇫🇷 +33" },
+  { code: "+81", label: "🇯🇵 +81" },
+  { code: "+86", label: "🇨🇳 +86" },
+  { code: "+92", label: "🇵🇰 +92" },
+  { code: "+880", label: "🇧🇩 +880" },
+  { code: "+94", label: "🇱🇰 +94" },
+];
 import { Sparkles, Mail, Phone } from "lucide-react";
 import { toast } from "sonner";
 
@@ -36,7 +53,9 @@ const AuthPage = () => {
   const [password, setPassword] = useState("");
 
   // Phone OTP state
-  const [phone, setPhone] = useState("");
+  const [countryCode, setCountryCode] = useState("+91");
+  const [phoneLocal, setPhoneLocal] = useState("");
+  const phone = `${countryCode}${phoneLocal.replace(/\D/g, "")}`;
   const [otp, setOtp] = useState("");
   const [otpSent, setOtpSent] = useState(false);
 
@@ -195,17 +214,30 @@ const AuthPage = () => {
             )}
             <div className="space-y-1.5">
               <Label htmlFor="phone">Mobile number</Label>
-              <Input
-                id="phone"
-                type="tel"
-                inputMode="tel"
-                value={phone}
-                onChange={(e) => setPhone(e.target.value)}
-                placeholder="+91 98765 43210"
-                autoComplete="tel"
-                disabled={otpSent}
-              />
-              <p className="text-[11px] text-muted-foreground">Use international format with country code.</p>
+              <div className="flex gap-2">
+                <Select value={countryCode} onValueChange={setCountryCode} disabled={otpSent}>
+                  <SelectTrigger className="w-[110px] shrink-0">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent className="max-h-64">
+                    {COUNTRY_CODES.map((c) => (
+                      <SelectItem key={c.code} value={c.code}>{c.label}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <Input
+                  id="phone"
+                  type="tel"
+                  inputMode="tel"
+                  value={phoneLocal}
+                  onChange={(e) => setPhoneLocal(e.target.value.replace(/\D/g, "").slice(0, 15))}
+                  placeholder="98765 43210"
+                  autoComplete="tel-national"
+                  disabled={otpSent}
+                  className="flex-1 min-w-0"
+                />
+              </div>
+              <p className="text-[11px] text-muted-foreground">Choose your country code, then enter your number.</p>
             </div>
 
             {otpSent && (
