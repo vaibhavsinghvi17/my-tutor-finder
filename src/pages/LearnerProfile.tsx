@@ -267,10 +267,20 @@ const LearnerProfilePage = () => {
             </AccordionTrigger>
             <AccordionContent className="px-3 pb-3">
               <div className="space-y-3">
+                <p className="text-[11px] text-muted-foreground">
+                  <span className="text-destructive">*</span> City and Pin code are required so we can show classes near you.
+                </p>
                 <LocationFields
                   value={{ country: learner.country, state: learner.state, city: learner.city, area: learner.area }}
                   onChange={(v) => store.updateLearner(v)}
                 />
+                <Field label="Pin / Postal code *">
+                  <PinCodeInput
+                    value={learner.pinCode ?? ""}
+                    onChange={(v) => store.updateLearner({ pinCode: v })}
+                    country={learner.country}
+                  />
+                </Field>
                 <div className="pt-2 border-t">
                   <AddressFields value={learner.address} onChange={(v) => store.updateLearner({ address: v })} />
                 </div>
