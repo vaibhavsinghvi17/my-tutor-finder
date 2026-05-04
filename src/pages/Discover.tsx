@@ -335,7 +335,6 @@ const Discover = () => {
           const opts: Array<{ v: typeof viewMode; label: string; disabled?: boolean }> = [
             { v: "interests", label: "Based on your interests", disabled: !hasInterests },
             { v: "all", label: "All classes" },
-            { v: "everything", label: "Show everything" },
           ];
           return (
             <div className="space-y-2 pt-1">
