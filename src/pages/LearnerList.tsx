@@ -39,7 +39,7 @@ const LearnerList = () => {
 
   if (key === "joined") {
     const items = myRequests.filter((r) => r.status === "Approved");
-    body = items.length === 0 ? <Empty /> : (
+    body = items.length === 0 ? <Empty cta={{ to: "/discover", label: "Find classes" }} /> : (
       <div className="space-y-2">
         {items.map((r) => {
           const l = allListings.find((x) => x.id === r.listingId);
@@ -131,10 +131,15 @@ function Row({ to, title, subtitle, right }: { to: string; title: string; subtit
   );
 }
 
-function Empty() {
+function Empty({ cta }: { cta?: { to: string; label: string } }) {
   return (
-    <Card className="p-10 text-center">
+    <Card className="p-10 text-center space-y-4">
       <p className="text-sm text-muted-foreground">Nothing to show here yet.</p>
+      {cta && (
+        <Button asChild size="sm" className="rounded-full">
+          <Link to={cta.to}>{cta.label}</Link>
+        </Button>
+      )}
     </Card>
   );
 }
