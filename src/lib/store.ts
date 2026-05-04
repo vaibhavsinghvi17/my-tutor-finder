@@ -95,6 +95,16 @@ function load(): AppState {
   }
 }
 
+/** Fields that should mirror across learner & provider profiles for the same person. */
+const SHARED_KEYS = ["phone", "verifiedPhone", "email", "verifiedEmail", "avatarDataUrl"] as const;
+function pickShared(patch: Record<string, any>): Record<string, any> {
+  const out: Record<string, any> = {};
+  for (const k of SHARED_KEYS) {
+    if (k in patch) out[k] = patch[k];
+  }
+  return out;
+}
+
 let state: AppState = load();
 const listeners = new Set<() => void>();
 
