@@ -188,26 +188,42 @@ const Discover = () => {
           </Card>
         )}
 
-        <Tabs value={scope} onValueChange={(v) => setScope(v as "local" | "world")}>
-          <TabsList className="w-full h-auto grid grid-cols-1 gap-1">
-            <TabsTrigger value="local" className="flex-col items-start py-2 h-auto whitespace-normal text-left min-w-0">
-              <span className="flex items-center gap-1.5 text-xs sm:text-sm">
-                <Home className="h-3.5 w-3.5 shrink-0" /> Learn from the locals
-              </span>
-              <span className="text-[10px] text-muted-foreground font-normal leading-snug break-words w-full">
-                Tutors in your area
-              </span>
-            </TabsTrigger>
-            <TabsTrigger value="world" className="flex-col items-start py-2 h-auto whitespace-normal text-left min-w-0">
-              <span className="flex items-center gap-1.5 text-xs sm:text-sm">
-                <Globe2 className="h-3.5 w-3.5 shrink-0" /> From around the world
-              </span>
-              <span className="text-[10px] text-muted-foreground font-normal leading-snug break-words w-full">
-                Learn French from a tutor in France, and more
-              </span>
-            </TabsTrigger>
-          </TabsList>
-        </Tabs>
+        <div className="grid grid-cols-2 gap-3">
+          <button
+            type="button"
+            onClick={() => setScope("local")}
+            className={cn(
+              "rounded-xl border-2 p-3 text-left transition-all",
+              scope === "local"
+                ? "border-primary bg-primary/10 shadow-elegant"
+                : "border-primary/30 bg-card hover:border-primary/60",
+            )}
+          >
+            <span className="flex items-center gap-1.5 text-xs sm:text-sm font-semibold text-primary">
+              <Home className="h-3.5 w-3.5 shrink-0" /> Learn from the locals
+            </span>
+            <span className="block text-[10px] text-muted-foreground leading-snug mt-1">
+              Tutors in your area
+            </span>
+          </button>
+          <button
+            type="button"
+            onClick={() => setScope("world")}
+            className={cn(
+              "rounded-xl border-2 p-3 text-left transition-all",
+              scope === "world"
+                ? "border-accent bg-accent/15 shadow-elegant"
+                : "border-accent/40 bg-card hover:border-accent/70",
+            )}
+          >
+            <span className="flex items-center gap-1.5 text-xs sm:text-sm font-semibold text-accent-foreground">
+              <Globe2 className="h-3.5 w-3.5 shrink-0" /> From around the world
+            </span>
+            <span className="block text-[10px] text-muted-foreground leading-snug mt-1">
+              Learn French from a tutor in France, and more
+            </span>
+          </button>
+        </div>
 
         <section className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
           <div className="relative sm:col-span-2 lg:col-span-1">
