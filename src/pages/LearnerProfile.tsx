@@ -341,6 +341,8 @@ const LearnerProfilePage = () => {
             value={learner.preferredMode === "Any" ? "Online / Offline" : learner.preferredMode} />
           <SummaryRow icon={MapPin} label="City"
             value={[learner.area, learner.city].filter(Boolean).join(", ") || "—"} />
+          <SummaryRow icon={MapPin} label="Pin / Postal code"
+            value={learner.pinCode || "—"} />
           <div className="p-3 flex items-start gap-2">
             <Clock className="h-4 w-4 mt-0.5 text-muted-foreground shrink-0" />
             <div className="flex-1 min-w-0">
