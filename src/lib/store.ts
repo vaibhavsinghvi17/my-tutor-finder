@@ -95,6 +95,16 @@ function load(): AppState {
   }
 }
 
+/** Fields that should mirror across learner & provider profiles for the same person. */
+const SHARED_KEYS = ["phone", "verifiedPhone", "email", "verifiedEmail", "avatarDataUrl"] as const;
+function pickShared(patch: Record<string, any>): Record<string, any> {
+  const out: Record<string, any> = {};
+  for (const k of SHARED_KEYS) {
+    if (k in patch) out[k] = patch[k];
+  }
+  return out;
+}
+
 let state: AppState = load();
 const listeners = new Set<() => void>();
 
@@ -126,10 +136,20 @@ export const store = {
     set((s) => ({ ...s, city }));
   },
   updateLearner(patch: Partial<AppState["learner"]>) {
-    set((s) => ({ ...s, learner: { ...s.learner, ...patch } }));
+    set((s) => {
+      const learner = { ...s.learner, ...patch };
+      const shared = pickShared(patch);
+      const provider = Object.keys(shared).length ? { ...s.provider, ...shared } : s.provider;
+      return { ...s, learner, provider };
+    });
   },
   updateProvider(patch: Partial<AppState["provider"]>) {
-    set((s) => ({ ...s, provider: { ...s.provider, ...patch } }));
+    set((s) => {
+      const provider = { ...s.provider, ...patch };
+      const shared = pickShared(patch);
+      const learner = Object.keys(shared).length ? { ...s.learner, ...shared } : s.learner;
+      return { ...s, provider, learner };
+    });
   },
   addKid(kid: Omit<KidProfile, "id">) {
     set((s) => ({
