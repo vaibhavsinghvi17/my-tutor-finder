@@ -126,10 +126,20 @@ export const store = {
     set((s) => ({ ...s, city }));
   },
   updateLearner(patch: Partial<AppState["learner"]>) {
-    set((s) => ({ ...s, learner: { ...s.learner, ...patch } }));
+    set((s) => {
+      const learner = { ...s.learner, ...patch };
+      const shared = pickShared(patch);
+      const provider = Object.keys(shared).length ? { ...s.provider, ...shared } : s.provider;
+      return { ...s, learner, provider };
+    });
   },
   updateProvider(patch: Partial<AppState["provider"]>) {
-    set((s) => ({ ...s, provider: { ...s.provider, ...patch } }));
+    set((s) => {
+      const provider = { ...s.provider, ...patch };
+      const shared = pickShared(patch);
+      const learner = Object.keys(shared).length ? { ...s.learner, ...shared } : s.learner;
+      return { ...s, provider, learner };
+    });
   },
   addKid(kid: Omit<KidProfile, "id">) {
     set((s) => ({
