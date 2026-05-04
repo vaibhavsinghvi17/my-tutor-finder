@@ -36,7 +36,9 @@ const AuthPage = () => {
   const [password, setPassword] = useState("");
 
   // Phone OTP state
-  const [phone, setPhone] = useState("");
+  const [countryCode, setCountryCode] = useState("+91");
+  const [phoneLocal, setPhoneLocal] = useState("");
+  const phone = `${countryCode}${phoneLocal.replace(/\D/g, "")}`;
   const [otp, setOtp] = useState("");
   const [otpSent, setOtpSent] = useState(false);
 
