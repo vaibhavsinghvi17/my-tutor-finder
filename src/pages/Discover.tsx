@@ -142,7 +142,7 @@ const Discover = () => {
     }
     return scoredList;
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [state, query, category, mode, pinFilter, sortBy, timeOfDay, scope, ratings, requests, interestsOnly]);
+  }, [state, query, category, mode, pinFilter, sortBy, timeOfDay, scope, ratings, requests, viewMode]);
 
   const activeKid = state.learner.activeKidId
     ? state.learner.kids.find((k) => k.id === state.learner.activeKidId)
