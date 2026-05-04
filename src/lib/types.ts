@@ -71,6 +71,8 @@ export interface LearnerProfile {
   activeKidId: string | null; // null = self
   avatarColor?: string;
   avatarDataUrl?: string;
+  phone?: string;            // raw phone with country code, e.g. +91...
+  verifiedPhone?: string;    // last-verified phone number
   savedListings?: string[];
   completedListings?: string[];
 }
