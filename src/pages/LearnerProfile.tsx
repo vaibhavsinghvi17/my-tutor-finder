@@ -136,8 +136,7 @@ const LearnerProfilePage = () => {
               <h1 className="text-lg font-bold leading-tight truncate">{learner.name || "Your profile"}</h1>
               {(() => {
                 const phoneVerified = !!learner.phone && learner.verifiedPhone === learner.phone;
-                const emailVerified = !!learner.email && learner.verifiedEmail === learner.email;
-                if (phoneVerified || emailVerified) {
+                if (phoneVerified) {
                   return (
                     <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full text-[10px] font-medium bg-success/10 text-success border border-success/30">
                       <ShieldCheck className="h-3 w-3" /> Verified
