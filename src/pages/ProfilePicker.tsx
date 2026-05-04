@@ -3,7 +3,8 @@ import { TopBar } from "@/components/TopBar";
 import { Button } from "@/components/ui/button";
 import { store, useStore } from "@/lib/store";
 import { ageFromDob } from "@/lib/timeUtils";
-import { Plus, UserCog } from "lucide-react";
+import { Plus, UserCog, LogOut } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 import { cn } from "@/lib/utils";
 
 const COLORS = [
@@ -129,9 +130,26 @@ const ProfilePicker = () => {
             </Button>
           </div>
         )}
+
+        <SignOutFooter />
       </main>
     </div>
   );
 };
+
+function SignOutFooter() {
+  const navigate = useNavigate();
+  async function handleSignOut() {
+    await supabase.auth.signOut();
+    navigate("/auth");
+  }
+  return (
+    <div className="pt-10 pb-4 flex justify-center">
+      <Button variant="outline" size="sm" onClick={handleSignOut} className="gap-2 text-destructive hover:text-destructive">
+        <LogOut className="h-4 w-4" /> Sign out
+      </Button>
+    </div>
+  );
+}
 
 export default ProfilePicker;
