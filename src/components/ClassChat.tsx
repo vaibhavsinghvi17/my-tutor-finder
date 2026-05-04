@@ -111,89 +111,145 @@ export function ClassChat({
     setBody("");
   }
 
-  return (
-    <Sheet open={open} onOpenChange={setOpen}>
-      <SheetTrigger asChild>
-        {floating ? (
+  // Shared body content
+  const chatBody = (
+    <>
+      {!user ? (
+        <div className="flex-1 grid place-items-center p-6 text-center">
+          <div className="space-y-3">
+            <p className="text-sm text-muted-foreground">Sign in to start a private chat with {otherPartyName}.</p>
+            <Button asChild size="sm" className="gap-1.5"><Link to="/auth"><LogIn className="h-4 w-4" /> Sign in</Link></Button>
+          </div>
+        </div>
+      ) : !providerUserId && !learnerUserId ? (
+        <div className="flex-1 grid place-items-center p-6 text-center">
+          <p className="text-sm text-muted-foreground">
+            This provider hasn't enabled chat yet. They need to sign in and re-save the class so messages can be linked to their account.
+          </p>
+        </div>
+      ) : (
+        <>
+          <div ref={scrollRef} className="flex-1 overflow-y-auto p-4 space-y-2.5">
+            {messages.length === 0 && (
+              <p className="text-xs text-center text-muted-foreground py-8">
+                No messages yet — say hi 👋
+              </p>
+            )}
+            {messages.map((m) => {
+              const mine = m.sender_user_id === user.id;
+              return (
+                <div key={m.id} className={cn("flex", mine ? "justify-end" : "justify-start")}>
+                  <div
+                    className={cn(
+                      "max-w-[80%] rounded-2xl px-3 py-1.5 text-sm",
+                      mine ? "bg-primary text-primary-foreground rounded-br-sm" : "bg-muted rounded-bl-sm",
+                    )}
+                  >
+                    <p className="whitespace-pre-wrap break-words">{m.body}</p>
+                    <p className={cn("text-[10px] mt-0.5", mine ? "text-primary-foreground/70" : "text-muted-foreground")}>
+                      {new Date(m.created_at).toLocaleTimeString([], { hour: "numeric", minute: "2-digit" })}
+                    </p>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+          <div className="border-t p-3 flex items-end gap-2">
+            <Textarea
+              value={body}
+              onChange={(e) => setBody(e.target.value.slice(0, 2000))}
+              placeholder="Type a message…"
+              rows={1}
+              className="min-h-9 resize-none"
+              onKeyDown={(e) => {
+                if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); send(); }
+              }}
+            />
+            <Button size="icon" onClick={send} disabled={sending || !body.trim()} aria-label="Send">
+              <Send className="h-4 w-4" />
+            </Button>
+          </div>
+        </>
+      )}
+    </>
+  );
+
+  if (floating) {
+    return (
+      <>
+        {!open && (
           <button
             type="button"
             aria-label="Chat instantly"
-            className="fixed bottom-4 right-4 z-50 flex items-center gap-1.5 rounded-full bg-primary text-primary-foreground pl-2 pr-3 py-1.5 shadow-elegant hover:bg-primary/90 transition-all hover:scale-105 active:scale-95"
+            onClick={() => setOpen(true)}
+            className="fixed bottom-4 left-4 z-50 flex items-center gap-1.5 rounded-full bg-primary text-primary-foreground pl-2 pr-3 py-1.5 shadow-elegant hover:bg-primary/90 transition-all hover:scale-105 active:scale-95 animate-fade-in"
           >
             <span className="grid place-items-center h-6 w-6 rounded-full bg-primary-foreground/20">
               <MessageCircle className="h-3.5 w-3.5" />
             </span>
             <span className="text-xs font-semibold whitespace-nowrap">Chat instantly</span>
           </button>
-        ) : (
-          <Button variant={triggerVariant} size="sm" className="gap-1.5">
-            <MessageCircle className="h-4 w-4" /> {triggerLabel}
-          </Button>
         )}
+
+        {open && (
+          <div
+            className={cn(
+              "fixed z-50 bg-background border rounded-2xl shadow-elegant flex flex-col overflow-hidden origin-bottom-left animate-scale-in",
+              expanded
+                ? "inset-2 sm:inset-6"
+                : "bottom-4 left-4 right-4 h-[55vh] sm:right-auto sm:w-[380px] sm:h-[60vh]",
+            )}
+            style={{ transformOrigin: "bottom left" }}
+          >
+            <div className="flex items-center justify-between gap-2 border-b p-3 bg-muted/30">
+              <div className="min-w-0 flex items-center gap-2">
+                <span className="grid place-items-center h-7 w-7 rounded-full bg-primary text-primary-foreground shrink-0">
+                  <MessageCircle className="h-3.5 w-3.5" />
+                </span>
+                <div className="min-w-0">
+                  <p className="text-sm font-semibold truncate">Chat with {otherPartyName}</p>
+                  <p className="text-[11px] text-muted-foreground truncate">{listingTitle}</p>
+                </div>
+              </div>
+              <div className="flex items-center gap-1 shrink-0">
+                <button
+                  type="button"
+                  aria-label={expanded ? "Minimize" : "Expand"}
+                  onClick={() => setExpanded((v) => !v)}
+                  className="h-7 w-7 grid place-items-center rounded-md hover:bg-muted text-muted-foreground hover:text-foreground"
+                >
+                  {expanded ? <Minimize2 className="h-4 w-4" /> : <Maximize2 className="h-4 w-4" />}
+                </button>
+                <button
+                  type="button"
+                  aria-label="Close chat"
+                  onClick={() => setOpen(false)}
+                  className="h-7 w-7 grid place-items-center rounded-md hover:bg-muted text-muted-foreground hover:text-foreground"
+                >
+                  <X className="h-4 w-4" />
+                </button>
+              </div>
+            </div>
+            {chatBody}
+          </div>
+        )}
+      </>
+    );
+  }
+
+  return (
+    <Sheet open={open} onOpenChange={setOpen}>
+      <SheetTrigger asChild>
+        <Button variant={triggerVariant} size="sm" className="gap-1.5">
+          <MessageCircle className="h-4 w-4" /> {triggerLabel}
+        </Button>
       </SheetTrigger>
       <SheetContent side="right" className="w-full sm:max-w-md flex flex-col p-0">
         <SheetHeader className="border-b p-4">
           <SheetTitle className="text-base">Chat with {otherPartyName}</SheetTitle>
           <p className="text-xs text-muted-foreground line-clamp-1">{listingTitle}</p>
         </SheetHeader>
-
-        {!user ? (
-          <div className="flex-1 grid place-items-center p-6 text-center">
-            <div className="space-y-3">
-              <p className="text-sm text-muted-foreground">Sign in to start a private chat with {otherPartyName}.</p>
-              <Button asChild size="sm" className="gap-1.5"><Link to="/auth"><LogIn className="h-4 w-4" /> Sign in</Link></Button>
-            </div>
-          </div>
-        ) : !providerUserId && !learnerUserId ? (
-          <div className="flex-1 grid place-items-center p-6 text-center">
-            <p className="text-sm text-muted-foreground">
-              This provider hasn't enabled chat yet. They need to sign in and re-save the class so messages can be linked to their account.
-            </p>
-          </div>
-        ) : (
-          <>
-            <div ref={scrollRef} className="flex-1 overflow-y-auto p-4 space-y-2.5">
-              {messages.length === 0 && (
-                <p className="text-xs text-center text-muted-foreground py-8">
-                  No messages yet — say hi 👋
-                </p>
-              )}
-              {messages.map((m) => {
-                const mine = m.sender_user_id === user.id;
-                return (
-                  <div key={m.id} className={cn("flex", mine ? "justify-end" : "justify-start")}>
-                    <div
-                      className={cn(
-                        "max-w-[80%] rounded-2xl px-3 py-1.5 text-sm",
-                        mine ? "bg-primary text-primary-foreground rounded-br-sm" : "bg-muted rounded-bl-sm",
-                      )}
-                    >
-                      <p className="whitespace-pre-wrap break-words">{m.body}</p>
-                      <p className={cn("text-[10px] mt-0.5", mine ? "text-primary-foreground/70" : "text-muted-foreground")}>
-                        {new Date(m.created_at).toLocaleTimeString([], { hour: "numeric", minute: "2-digit" })}
-                      </p>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-            <div className="border-t p-3 flex items-end gap-2">
-              <Textarea
-                value={body}
-                onChange={(e) => setBody(e.target.value.slice(0, 2000))}
-                placeholder="Type a message…"
-                rows={1}
-                className="min-h-9 resize-none"
-                onKeyDown={(e) => {
-                  if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); send(); }
-                }}
-              />
-              <Button size="icon" onClick={send} disabled={sending || !body.trim()} aria-label="Send">
-                <Send className="h-4 w-4" />
-              </Button>
-            </div>
-          </>
-        )}
+        {chatBody}
       </SheetContent>
     </Sheet>
   );
