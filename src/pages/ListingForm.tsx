@@ -21,6 +21,7 @@ import { useCategories } from "@/lib/useCategories";
 import { useAuth } from "@/lib/useAuth";
 import { Plus, Globe2, Users, Wifi, MapPin, Locate, ShieldCheck } from "lucide-react";
 import { store, useStore } from "@/lib/store";
+import { VerifyProfileDialog } from "@/components/VerifyProfileDialog";
 import { Link } from "react-router-dom";
 import { toast } from "sonner";
 
