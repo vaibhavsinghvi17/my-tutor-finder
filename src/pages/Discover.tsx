@@ -53,12 +53,12 @@ const Discover = () => {
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState<Category | "all">("all");
   const [mode, setMode] = useState<Mode | "all">("all");
-  // city filter removed — using pin code instead
-  const [pinFilter, setPinFilter] = useState<string>("");
   const [sortBy, setSortBy] = useState<SortOption>("recommended");
   const [timeOfDay, setTimeOfDay] = useState<TimeOfDay>("all");
   const [scope, setScope] = useState<"local" | "world">("local");
-  const [viewMode, setViewMode] = useState<"interests" | "all">("interests");
+  const [viewMode, setViewMode] = useState<"interests" | "all">("all");
+  // Pin code is auto-derived from learner profile (no manual filter input)
+  const pinFilter = state.learner.pinCode ?? "";
 
   const allListings = getAllListings();
   const allCategories = Array.from(new Set([...categoryNames, ...CATEGORIES])).sort();
@@ -253,15 +253,10 @@ const Discover = () => {
               <SelectItem value="Offline">Offline</SelectItem>
             </SelectContent>
           </Select>
-          {scope === "local" && (
-            <div className="relative">
-              <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-              <Input
-                placeholder="Pin / Postal code"
-                value={pinFilter}
-                onChange={(e) => setPinFilter(e.target.value.slice(0, 12))}
-                className="pl-9"
-              />
+          {scope === "local" && pinFilter && (
+            <div className="relative flex items-center gap-2 text-xs text-muted-foreground border rounded-md px-3 bg-muted/30">
+              <MapPin className="h-3.5 w-3.5 shrink-0" />
+              <span>Near pin <strong className="text-foreground">{pinFilter}</strong> (from your profile)</span>
             </div>
           )}
         </section>
