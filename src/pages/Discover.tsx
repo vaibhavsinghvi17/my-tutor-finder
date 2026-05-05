@@ -53,12 +53,12 @@ const Discover = () => {
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState<Category | "all">("all");
   const [mode, setMode] = useState<Mode | "all">("all");
-  // city filter removed — using pin code instead
-  const [pinFilter, setPinFilter] = useState<string>("");
   const [sortBy, setSortBy] = useState<SortOption>("recommended");
   const [timeOfDay, setTimeOfDay] = useState<TimeOfDay>("all");
   const [scope, setScope] = useState<"local" | "world">("local");
   const [viewMode, setViewMode] = useState<"interests" | "all">("all");
+  // Pin code is auto-derived from learner profile (no manual filter input)
+  const pinFilter = state.learner.pinCode ?? "";
 
   const allListings = getAllListings();
   const allCategories = Array.from(new Set([...categoryNames, ...CATEGORIES])).sort();
