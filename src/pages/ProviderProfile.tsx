@@ -23,6 +23,7 @@ import { SocialLinksRow } from "@/components/SocialLinksRow";
 import { ContactActions } from "@/components/ContactActions";
 import { PinCodeInput } from "@/components/PinCodeInput";
 import { LanguagesEditor } from "@/components/LanguagesEditor";
+import { InterestPicker } from "@/components/InterestPicker";
 import { VerifyContact } from "@/components/VerifyContact";
 import { useCategories } from "@/lib/useCategories";
 import { store, useStore } from "@/lib/store";
@@ -520,50 +521,17 @@ const ProviderProfilePage = () => {
         <DialogContent className="max-w-lg">
           <DialogHeader><DialogTitle>What you teach</DialogTitle></DialogHeader>
 
-          {provider.categories.length > 0 && (
-            <div className="flex flex-wrap gap-1.5">
-              {provider.categories.map((c) => (
-                <span key={c} className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs bg-primary text-primary-foreground">
-                  {c}
-                  <button type="button" onClick={() => toggleCat(c)} className="hover:opacity-70" aria-label={`Remove ${c}`}>
-                    <X className="h-3 w-3" />
-                  </button>
-                </span>
-              ))}
-            </div>
-          )}
+          <InterestPicker
+            value={provider.categories}
+            extra={categoryNames}
+            onChange={(next) => store.updateProvider({ categories: next as Category[] })}
+            onAddCustom={async (name) => {
+              await addCategory(name, provider.businessName);
+            }}
+          />
 
-          <Select
-            value=""
-            onValueChange={(v) => { if (v && !provider.categories.includes(v)) toggleCat(v); }}
-          >
-            <SelectTrigger>
-              <SelectValue placeholder="Select categories to add..." />
-            </SelectTrigger>
-            <SelectContent className="max-h-72">
-              {Array.from(new Set([...categoryNames, ...provider.categories]))
-                .filter((c) => !provider.categories.includes(c))
-                .sort()
-                .map((c) => (
-                  <SelectItem key={c} value={c}>{c}</SelectItem>
-                ))}
-            </SelectContent>
-          </Select>
-
-          <div className="flex gap-2 pt-1 border-t mt-2">
-            <Input
-              placeholder="Don't see your category? Add a new one"
-              value={newCat}
-              onChange={(e) => setNewCat(e.target.value.slice(0, 40))}
-              onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); handleAddCategory(); } }}
-              className="h-9"
-            />
-            <Button type="button" size="sm" onClick={handleAddCategory} className="gap-1">
-              <Plus className="h-3.5 w-3.5" /> Add
-            </Button>
-          </div>
           <p className="text-xs text-muted-foreground">
-            New categories are added globally and become available to all users.
+            Pick subcategories under each group (e.g. Sports → Badminton). New entries are added globally.
           </p>
 
           <DialogFooter>
