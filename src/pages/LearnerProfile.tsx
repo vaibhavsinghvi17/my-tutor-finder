@@ -362,6 +362,15 @@ const LearnerProfilePage = () => {
                 </div>
               )}
             </div>
+            <Button
+              variant="outline"
+              size="sm"
+              className="h-8 gap-1 px-2 text-xs"
+              onClick={() => setTimingsOpen(true)}
+              aria-label="Edit preferred timings"
+            >
+              <Pencil className="h-3.5 w-3.5" />
+            </Button>
           </div>
         </div>
 
