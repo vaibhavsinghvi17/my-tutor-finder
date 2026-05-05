@@ -57,6 +57,7 @@ const LearnerProfilePage = () => {
   const age = ageFromDob(learner.dob);
   const navigate = useNavigate();
   const [interestsOpen, setInterestsOpen] = useState(false);
+  const [timingsOpen, setTimingsOpen] = useState(false);
   const [customInterest, setCustomInterest] = useState("");
   const fileRef = useRef<HTMLInputElement>(null);
 
