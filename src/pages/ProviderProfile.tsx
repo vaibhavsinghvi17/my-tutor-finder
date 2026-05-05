@@ -403,8 +403,8 @@ const ProviderProfilePage = () => {
                     area: loc.area || provider.area,
                     pinCode: loc.pinCode || provider.pinCode,
                     address: loc.address || provider.address,
-                    mapsUrl: loc.mapsUrl || provider.mapsUrl,
                   });
+                  toast.success("Address fields updated");
                 }}
               />
             </div>
