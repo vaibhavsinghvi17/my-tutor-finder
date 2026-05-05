@@ -260,17 +260,6 @@ const LearnerProfilePage = () => {
                 <Field label="Occupation (optional)">
                   <Input value={learner.occupation} onChange={(e) => store.updateLearner({ occupation: e.target.value.slice(0, 80) })} className="h-9" />
                 </Field>
-                <Field label="Preferred mode">
-                  <Select value={learner.preferredMode} onValueChange={(v) => store.updateLearner({ preferredMode: v as Mode | "Any" })}>
-                    <SelectTrigger className="h-9"><SelectValue /></SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="Any">No preference</SelectItem>
-                      <SelectItem value="Online">Online</SelectItem>
-                      <SelectItem value="Offline">Offline</SelectItem>
-                      <SelectItem value="Both">Either works</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </Field>
               </div>
             </AccordionContent>
           </AccordionItem>
