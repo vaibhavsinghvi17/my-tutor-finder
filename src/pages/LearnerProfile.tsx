@@ -219,7 +219,7 @@ const LearnerProfilePage = () => {
           <AccordionItem value="about" className="border-b border-border/60">
             <AccordionTrigger className="px-3 py-3 hover:no-underline">
               <span className="flex items-center gap-2 text-sm font-medium">
-                <UserCircle2 className="h-4 w-4 text-primary" /> About you
+                <UserCircle2 className="h-4 w-4 text-primary" /> Personal Details
               </span>
             </AccordionTrigger>
             <AccordionContent className="px-3 pb-3">
