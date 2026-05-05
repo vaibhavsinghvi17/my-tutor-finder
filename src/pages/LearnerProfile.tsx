@@ -342,12 +342,24 @@ const LearnerProfilePage = () => {
 
         {/* Quick summary lines */}
         <div className="rounded-xl border border-border/60 bg-card/40 backdrop-blur-sm divide-y divide-border/50 overflow-hidden text-sm">
-          <SummaryRow icon={UserCircle2} label="Preferred Mode"
-            value={learner.preferredMode === "Any" ? "Online / Offline" : learner.preferredMode} />
-          <SummaryRow icon={MapPin} label="City"
-            value={[learner.area, learner.city].filter(Boolean).join(", ") || "—"} />
-          <SummaryRow icon={MapPin} label="Pin / Postal code"
-            value={learner.pinCode || "—"} />
+          <div className="p-3 flex items-center gap-2">
+            <UserCircle2 className="h-4 w-4 text-muted-foreground shrink-0" />
+            <div className="flex-1 min-w-0">
+              <div className="text-[11px] uppercase tracking-wider text-muted-foreground">Preferred Mode</div>
+              <div className="text-sm">{learner.preferredMode === "Any" ? "Online / Offline" : learner.preferredMode}</div>
+            </div>
+            <Select value={learner.preferredMode} onValueChange={(v) => store.updateLearner({ preferredMode: v as Mode | "Any" })}>
+              <SelectTrigger className="h-8 w-auto gap-1 px-2 text-xs" aria-label="Edit preferred mode">
+                <Pencil className="h-3.5 w-3.5" />
+              </SelectTrigger>
+              <SelectContent align="end">
+                <SelectItem value="Any">No preference</SelectItem>
+                <SelectItem value="Online">Online</SelectItem>
+                <SelectItem value="Offline">Offline</SelectItem>
+                <SelectItem value="Both">Either works</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
           <div className="p-3 flex items-start gap-2">
             <Clock className="h-4 w-4 mt-0.5 text-muted-foreground shrink-0" />
             <div className="flex-1 min-w-0">
