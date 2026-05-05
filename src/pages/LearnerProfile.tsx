@@ -326,19 +326,6 @@ const LearnerProfilePage = () => {
             </AccordionContent>
           </AccordionItem>
 
-          <AccordionItem value="time" className="border-b-0">
-            <AccordionTrigger className="px-3 py-3 hover:no-underline">
-              <span className="flex items-center gap-2 text-sm font-medium">
-                <Clock className="h-4 w-4 text-primary" /> Free time
-              </span>
-            </AccordionTrigger>
-            <AccordionContent className="px-3 pb-3">
-              <FreeTimeEditor
-                value={learner.freeBlocks}
-                onChange={(v: FreeTimeBlock[]) => store.updateLearner({ freeBlocks: v })}
-              />
-            </AccordionContent>
-          </AccordionItem>
         </Accordion>
 
         {/* Quick summary lines */}
