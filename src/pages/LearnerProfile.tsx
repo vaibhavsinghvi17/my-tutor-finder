@@ -479,6 +479,19 @@ const LearnerProfilePage = () => {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      <Dialog open={timingsOpen} onOpenChange={setTimingsOpen}>
+        <DialogContent className="max-w-lg">
+          <DialogHeader><DialogTitle>Preferred Timings</DialogTitle></DialogHeader>
+          <FreeTimeEditor
+            value={learner.freeBlocks}
+            onChange={(v: FreeTimeBlock[]) => store.updateLearner({ freeBlocks: v })}
+          />
+          <DialogFooter>
+            <Button onClick={() => { setTimingsOpen(false); toast.success("Saved"); }}>Done</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
