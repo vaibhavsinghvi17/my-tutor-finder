@@ -57,6 +57,7 @@ const LearnerProfilePage = () => {
   const age = ageFromDob(learner.dob);
   const navigate = useNavigate();
   const [interestsOpen, setInterestsOpen] = useState(false);
+  const [timingsOpen, setTimingsOpen] = useState(false);
   const [customInterest, setCustomInterest] = useState("");
   const fileRef = useRef<HTMLInputElement>(null);
 
@@ -218,7 +219,7 @@ const LearnerProfilePage = () => {
           <AccordionItem value="about" className="border-b border-border/60">
             <AccordionTrigger className="px-3 py-3 hover:no-underline">
               <span className="flex items-center gap-2 text-sm font-medium">
-                <UserCircle2 className="h-4 w-4 text-primary" /> About you
+                <UserCircle2 className="h-4 w-4 text-primary" /> Personal Details
               </span>
             </AccordionTrigger>
             <AccordionContent className="px-3 pb-3">
@@ -325,19 +326,6 @@ const LearnerProfilePage = () => {
             </AccordionContent>
           </AccordionItem>
 
-          <AccordionItem value="time" className="border-b-0">
-            <AccordionTrigger className="px-3 py-3 hover:no-underline">
-              <span className="flex items-center gap-2 text-sm font-medium">
-                <Clock className="h-4 w-4 text-primary" /> Free time
-              </span>
-            </AccordionTrigger>
-            <AccordionContent className="px-3 pb-3">
-              <FreeTimeEditor
-                value={learner.freeBlocks}
-                onChange={(v: FreeTimeBlock[]) => store.updateLearner({ freeBlocks: v })}
-              />
-            </AccordionContent>
-          </AccordionItem>
         </Accordion>
 
         {/* Quick summary lines */}
@@ -374,6 +362,15 @@ const LearnerProfilePage = () => {
                 </div>
               )}
             </div>
+            <Button
+              variant="outline"
+              size="sm"
+              className="h-8 gap-1 px-2 text-xs"
+              onClick={() => setTimingsOpen(true)}
+              aria-label="Edit preferred timings"
+            >
+              <Pencil className="h-3.5 w-3.5" />
+            </Button>
           </div>
         </div>
 
@@ -479,6 +476,19 @@ const LearnerProfilePage = () => {
           />
           <DialogFooter>
             <Button onClick={() => { setInterestsOpen(false); toast.success("Saved"); }}>Done</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={timingsOpen} onOpenChange={setTimingsOpen}>
+        <DialogContent className="max-w-lg">
+          <DialogHeader><DialogTitle>Preferred Timings</DialogTitle></DialogHeader>
+          <FreeTimeEditor
+            value={learner.freeBlocks}
+            onChange={(v: FreeTimeBlock[]) => store.updateLearner({ freeBlocks: v })}
+          />
+          <DialogFooter>
+            <Button onClick={() => { setTimingsOpen(false); toast.success("Saved"); }}>Done</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
