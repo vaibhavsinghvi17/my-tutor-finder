@@ -253,12 +253,6 @@ const Discover = () => {
               <SelectItem value="Offline">Offline</SelectItem>
             </SelectContent>
           </Select>
-          {scope === "local" && pinFilter && (
-            <div className="relative flex items-center gap-2 text-xs text-muted-foreground border rounded-md px-3 bg-muted/30">
-              <MapPin className="h-3.5 w-3.5 shrink-0" />
-              <span>Near pin <strong className="text-foreground">{pinFilter}</strong> (from your profile)</span>
-            </div>
-          )}
         </section>
 
 
