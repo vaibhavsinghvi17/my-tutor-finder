@@ -22,6 +22,7 @@ import { AddressFields } from "@/components/AddressFields";
 import { SocialLinksRow } from "@/components/SocialLinksRow";
 import { ContactActions } from "@/components/ContactActions";
 import { PinCodeInput } from "@/components/PinCodeInput";
+import { UseMyLocationButton } from "@/components/UseMyLocationButton";
 import { LanguagesEditor } from "@/components/LanguagesEditor";
 import { InterestPicker } from "@/components/InterestPicker";
 import { VerifyContact } from "@/components/VerifyContact";
@@ -392,6 +393,21 @@ const ProviderProfilePage = () => {
             <p className="text-[11px] text-muted-foreground">
               <span className="text-destructive">*</span> City and Pin code are required so learners nearby can find your classes.
             </p>
+            <div className="flex justify-end">
+              <UseMyLocationButton
+                onResolved={(loc) => {
+                  store.updateProvider({
+                    country: loc.country || provider.country,
+                    state: loc.state || provider.state,
+                    city: loc.city || provider.city,
+                    area: loc.area || provider.area,
+                    pinCode: loc.pinCode || provider.pinCode,
+                    address: loc.address || provider.address,
+                  });
+                  toast.success("Address fields updated");
+                }}
+              />
+            </div>
             <LocationFields
               value={{ country: provider.country, state: provider.state, city: provider.city, area: provider.area }}
               onChange={(v) => store.updateProvider(v)}
