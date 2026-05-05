@@ -56,14 +56,34 @@ export function PinCodeInput({ value, onChange, country, onResolved, placeholder
     const ctrl = new AbortController();
     const t = setTimeout(async () => {
       try {
+        // Primary: Zippopotam (covers many countries)
         const res = await fetch(`https://api.zippopotam.us/${iso.toLowerCase()}/${encodeURIComponent(v)}`, { signal: ctrl.signal });
-        if (!res.ok) throw new Error("not found");
-        const data = await res.json();
-        const place = data.places?.[0]?.["place name"];
-        const stateName = data.places?.[0]?.state;
-        setStatus("ok");
-        setInfo(`${place}${stateName ? ", " + stateName : ""}`);
-        onResolved?.({ pinCode: v, place, state: stateName, country: data.country });
+        if (res.ok) {
+          const data = await res.json();
+          const place = data.places?.[0]?.["place name"];
+          const stateName = data.places?.[0]?.state;
+          setStatus("ok");
+          setInfo(`${place}${stateName ? ", " + stateName : ""}`);
+          onResolved?.({ pinCode: v, place, state: stateName, country: data.country });
+          return;
+        }
+        // Fallback for India: postalpincode.in (full official PIN directory)
+        if (iso === "IN" && /^\d{6}$/.test(v)) {
+          const r2 = await fetch(`https://api.postalpincode.in/pincode/${v}`, { signal: ctrl.signal });
+          if (r2.ok) {
+            const j = await r2.json();
+            const po = j?.[0]?.PostOffice?.[0];
+            if (po) {
+              const place = po.Name || po.District;
+              const stateName = po.State;
+              setStatus("ok");
+              setInfo(`${place}${stateName ? ", " + stateName : ""}`);
+              onResolved?.({ pinCode: v, place, state: stateName, country: "India" });
+              return;
+            }
+          }
+        }
+        throw new Error("not found");
       } catch (e: any) {
         if (e.name === "AbortError") return;
         setStatus("err");
