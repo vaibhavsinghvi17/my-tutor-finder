@@ -23,6 +23,7 @@ import { SocialLinksRow } from "@/components/SocialLinksRow";
 import { ContactActions } from "@/components/ContactActions";
 import { PinCodeInput } from "@/components/PinCodeInput";
 import { LanguagesEditor } from "@/components/LanguagesEditor";
+import { InterestPicker } from "@/components/InterestPicker";
 import { VerifyContact } from "@/components/VerifyContact";
 import { useCategories } from "@/lib/useCategories";
 import { store, useStore } from "@/lib/store";
