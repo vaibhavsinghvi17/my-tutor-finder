@@ -174,6 +174,14 @@ const ProviderProfilePage = () => {
                     ? "City is required so learners nearby can discover your classes."
                     : "Pin code is required so learners nearby can discover your classes."}
               </div>
+              <Button
+                size="sm"
+                variant="destructive"
+                className="mt-2 h-7 px-3 text-xs"
+                onClick={() => setOpen("address")}
+              >
+                Complete now
+              </Button>
             </div>
           </div>
         )}
