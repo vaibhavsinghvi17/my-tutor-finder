@@ -159,10 +159,20 @@ const ProviderProfilePage = () => {
               {provider.yearsExperience ? `${provider.yearsExperience}+ yrs experience` : "Add your details"}
               {locationLine !== "—" && ` • ${locationLine}`}
             </p>
+            <Link
+              to="/pricing"
+              className={cn(
+                "inline-flex items-center gap-1 mt-1.5 px-2 py-0.5 rounded-full text-[11px] font-medium border",
+                isGrowth
+                  ? "bg-primary/10 text-primary border-primary/30"
+                  : "bg-muted text-muted-foreground border-border"
+              )}
+            >
+              <Sparkles className="h-3 w-3" />
+              {isGrowth ? "Growth plan" : "Starter plan"}
+            </Link>
           </div>
         </div>
-
-        <SubscriptionPanel />
 
 
         {(!provider.city || !provider.pinCode) && (
