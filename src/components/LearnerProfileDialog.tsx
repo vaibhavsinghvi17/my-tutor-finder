@@ -1,10 +1,13 @@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { JoinRequest } from "@/lib/types";
 import { useStore } from "@/lib/store";
 import { ageFromDob, blockSummary } from "@/lib/timeUtils";
 import { slotsToText } from "@/components/ScheduleGrid";
-import { Baby, UserCircle2, Mail, MapPin, Calendar, Clock, Heart, MessageSquare } from "lucide-react";
+import { Baby, UserCircle2, Mail, MapPin, Calendar, Clock, Heart, MessageSquare, Lock, Sparkles } from "lucide-react";
+import { useSubscription } from "@/lib/useSubscription";
+import { Link } from "react-router-dom";
 
 interface Props {
   request: JoinRequest | null;
@@ -13,6 +16,7 @@ interface Props {
 
 export function LearnerProfileDialog({ request, onOpenChange }: Props) {
   const learner = useStore((s) => s.learner);
+  const { isGrowth } = useSubscription();
   const open = !!request;
   if (!request) {
     return (
