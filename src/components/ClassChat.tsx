@@ -14,6 +14,7 @@ interface Msg {
   body: string;
   sender_user_id: string;
   created_at: string;
+  via_boost_id?: string | null;
 }
 
 interface Props {
