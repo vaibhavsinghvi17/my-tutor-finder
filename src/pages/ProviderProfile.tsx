@@ -38,6 +38,8 @@ import { cn } from "@/lib/utils";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/useAuth";
 import { SubscriptionPanel } from "@/components/SubscriptionPanel";
+import { useSubscription } from "@/lib/useSubscription";
+import { Sparkles } from "lucide-react";
 
 function SignOutFooter() {
   const { user } = useAuth();
@@ -72,6 +74,7 @@ const SOCIAL_FIELDS: { key: keyof SocialLinks; icon: React.ComponentType<{ class
 const ProviderProfilePage = () => {
   const provider = useStore((s) => s.provider);
   const listings = useStore((s) => s.listings);
+  const { isGrowth } = useSubscription();
   const { names: categoryNames, addCategory } = useCategories();
   const navigate = useNavigate();
   const fileRef = useRef<HTMLInputElement>(null);
@@ -156,10 +159,20 @@ const ProviderProfilePage = () => {
               {provider.yearsExperience ? `${provider.yearsExperience}+ yrs experience` : "Add your details"}
               {locationLine !== "—" && ` • ${locationLine}`}
             </p>
+            <Link
+              to="/pricing"
+              className={cn(
+                "inline-flex items-center gap-1 mt-1.5 px-2 py-0.5 rounded-full text-[11px] font-medium border",
+                isGrowth
+                  ? "bg-primary/10 text-primary border-primary/30"
+                  : "bg-muted text-muted-foreground border-border"
+              )}
+            >
+              <Sparkles className="h-3 w-3" />
+              {isGrowth ? "Growth plan" : "Starter plan"}
+            </Link>
           </div>
         </div>
-
-        <SubscriptionPanel />
 
 
         {(!provider.city || !provider.pinCode) && (
@@ -346,6 +359,8 @@ const ProviderProfilePage = () => {
             <SocialLinksRow socials={provider.socials} size="sm" />
           </ProviderSection>
         )}
+
+        <SubscriptionPanel />
 
         <SignOutFooter />
       </main>
