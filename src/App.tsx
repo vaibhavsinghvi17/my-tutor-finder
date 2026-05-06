@@ -50,6 +50,7 @@ const App = () => (
           <Route path="/provider/listing/new" element={<ListingForm />} />
           <Route path="/provider/listing/:id" element={<ListingForm />} />
           <Route path="/pricing" element={<Pricing />} />
+          <Route path="/provider/insights" element={<Insights />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
