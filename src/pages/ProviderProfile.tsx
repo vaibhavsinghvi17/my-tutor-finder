@@ -449,6 +449,46 @@ const ProviderProfilePage = () => {
             <div className="pt-2 border-t">
               <AddressFields value={provider.address} onChange={(v) => store.updateProvider({ address: v })} />
             </div>
+            <div className="pt-2 border-t space-y-1.5">
+              <div className="flex items-center justify-between gap-2">
+                <Label className="text-xs">Google Maps location</Label>
+                <UseMyLocationButton
+                  label="Fetch live location"
+                  onResolved={(loc) => {
+                    if (loc.mapsUrl) {
+                      setContact({ mapsUrl: loc.mapsUrl });
+                      store.updateProvider({
+                        country: loc.country || provider.country,
+                        state: loc.state || provider.state,
+                        city: loc.city || provider.city,
+                        area: loc.area || provider.area,
+                        pinCode: loc.pinCode || provider.pinCode,
+                      });
+                      toast.success("Live location captured");
+                    }
+                  }}
+                />
+              </div>
+              <Input
+                value={contactInfo.mapsUrl ?? ""}
+                onChange={(e) => setContact({ mapsUrl: e.target.value.slice(0, 500) })}
+                placeholder="Paste a Google Maps link (https://maps.google.com/...)"
+                className="h-9"
+              />
+              {contactInfo.mapsUrl && (
+                <a
+                  href={contactInfo.mapsUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="inline-flex items-center gap-1 text-[11px] text-primary hover:underline"
+                >
+                  <MapPin className="h-3 w-3" /> Preview on Google Maps
+                </a>
+              )}
+              <p className="text-[11px] text-muted-foreground">
+                Adds a precise pin so learners can navigate directly to your studio.
+              </p>
+            </div>
           </div>
           <DialogFooter>
             <Button onClick={() => { setOpen(null); toast.success("Saved"); }}>Done</Button>
