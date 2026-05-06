@@ -26,6 +26,23 @@ const ProviderDashboard = () => {
   const myListingIds = new Set(listings.map((l) => l.id));
   const incoming = requests.filter((r) => myListingIds.has(r.listingId));
 
+  const missingName = !provider.businessName?.trim();
+  const missingPin = !provider.pinCode?.trim();
+  const profileIncomplete = missingName || missingPin;
+  const missingLabel = missingName && missingPin
+    ? "class name and pin code"
+    : missingName
+      ? "class name"
+      : "pin code";
+
+  function handleNewClass(e: React.MouseEvent) {
+    if (profileIncomplete) {
+      e.preventDefault();
+      toast.error(`Please add your ${missingLabel} before creating a class.`);
+      navigate("/profile/provider");
+    }
+  }
+
   function switchToLearner() {
     store.setMode("learner");
     navigate("/dashboard");
