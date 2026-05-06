@@ -19,6 +19,7 @@ import LearnerList from "./pages/LearnerList";
 import ListingForm from "./pages/ListingForm";
 import Auth from "./pages/Auth";
 import Pricing from "./pages/Pricing";
+import Insights from "./pages/Insights";
 import NotFound from "./pages/NotFound.tsx";
 import ScrollToTop from "./components/ScrollToTop";
 
