@@ -150,7 +150,10 @@ const ListingDetail = () => {
             </div>
           </div>
           {hasContact && (
-            <div className="rounded-lg bg-background/95 backdrop-blur-sm p-1.5 shadow-sm flex items-center gap-1.5 flex-wrap">
+            <div
+              className="rounded-lg bg-background/95 backdrop-blur-sm p-1.5 shadow-sm flex items-center gap-1.5 flex-wrap"
+              onClickCapture={() => recordEvent(listing!, "contact_click", { userId: user?.id, city: learner.city, dob: learner.dob, gender: (learner as any).gender })}
+            >
               <ContactActions contact={contact} fallbackAddress={contactFallback} size="sm" />
             </div>
           )}
