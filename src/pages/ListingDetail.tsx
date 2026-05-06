@@ -111,6 +111,12 @@ const ListingDetail = () => {
       note: finalNote,
       isTrial,
     } as any);
+    recordEvent(listing!, "request_click", {
+      userId: user?.id,
+      city: learner.city,
+      dob: learner.dob,
+      gender: (learner as any).gender,
+    });
     toast.success(isTrial ? "Trial class request sent!" : "Request sent! The provider will reply soon.");
     navigate("/requests");
   }
