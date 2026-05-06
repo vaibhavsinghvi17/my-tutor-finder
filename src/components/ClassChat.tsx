@@ -158,8 +158,16 @@ export function ClassChat({
             )}
             {messages.map((m) => {
               const mine = m.sender_user_id === user.id;
+              const fromBoost = !!m.via_boost_id;
+              // Show the boost badge to the provider on incoming learner messages.
+              const showBoostBadge = fromBoost && !mine && user.id === providerId;
               return (
-                <div key={m.id} className={cn("flex", mine ? "justify-end" : "justify-start")}>
+                <div key={m.id} className={cn("flex flex-col gap-0.5", mine ? "items-end" : "items-start")}>
+                  {showBoostBadge && (
+                    <Badge className="gap-1 bg-primary/10 text-primary border-0 text-[10px] py-0 px-1.5">
+                      <Rocket className="h-2.5 w-2.5" /> from Boost
+                    </Badge>
+                  )}
                   <div
                     className={cn(
                       "max-w-[80%] rounded-2xl px-3 py-1.5 text-sm",
