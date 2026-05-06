@@ -147,20 +147,21 @@ const Discover = () => {
     const learnerDob = state.learner.dob || "";
     const learnerAge = learnerDob ? (new Date().getFullYear() - new Date(learnerDob).getFullYear()) : null;
     const learnerGroup = learnerAge == null ? null : learnerAge < 13 ? "Kids" : learnerAge < 20 ? "Teens" : "Adults";
-    const matchedBoostIds = new Set(
-      boosts.filter((b) => {
-        if (b.city && learnerCity && b.city.toLowerCase() !== learnerCity) return false;
-        if (b.age_group && learnerGroup && b.age_group !== "All" && b.age_group !== learnerGroup) return false;
-        // gender targeting honored if learner profile gender exists
-        const lg = (state.learner as any).gender as string | undefined;
-        if (b.gender && lg && b.gender.toLowerCase() !== lg.toLowerCase()) return false;
-        return true;
-      }).map((b) => b.listing_id),
-    );
+    // Build a per-listing boost rank: Growth boost = 2, Starter boost = 1, none = 0
+    const boostRankByListing = new Map<string, number>();
+    boosts.forEach((b) => {
+      if (b.city && learnerCity && b.city.toLowerCase() !== learnerCity) return;
+      if (b.age_group && learnerGroup && b.age_group !== "All" && b.age_group !== learnerGroup) return;
+      const lg = (state.learner as any).gender as string | undefined;
+      if (b.gender && lg && b.gender.toLowerCase() !== lg.toLowerCase()) return;
+      const rank = b.provider_tier === "growth" ? 2 : 1;
+      const prev = boostRankByListing.get(b.listing_id) ?? 0;
+      if (rank > prev) boostRankByListing.set(b.listing_id, rank);
+    });
     scoredList = [...scoredList].sort((a, b) => {
-      const ab = matchedBoostIds.has(a.listing.id) ? 1 : 0;
-      const bb = matchedBoostIds.has(b.listing.id) ? 1 : 0;
-      return bb - ab;
+      const ar = boostRankByListing.get(a.listing.id) ?? 0;
+      const br = boostRankByListing.get(b.listing.id) ?? 0;
+      return br - ar;
     });
     return scoredList;
     // eslint-disable-next-line react-hooks/exhaustive-deps
