@@ -54,24 +54,6 @@ const ProviderDashboard = () => {
       <main className="container py-4 sm:py-6 space-y-5">
         <div className="flex items-center gap-2 py-1 w-full">
           <Button asChild size="sm" className="gap-1.5 rounded-full w-full">
-            <Link to="/provider/listing/new">
-              <Plus className="h-4 w-4" />
-              <span className="text-xs font-medium truncate">New class</span>
-            </Link>
-          </Button>
-        </div>
-
-        <div className="flex items-start justify-between gap-3 flex-wrap">
-          <div>
-            <h1 className="text-2xl sm:text-3xl font-bold">
-              {provider.businessName || "Your studio"}
-            </h1>
-            <p className="text-sm text-muted-foreground">
-              Manage your classes and respond to join requests.
-            </p>
-          </div>
-        <div className="flex items-center gap-2 py-1 w-full">
-          <Button asChild size="sm" className="gap-1.5 rounded-full w-full">
             <Link to="/provider/listing/new" onClick={handleNewClass}>
               <Plus className="h-4 w-4" />
               <span className="text-xs font-medium truncate">New class</span>
@@ -92,6 +74,23 @@ const ProviderDashboard = () => {
             </div>
           </Card>
         )}
+
+        <div className="flex items-start justify-between gap-3 flex-wrap">
+          <div>
+            <h1 className="text-2xl sm:text-3xl font-bold">
+              {provider.businessName || "Your studio"}
+            </h1>
+            <p className="text-sm text-muted-foreground">
+              Manage your classes and respond to join requests.
+            </p>
+          </div>
+          <Link to="/pricing">
+            <Badge className={isGrowth ? "bg-primary text-primary-foreground gap-1" : "bg-muted text-foreground gap-1"}>
+              <Sparkles className="h-3 w-3" />
+              {isGrowth ? "Growth" : "Starter — Upgrade"}
+            </Badge>
+          </Link>
+        </div>
 
         {/* At-a-glance stats */}
         <section className="grid gap-3 grid-cols-2 lg:grid-cols-3">
