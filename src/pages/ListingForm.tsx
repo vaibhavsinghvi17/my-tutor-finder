@@ -34,6 +34,7 @@ const ListingForm = () => {
   const existing = useStore((s) => id ? s.listings.find((l) => l.id === id) : undefined);
   const allListings = useStore((s) => s.listings);
   const { names: categoryNames, addCategory } = useCategories();
+  const { isGrowth } = useSubscription();
   const [newCat, setNewCat] = useState("");
 
   const [title, setTitle] = useState(existing?.title ?? "");
