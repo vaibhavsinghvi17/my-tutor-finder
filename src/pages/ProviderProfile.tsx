@@ -166,7 +166,7 @@ const ProviderProfilePage = () => {
           <div className="rounded-xl border border-destructive/30 bg-destructive/5 p-3 text-xs flex items-start gap-2">
             <MapPin className="h-4 w-4 text-destructive mt-0.5 shrink-0" />
             <div className="flex-1">
-              <div className="font-medium text-destructive">Complete your studio address</div>
+              <div className="font-medium text-destructive">Complete your Classes Address</div>
               <div className="text-muted-foreground">
                 {!provider.city && !provider.pinCode
                   ? "City and Pin code are required so learners nearby can discover your classes."
