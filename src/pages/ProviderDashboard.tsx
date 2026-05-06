@@ -70,13 +70,28 @@ const ProviderDashboard = () => {
               Manage your classes and respond to join requests.
             </p>
           </div>
-          <Link to="/pricing">
-            <Badge className={isGrowth ? "bg-primary text-primary-foreground gap-1" : "bg-muted text-foreground gap-1"}>
-              <Sparkles className="h-3 w-3" />
-              {isGrowth ? "Growth" : "Starter — Upgrade"}
-            </Badge>
-          </Link>
+        <div className="flex items-center gap-2 py-1 w-full">
+          <Button asChild size="sm" className="gap-1.5 rounded-full w-full">
+            <Link to="/provider/listing/new" onClick={handleNewClass}>
+              <Plus className="h-4 w-4" />
+              <span className="text-xs font-medium truncate">New class</span>
+            </Link>
+          </Button>
         </div>
+
+        {profileIncomplete && (
+          <Card className="p-3 border-destructive/40 bg-destructive/5 flex items-start gap-2">
+            <MapPin className="h-4 w-4 text-destructive mt-0.5 shrink-0" />
+            <div className="flex-1 text-xs space-y-2">
+              <p className="text-foreground">
+                Please add your <strong>{missingLabel}</strong> in your profile before creating a class.
+              </p>
+              <Button size="sm" variant="destructive" onClick={() => navigate("/profile/provider")}>
+                Complete profile
+              </Button>
+            </div>
+          </Card>
+        )}
 
         {/* At-a-glance stats */}
         <section className="grid gap-3 grid-cols-2 lg:grid-cols-3">
