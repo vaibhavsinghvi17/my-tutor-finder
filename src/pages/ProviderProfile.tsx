@@ -74,6 +74,7 @@ const SOCIAL_FIELDS: { key: keyof SocialLinks; icon: React.ComponentType<{ class
 const ProviderProfilePage = () => {
   const provider = useStore((s) => s.provider);
   const listings = useStore((s) => s.listings);
+  const { isGrowth } = useSubscription();
   const { names: categoryNames, addCategory } = useCategories();
   const navigate = useNavigate();
   const fileRef = useRef<HTMLInputElement>(null);
