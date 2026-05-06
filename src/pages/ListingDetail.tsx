@@ -25,6 +25,7 @@ import { formatDuration, formatPrice } from "@/lib/listingUtils";
 import { useFxRates } from "@/lib/useFxRates";
 import { useAuth } from "@/lib/useAuth";
 import { toast } from "sonner";
+import { recordEvent } from "@/lib/useEvents";
 
 const ListingDetail = () => {
   const { id } = useParams();
