@@ -71,6 +71,18 @@ const ListingDetail = () => {
     setVerifyOpen(!verified);
   }, [verified]);
 
+  // Track a 'view' event for insights & boost attribution
+  useEffect(() => {
+    if (!listing) return;
+    recordEvent(listing, "view", {
+      userId: user?.id,
+      city: learner.city,
+      dob: learner.dob,
+      gender: (learner as any).gender,
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [listing?.id, user?.id]);
+
   const activeKid = learner.activeKidId ? learner.kids.find((k) => k.id === learner.activeKidId) : null;
   const freeSlots = blocksToSlots(activeKid ? activeKid.freeBlocks : learner.freeBlocks);
   const allSlots = [...listing.slots, ...((listing.onlineSlots ?? []) as typeof listing.slots)];
