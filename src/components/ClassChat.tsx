@@ -103,6 +103,21 @@ export function ClassChat({
     const text = body.trim();
     if (!text || !user || !learnerId || !providerId) return;
     setSending(true);
+    // If the current user is the learner, attribute this message to an active boost (if any).
+    let viaBoostId: string | null = null;
+    if (user.id === learnerId) {
+      viaBoostId = await resolveActiveBoostId(listingId, {
+        city: learner.city,
+        dob: learner.dob,
+        gender: (learner as any).gender,
+      });
+      // Also log a message_click event so insights pick it up
+      await recordEvent(
+        { id: listingId, providerUserId: providerId, city: learner.city, category: "", ageGroup: "All" } as any,
+        "message_click",
+        { userId: user.id, city: learner.city, dob: learner.dob, gender: (learner as any).gender },
+      );
+    }
     const { error } = await supabase.from("messages").insert({
       listing_id: listingId,
       listing_title: listingTitle,
@@ -110,6 +125,7 @@ export function ClassChat({
       provider_user_id: providerId,
       sender_user_id: user.id,
       body: text,
+      via_boost_id: viaBoostId,
     });
     setSending(false);
     if (error) { toast.error(error.message); return; }
