@@ -5,7 +5,7 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { store, useStore } from "@/lib/store";
-import { Plus, Pencil, Trash2, Inbox, Building2, Wifi, MapPin, Clock, GraduationCap, BookOpen, Repeat, Users, CheckCircle2, BarChart3 } from "lucide-react";
+import { Plus, Pencil, Trash2, Inbox, Building2, Wifi, MapPin, Clock, GraduationCap, BookOpen, Repeat, Users, CheckCircle2, BarChart3, Copy } from "lucide-react";
 import { slotsToText } from "@/components/ScheduleGrid";
 import { LearnerProfileDialog } from "@/components/LearnerProfileDialog";
 import { JoinRequest } from "@/lib/types";
@@ -158,12 +158,33 @@ const ProviderDashboard = () => {
                       <Button asChild size="sm" variant="outline">
                         <Link to={`/listing/${l.id}`}>View</Link>
                       </Button>
-                      <Button asChild size="sm" variant="outline">
+                      <Button asChild size="sm" variant="outline" title="Edit">
                         <Link to={`/provider/listing/${l.id}`}><Pencil className="h-4 w-4" /></Link>
                       </Button>
                       <Button
                         size="sm"
                         variant="outline"
+                        title="Duplicate"
+                        onClick={() => {
+                          const { id: _id, createdAt: _c, providerId: _p, providerName: _pn, ...rest } = l as any;
+                          store.addListing(
+                            { ...rest, title: `${l.title} (copy)`, draft: true },
+                            (l as any).providerUserId,
+                          );
+                          toast.success("Class duplicated as draft");
+                          // Navigate to the newly created draft (it's the first one in the list).
+                          setTimeout(() => {
+                            const newest = store.get().listings[0];
+                            if (newest) navigate(`/provider/listing/${newest.id}`);
+                          }, 0);
+                        }}
+                      >
+                        <Copy className="h-4 w-4" />
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        title="Delete"
                         onClick={() => { store.removeListing(l.id); toast.success("Class removed"); }}
                         className="text-destructive"
                       >
