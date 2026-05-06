@@ -62,7 +62,7 @@ export function ClassChat({
     (async () => {
       const { data, error } = await supabase
         .from("messages")
-        .select("id, body, sender_user_id, created_at")
+        .select("id, body, sender_user_id, created_at, via_boost_id")
         .eq("listing_id", listingId)
         .eq("learner_user_id", learnerId!)
         .eq("provider_user_id", providerId!)
