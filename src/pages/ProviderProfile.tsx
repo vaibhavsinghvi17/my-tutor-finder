@@ -37,6 +37,7 @@ import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/useAuth";
+import { SubscriptionPanel } from "@/components/SubscriptionPanel";
 
 function SignOutFooter() {
   const { user } = useAuth();
@@ -157,6 +158,8 @@ const ProviderProfilePage = () => {
             </p>
           </div>
         </div>
+
+        <SubscriptionPanel />
 
 
         {(!provider.city || !provider.pinCode) && (

@@ -9,10 +9,11 @@ import { useAuth } from "@/lib/useAuth";
 import { toast } from "sonner";
 
 const STARTER = [
-  "Up to 2 active classes",
+  "1 active class",
   "Receive learner requests",
   "Limited learner contact (name + city only)",
   "Standard listing position in Discover",
+  "Boost add-on: ₹500 for 3 days",
 ];
 
 const GROWTH = [
@@ -20,8 +21,9 @@ const GROWTH = [
   "Full learner contact details (phone, email, address)",
   "Verified tutor badge",
   "Priority listing in Discover",
+  "Insights dashboard (views, clicks, audience)",
   "Pending message inbox",
-  "Boost add-on available (₹500 / 7 days)",
+  "Boost add-on: ₹500 for 7 days — ranks above Starter boosts",
 ];
 
 export default function Pricing() {
@@ -36,9 +38,9 @@ export default function Pricing() {
       return;
     }
     try {
-      // Razorpay test bypass — instant activation
       await activateGrowth();
       toast.success("Growth activated (test mode)");
+      navigate("/provider");
     } catch (e: any) {
       toast.error(e.message ?? "Could not activate");
     }
@@ -83,14 +85,23 @@ export default function Pricing() {
         </div>
 
         <Card className="p-5 bg-gradient-hero border-primary/20 space-y-2">
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 flex-wrap">
             <Sparkles className="h-4 w-4 text-primary" />
             <h3 className="font-semibold">Boost add-on</h3>
-            <Badge variant="outline" className="text-[10px]">₹500 / 7 days</Badge>
+            <Badge variant="outline" className="text-[10px]">₹500</Badge>
           </div>
-          <p className="text-sm text-muted-foreground">
-            Boost any class to the top of Discover for learners in your city, age group and category.
-            Available from the class card on your dashboard.
+          <div className="grid sm:grid-cols-2 gap-2 text-sm">
+            <div className="rounded-lg border bg-background/60 p-3">
+              <div className="font-medium">Starter boost</div>
+              <div className="text-xs text-muted-foreground">₹500 · 3 days</div>
+            </div>
+            <div className="rounded-lg border-2 border-primary/40 bg-primary/5 p-3">
+              <div className="font-medium flex items-center gap-1">Growth boost <Badge className="text-[9px] h-4 px-1.5">priority</Badge></div>
+              <div className="text-xs text-muted-foreground">₹500 · 7 days · ranks above Starter boosts</div>
+            </div>
+          </div>
+          <p className="text-xs text-muted-foreground">
+            Target by city, age group and gender. Available from the class card on your dashboard.
           </p>
           <div>
             <Button asChild size="sm" variant="outline">

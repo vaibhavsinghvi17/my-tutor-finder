@@ -12,6 +12,7 @@ export interface Boost {
   age_group: string | null;
   gender: string | null;
   status: string;
+  provider_tier?: "starter" | "growth";
 }
 
 export function useActiveBoosts() {
@@ -25,7 +26,22 @@ export function useActiveBoosts() {
       .select("*")
       .eq("status", "active")
       .gt("expires_at", new Date().toISOString());
-    setBoosts((data as Boost[]) ?? []);
+    const list = (data as Boost[]) ?? [];
+    // Look up each provider's current subscription tier so Growth boosts can outrank Starter ones.
+    const ids = Array.from(new Set(list.map((b) => b.provider_user_id)));
+    if (ids.length) {
+      const { data: profs } = await supabase
+        .from("profiles")
+        .select("user_id, subscription_tier, subscription_expires_at")
+        .in("user_id", ids);
+      const tierMap = new Map<string, "starter" | "growth">();
+      (profs ?? []).forEach((p: any) => {
+        const active = !p.subscription_expires_at || new Date(p.subscription_expires_at) > new Date();
+        tierMap.set(p.user_id, active && p.subscription_tier === "growth" ? "growth" : "starter");
+      });
+      list.forEach((b) => { b.provider_tier = tierMap.get(b.provider_user_id) ?? "starter"; });
+    }
+    setBoosts(list);
     setLoading(false);
   }, []);
 
@@ -33,15 +49,18 @@ export function useActiveBoosts() {
   return { boosts, loading, refresh };
 }
 
-// BYPASS: Razorpay test mode — pretend the ₹500 boost payment succeeded and write a 7-day boost row.
+// BYPASS: Razorpay test mode — pretend the ₹500 boost payment succeeded.
+// Duration depends on tier: Starter = 3 days, Growth = 7 days.
 export async function createBoost(params: {
   listingId: string;
   providerUserId: string;
+  durationDays: number;
   city?: string | null;
   category?: string | null;
   ageGroup?: string | null;
   gender?: string | null;
 }) {
+  const expiresAt = new Date(Date.now() + params.durationDays * 24 * 3600 * 1000).toISOString();
   const { error, data } = await supabase
     .from("boosts")
     .insert({
@@ -51,6 +70,7 @@ export async function createBoost(params: {
       category: params.category ?? null,
       age_group: params.ageGroup ?? null,
       gender: params.gender ?? null,
+      expires_at: expiresAt,
     })
     .select()
     .single();
