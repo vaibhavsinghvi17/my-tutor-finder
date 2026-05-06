@@ -36,9 +36,9 @@ export default function Pricing() {
       return;
     }
     try {
-      // Razorpay test bypass — instant activation
       await activateGrowth();
       toast.success("Growth activated (test mode)");
+      navigate("/provider");
     } catch (e: any) {
       toast.error(e.message ?? "Could not activate");
     }
