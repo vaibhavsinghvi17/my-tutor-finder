@@ -38,6 +38,8 @@ import { cn } from "@/lib/utils";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/useAuth";
 import { SubscriptionPanel } from "@/components/SubscriptionPanel";
+import { useSubscription } from "@/lib/useSubscription";
+import { Sparkles } from "lucide-react";
 
 function SignOutFooter() {
   const { user } = useAuth();
