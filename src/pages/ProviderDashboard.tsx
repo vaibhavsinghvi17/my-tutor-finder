@@ -26,6 +26,23 @@ const ProviderDashboard = () => {
   const myListingIds = new Set(listings.map((l) => l.id));
   const incoming = requests.filter((r) => myListingIds.has(r.listingId));
 
+  const missingName = !provider.businessName?.trim();
+  const missingPin = !provider.pinCode?.trim();
+  const profileIncomplete = missingName || missingPin;
+  const missingLabel = missingName && missingPin
+    ? "class name and pin code"
+    : missingName
+      ? "class name"
+      : "pin code";
+
+  function handleNewClass(e: React.MouseEvent) {
+    if (profileIncomplete) {
+      e.preventDefault();
+      toast.error(`Please add your ${missingLabel} before creating a class.`);
+      navigate("/profile/provider");
+    }
+  }
+
   function switchToLearner() {
     store.setMode("learner");
     navigate("/dashboard");
@@ -37,12 +54,26 @@ const ProviderDashboard = () => {
       <main className="container py-4 sm:py-6 space-y-5">
         <div className="flex items-center gap-2 py-1 w-full">
           <Button asChild size="sm" className="gap-1.5 rounded-full w-full">
-            <Link to="/provider/listing/new">
+            <Link to="/provider/listing/new" onClick={handleNewClass}>
               <Plus className="h-4 w-4" />
               <span className="text-xs font-medium truncate">New class</span>
             </Link>
           </Button>
         </div>
+
+        {profileIncomplete && (
+          <Card className="p-3 border-destructive/40 bg-destructive/5 flex items-start gap-2">
+            <MapPin className="h-4 w-4 text-destructive mt-0.5 shrink-0" />
+            <div className="flex-1 text-xs space-y-2">
+              <p className="text-foreground">
+                Please add your <strong>{missingLabel}</strong> in your profile before creating a class.
+              </p>
+              <Button size="sm" variant="destructive" onClick={() => navigate("/profile/provider")}>
+                Complete profile
+              </Button>
+            </div>
+          </Card>
+        )}
 
         <div className="flex items-start justify-between gap-3 flex-wrap">
           <div>

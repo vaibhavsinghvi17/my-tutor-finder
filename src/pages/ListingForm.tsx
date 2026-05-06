@@ -101,6 +101,11 @@ const ListingForm = () => {
 
   function save(asDraft = false) {
     if (!verified) { setVerifyOpen(true); return; }
+    if (!provider.businessName?.trim() || !provider.pinCode?.trim()) {
+      toast.error("Please add your class name and pin code in your profile first.");
+      navigate("/profile/provider");
+      return;
+    }
     if (!title.trim()) return toast.error("Add a title");
     // Starter plan limit: only 1 active (non-draft) class.
     if (!asDraft && !isGrowth) {
