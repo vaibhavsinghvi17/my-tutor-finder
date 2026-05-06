@@ -44,6 +44,7 @@ export function ClassChat({
   otherPartyName, triggerVariant = "outline", triggerLabel = "Message", floating = false,
 }: Props) {
   const { user } = useAuth();
+  const learner = useStore((s) => s.learner);
   const [open, setOpen] = useState(false);
   const [expanded, setExpanded] = useState(false);
   const [messages, setMessages] = useState<Msg[]>([]);
