@@ -14,6 +14,45 @@ export type Database = {
   }
   public: {
     Tables: {
+      boosts: {
+        Row: {
+          age_group: string | null
+          category: string | null
+          city: string | null
+          created_at: string
+          expires_at: string
+          id: string
+          listing_id: string
+          provider_user_id: string
+          starts_at: string
+          status: string
+        }
+        Insert: {
+          age_group?: string | null
+          category?: string | null
+          city?: string | null
+          created_at?: string
+          expires_at?: string
+          id?: string
+          listing_id: string
+          provider_user_id: string
+          starts_at?: string
+          status?: string
+        }
+        Update: {
+          age_group?: string | null
+          category?: string | null
+          city?: string | null
+          created_at?: string
+          expires_at?: string
+          id?: string
+          listing_id?: string
+          provider_user_id?: string
+          starts_at?: string
+          status?: string
+        }
+        Relationships: []
+      }
       categories: {
         Row: {
           created_at: string
@@ -80,6 +119,8 @@ export type Database = {
           created_at: string
           display_name: string | null
           id: string
+          subscription_expires_at: string | null
+          subscription_tier: string
           updated_at: string
           user_id: string
         }
@@ -88,6 +129,8 @@ export type Database = {
           created_at?: string
           display_name?: string | null
           id?: string
+          subscription_expires_at?: string | null
+          subscription_tier?: string
           updated_at?: string
           user_id: string
         }
@@ -96,6 +139,8 @@ export type Database = {
           created_at?: string
           display_name?: string | null
           id?: string
+          subscription_expires_at?: string | null
+          subscription_tier?: string
           updated_at?: string
           user_id?: string
         }

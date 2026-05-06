@@ -14,6 +14,7 @@ import { Search, UserCircle2, Baby, Plus, MapPin, Home, Globe2, Clock, SlidersHo
 import { Link, useNavigate } from "react-router-dom";
 import { Card } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
+import { useActiveBoosts } from "@/lib/useBoosts";
 
 import {
   DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel,
@@ -50,6 +51,8 @@ const Discover = () => {
   const ratings = useStore((s) => s.ratings);
   const requests = useStore((s) => s.requests);
   const { names: categoryNames } = useCategories();
+  const { boosts } = useActiveBoosts();
+  const boostedIds = new Set(boosts.map((b) => b.listing_id));
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState<Category | "all">("all");
   const [mode, setMode] = useState<Mode | "all">("all");
@@ -140,9 +143,15 @@ const Discover = () => {
     } else if (sortBy === "newest") {
       scoredList = [...scoredList].sort((a, b) => (b.listing.createdAt ?? 0) - (a.listing.createdAt ?? 0));
     }
+    // Boosted listings always come first (after other sorts)
+    scoredList = [...scoredList].sort((a, b) => {
+      const ab = boostedIds.has(a.listing.id) ? 1 : 0;
+      const bb = boostedIds.has(b.listing.id) ? 1 : 0;
+      return bb - ab;
+    });
     return scoredList;
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [state, query, category, mode, pinFilter, sortBy, timeOfDay, scope, ratings, requests, viewMode]);
+  }, [state, query, category, mode, pinFilter, sortBy, timeOfDay, scope, ratings, requests, viewMode, boosts]);
 
   const activeKid = state.learner.activeKidId
     ? state.learner.kids.find((k) => k.id === state.learner.activeKidId)

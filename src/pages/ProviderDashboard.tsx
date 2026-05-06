@@ -10,6 +10,9 @@ import { slotsToText } from "@/components/ScheduleGrid";
 import { LearnerProfileDialog } from "@/components/LearnerProfileDialog";
 import { JoinRequest } from "@/lib/types";
 import { toast } from "sonner";
+import { BoostButton } from "@/components/BoostButton";
+import { useSubscription } from "@/lib/useSubscription";
+import { Sparkles } from "lucide-react";
 
 const ProviderDashboard = () => {
   const [viewing, setViewing] = useState<JoinRequest | null>(null);
@@ -17,6 +20,7 @@ const ProviderDashboard = () => {
   const requests = useStore((s) => s.requests);
   const provider = useStore((s) => s.provider);
   const navigate = useNavigate();
+  const { tier, isGrowth } = useSubscription();
 
   // requests targeting this provider's listings
   const myListingIds = new Set(listings.map((l) => l.id));
@@ -40,13 +44,21 @@ const ProviderDashboard = () => {
           </Button>
         </div>
 
-        <div>
-          <h1 className="text-2xl sm:text-3xl font-bold">
-            {provider.businessName || "Your studio"}
-          </h1>
-          <p className="text-sm text-muted-foreground">
-            Manage your classes and respond to join requests.
-          </p>
+        <div className="flex items-start justify-between gap-3 flex-wrap">
+          <div>
+            <h1 className="text-2xl sm:text-3xl font-bold">
+              {provider.businessName || "Your studio"}
+            </h1>
+            <p className="text-sm text-muted-foreground">
+              Manage your classes and respond to join requests.
+            </p>
+          </div>
+          <Link to="/pricing">
+            <Badge className={isGrowth ? "bg-primary text-primary-foreground gap-1" : "bg-muted text-foreground gap-1"}>
+              <Sparkles className="h-3 w-3" />
+              {isGrowth ? "Growth" : "Starter — Upgrade"}
+            </Badge>
+          </Link>
         </div>
 
         {/* At-a-glance stats */}
@@ -132,7 +144,8 @@ const ProviderDashboard = () => {
                       </div>
                     </div>
 
-                    <div className="flex gap-1.5 shrink-0">
+                    <div className="flex gap-1.5 shrink-0 flex-wrap">
+                      <BoostButton listing={l} />
                       <Button asChild size="sm" variant="outline">
                         <Link to={`/listing/${l.id}`}>View</Link>
                       </Button>

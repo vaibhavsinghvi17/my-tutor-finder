@@ -18,6 +18,7 @@ import LearnerDashboard from "./pages/LearnerDashboard";
 import LearnerList from "./pages/LearnerList";
 import ListingForm from "./pages/ListingForm";
 import Auth from "./pages/Auth";
+import Pricing from "./pages/Pricing";
 import NotFound from "./pages/NotFound.tsx";
 import ScrollToTop from "./components/ScrollToTop";
 
@@ -47,6 +48,7 @@ const App = () => (
           <Route path="/provider/requests" element={<ProviderRequests />} />
           <Route path="/provider/listing/new" element={<ListingForm />} />
           <Route path="/provider/listing/:id" element={<ListingForm />} />
+          <Route path="/pricing" element={<Pricing />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
