@@ -75,8 +75,8 @@ export function formatPrice(
 
 export function formatDuration(mins?: number): string | null {
   if (!mins || mins <= 0) return null;
-  if (mins < 60) return `${mins} min`;
+  if (mins < 60) return `${mins} min per class`;
   const h = Math.floor(mins / 60);
   const m = mins % 60;
-  return m === 0 ? `${h} hr` : `${h}h ${m}m`;
+  return m === 0 ? `${h} hr per class` : `${h}h ${m}m per class`;
 }
