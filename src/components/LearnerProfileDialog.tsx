@@ -87,10 +87,14 @@ export function LearnerProfileDialog({ request, onOpenChange }: Props) {
               {adult && (
                 <div className="space-y-1.5">
                   {adult.email && (
-                    <div className="flex items-start gap-2">
-                      <Mail className="h-3.5 w-3.5 mt-0.5 text-muted-foreground" />
-                      <span>{adult.email}</span>
-                    </div>
+                    isGrowth ? (
+                      <div className="flex items-start gap-2">
+                        <Mail className="h-3.5 w-3.5 mt-0.5 text-muted-foreground" />
+                        <span>{adult.email}</span>
+                      </div>
+                    ) : (
+                      <LockedContact email={adult.email} />
+                    )
                   )}
                   {adult.occupation && (
                     <div className="flex items-start gap-2">
@@ -126,17 +130,23 @@ export function LearnerProfileDialog({ request, onOpenChange }: Props) {
           ) : (
             // Fallback: show parent's profile from local store (best-effort for demo data)
             <div className="space-y-1.5">
-              {learner.email && learner.name === request.learnerName && (
-                <div className="flex items-start gap-2">
-                  <Mail className="h-3.5 w-3.5 mt-0.5 text-muted-foreground" />
-                  <span>{learner.email}</span>
-                </div>
-              )}
-              {learner.city && learner.name === request.learnerName && (
-                <div className="flex items-start gap-2">
-                  <MapPin className="h-3.5 w-3.5 mt-0.5 text-muted-foreground" />
-                  <span>{[learner.area, learner.city].filter(Boolean).join(", ")}</span>
-                </div>
+              {isGrowth ? (
+                <>
+                  {learner.email && learner.name === request.learnerName && (
+                    <div className="flex items-start gap-2">
+                      <Mail className="h-3.5 w-3.5 mt-0.5 text-muted-foreground" />
+                      <span>{learner.email}</span>
+                    </div>
+                  )}
+                  {learner.city && learner.name === request.learnerName && (
+                    <div className="flex items-start gap-2">
+                      <MapPin className="h-3.5 w-3.5 mt-0.5 text-muted-foreground" />
+                      <span>{[learner.area, learner.city].filter(Boolean).join(", ")}</span>
+                    </div>
+                  )}
+                </>
+              ) : (
+                <LockedContact email={learner.email} city={learner.city} />
               )}
               <p className="text-xs text-muted-foreground italic">
                 Limited profile info available for this learner.
@@ -146,5 +156,31 @@ export function LearnerProfileDialog({ request, onOpenChange }: Props) {
         </div>
       </DialogContent>
     </Dialog>
+  );
+}
+
+function LockedContact({ email, city }: { email?: string; city?: string }) {
+  function mask(s?: string) {
+    if (!s) return "—";
+    const [u, d] = s.split("@");
+    if (d) return u.slice(0, 2) + "•••@" + d;
+    return s.slice(0, 2) + "•••";
+  }
+  return (
+    <div className="rounded-lg border border-dashed p-3 bg-muted/40 space-y-2">
+      <div className="flex items-center gap-2 text-xs font-semibold">
+        <Lock className="h-3.5 w-3.5 text-muted-foreground" />
+        Contact details locked
+      </div>
+      <div className="text-xs text-muted-foreground space-y-0.5">
+        {email !== undefined && <div>Email: <span className="font-mono">{mask(email)}</span></div>}
+        {city !== undefined && <div>City: <span className="font-mono">{city || "—"}</span></div>}
+      </div>
+      <Button asChild size="sm" className="w-full gap-1.5">
+        <Link to="/pricing">
+          <Sparkles className="h-3.5 w-3.5" /> Upgrade to Growth to reveal
+        </Link>
+      </Button>
+    </div>
   );
 }
