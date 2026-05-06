@@ -7,6 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Rocket } from "lucide-react";
 import { toast } from "sonner";
 import { createBoost, useActiveBoosts, isBoosted } from "@/lib/useBoosts";
+import { useSubscription } from "@/lib/useSubscription";
 import { useAuth } from "@/lib/useAuth";
 import { Listing, AGE_GROUPS } from "@/lib/types";
 
@@ -18,6 +19,7 @@ const ANY = "__any__";
 
 export function BoostButton({ listing }: Props) {
   const { user } = useAuth();
+  const { isGrowth } = useSubscription();
   const { boosts, refresh } = useActiveBoosts();
   const [open, setOpen] = useState(false);
   const [busy, setBusy] = useState(false);
@@ -25,6 +27,7 @@ export function BoostButton({ listing }: Props) {
   const [ageGroup, setAgeGroup] = useState<string>(listing.ageGroup ?? ANY);
   const [gender, setGender] = useState<string>(ANY);
   const boosted = isBoosted(listing.id, boosts);
+  const durationDays = isGrowth ? 7 : 3;
 
   async function handleBoost() {
     if (!user) {
@@ -37,13 +40,14 @@ export function BoostButton({ listing }: Props) {
       await createBoost({
         listingId: listing.id,
         providerUserId: user.id,
+        durationDays,
         city: city.trim() || null,
         category: listing.category,
         ageGroup: ageGroup === ANY ? null : ageGroup,
         gender: gender === ANY ? null : gender,
       });
       await refresh();
-      toast.success("Class boosted for 7 days 🚀");
+      toast.success(`Class boosted for ${durationDays} days 🚀`);
       setOpen(false);
     } catch (e: any) {
       toast.error(e.message ?? "Could not boost");
@@ -111,9 +115,25 @@ export function BoostButton({ listing }: Props) {
             </div>
 
             <div className="rounded-lg border p-3 bg-muted/30 space-y-1 text-sm">
-              <div className="flex justify-between"><span>Duration</span><span className="font-medium">7 days</span></div>
+              <div className="flex justify-between">
+                <span>Plan</span>
+                <span className="font-medium">{isGrowth ? "Growth" : "Starter"}</span>
+              </div>
+              <div className="flex justify-between">
+                <span>Duration</span>
+                <span className="font-medium">{durationDays} days</span>
+              </div>
               <div className="flex justify-between"><span>Price</span><span className="font-bold">₹500</span></div>
-              <p className="text-[11px] text-muted-foreground pt-1">
+              {!isGrowth ? (
+                <p className="text-[11px] text-muted-foreground pt-1 leading-snug">
+                  Starter boosts run for <strong>3 days</strong> at ₹500. Growth members get <strong>7 days</strong> for the same price and rank above Starter boosts in Discover.
+                </p>
+              ) : (
+                <p className="text-[11px] text-muted-foreground pt-1 leading-snug">
+                  Growth boosts run for <strong>7 days</strong> and appear above Starter-plan boosts in Discover.
+                </p>
+              )}
+              <p className="text-[11px] text-muted-foreground italic pt-0.5">
                 Razorpay test mode — payment is bypassed for now.
               </p>
             </div>
