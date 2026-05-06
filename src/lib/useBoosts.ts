@@ -1,6 +1,5 @@
 import { useEffect, useState, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { useAuth } from "@/lib/useAuth";
 
 export interface Boost {
   id: string;
@@ -11,6 +10,7 @@ export interface Boost {
   city: string | null;
   category: string | null;
   age_group: string | null;
+  gender: string | null;
   status: string;
 }
 
@@ -37,9 +37,10 @@ export function useActiveBoosts() {
 export async function createBoost(params: {
   listingId: string;
   providerUserId: string;
-  city?: string;
-  category?: string;
-  ageGroup?: string;
+  city?: string | null;
+  category?: string | null;
+  ageGroup?: string | null;
+  gender?: string | null;
 }) {
   const { error, data } = await supabase
     .from("boosts")
@@ -49,6 +50,7 @@ export async function createBoost(params: {
       city: params.city ?? null,
       category: params.category ?? null,
       age_group: params.ageGroup ?? null,
+      gender: params.gender ?? null,
     })
     .select()
     .single();
