@@ -360,6 +360,8 @@ const ProviderProfilePage = () => {
           </ProviderSection>
         )}
 
+        <SubscriptionPanel />
+
         <SignOutFooter />
       </main>
 
