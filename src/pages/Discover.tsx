@@ -52,7 +52,6 @@ const Discover = () => {
   const requests = useStore((s) => s.requests);
   const { names: categoryNames } = useCategories();
   const { boosts } = useActiveBoosts();
-  const boostedIds = new Set(boosts.map((b) => b.listing_id));
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState<Category | "all">("all");
   const [mode, setMode] = useState<Mode | "all">("all");
