@@ -52,7 +52,6 @@ const Discover = () => {
   const requests = useStore((s) => s.requests);
   const { names: categoryNames } = useCategories();
   const { boosts } = useActiveBoosts();
-  const boostedIds = new Set(boosts.map((b) => b.listing_id));
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState<Category | "all">("all");
   const [mode, setMode] = useState<Mode | "all">("all");
@@ -143,10 +142,24 @@ const Discover = () => {
     } else if (sortBy === "newest") {
       scoredList = [...scoredList].sort((a, b) => (b.listing.createdAt ?? 0) - (a.listing.createdAt ?? 0));
     }
-    // Boosted listings always come first (after other sorts)
+    // Boosted listings (whose targeting matches the learner) always come first
+    const learnerCity = (state.learner.city || "").toLowerCase();
+    const learnerDob = state.learner.dob || "";
+    const learnerAge = learnerDob ? (new Date().getFullYear() - new Date(learnerDob).getFullYear()) : null;
+    const learnerGroup = learnerAge == null ? null : learnerAge < 13 ? "Kids" : learnerAge < 20 ? "Teens" : "Adults";
+    const matchedBoostIds = new Set(
+      boosts.filter((b) => {
+        if (b.city && learnerCity && b.city.toLowerCase() !== learnerCity) return false;
+        if (b.age_group && learnerGroup && b.age_group !== "All" && b.age_group !== learnerGroup) return false;
+        // gender targeting honored if learner profile gender exists
+        const lg = (state.learner as any).gender as string | undefined;
+        if (b.gender && lg && b.gender.toLowerCase() !== lg.toLowerCase()) return false;
+        return true;
+      }).map((b) => b.listing_id),
+    );
     scoredList = [...scoredList].sort((a, b) => {
-      const ab = boostedIds.has(a.listing.id) ? 1 : 0;
-      const bb = boostedIds.has(b.listing.id) ? 1 : 0;
+      const ab = matchedBoostIds.has(a.listing.id) ? 1 : 0;
+      const bb = matchedBoostIds.has(b.listing.id) ? 1 : 0;
       return bb - ab;
     });
     return scoredList;

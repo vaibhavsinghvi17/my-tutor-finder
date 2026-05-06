@@ -2,10 +2,13 @@ import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/useAuth";
+import { useStore } from "@/lib/store";
+import { resolveActiveBoostId, recordEvent } from "@/lib/useEvents";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
-import { MessageCircle, Send, LogIn, X, Maximize2, Minimize2 } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { MessageCircle, Send, LogIn, X, Maximize2, Minimize2, Rocket } from "lucide-react";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 
@@ -14,6 +17,7 @@ interface Msg {
   body: string;
   sender_user_id: string;
   created_at: string;
+  via_boost_id?: string | null;
 }
 
 interface Props {
@@ -40,6 +44,7 @@ export function ClassChat({
   otherPartyName, triggerVariant = "outline", triggerLabel = "Message", floating = false,
 }: Props) {
   const { user } = useAuth();
+  const learner = useStore((s) => s.learner);
   const [open, setOpen] = useState(false);
   const [expanded, setExpanded] = useState(false);
   const [messages, setMessages] = useState<Msg[]>([]);
@@ -61,7 +66,7 @@ export function ClassChat({
     (async () => {
       const { data, error } = await supabase
         .from("messages")
-        .select("id, body, sender_user_id, created_at")
+        .select("id, body, sender_user_id, created_at, via_boost_id")
         .eq("listing_id", listingId)
         .eq("learner_user_id", learnerId!)
         .eq("provider_user_id", providerId!)
@@ -98,6 +103,21 @@ export function ClassChat({
     const text = body.trim();
     if (!text || !user || !learnerId || !providerId) return;
     setSending(true);
+    // If the current user is the learner, attribute this message to an active boost (if any).
+    let viaBoostId: string | null = null;
+    if (user.id === learnerId) {
+      viaBoostId = await resolveActiveBoostId(listingId, {
+        city: learner.city,
+        dob: learner.dob,
+        gender: (learner as any).gender,
+      });
+      // Also log a message_click event so insights pick it up
+      await recordEvent(
+        { id: listingId, providerUserId: providerId, city: learner.city, category: "", ageGroup: "All" } as any,
+        "message_click",
+        { userId: user.id, city: learner.city, dob: learner.dob, gender: (learner as any).gender },
+      );
+    }
     const { error } = await supabase.from("messages").insert({
       listing_id: listingId,
       listing_title: listingTitle,
@@ -105,6 +125,7 @@ export function ClassChat({
       provider_user_id: providerId,
       sender_user_id: user.id,
       body: text,
+      via_boost_id: viaBoostId,
     });
     setSending(false);
     if (error) { toast.error(error.message); return; }
@@ -137,8 +158,16 @@ export function ClassChat({
             )}
             {messages.map((m) => {
               const mine = m.sender_user_id === user.id;
+              const fromBoost = !!m.via_boost_id;
+              // Show the boost badge to the provider on incoming learner messages.
+              const showBoostBadge = fromBoost && !mine && user.id === providerId;
               return (
-                <div key={m.id} className={cn("flex", mine ? "justify-end" : "justify-start")}>
+                <div key={m.id} className={cn("flex flex-col gap-0.5", mine ? "items-end" : "items-start")}>
+                  {showBoostBadge && (
+                    <Badge className="gap-1 bg-primary/10 text-primary border-0 text-[10px] py-0 px-1.5">
+                      <Rocket className="h-2.5 w-2.5" /> from Boost
+                    </Badge>
+                  )}
                   <div
                     className={cn(
                       "max-w-[80%] rounded-2xl px-3 py-1.5 text-sm",

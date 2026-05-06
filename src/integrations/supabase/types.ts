@@ -21,6 +21,7 @@ export type Database = {
           city: string | null
           created_at: string
           expires_at: string
+          gender: string | null
           id: string
           listing_id: string
           provider_user_id: string
@@ -33,6 +34,7 @@ export type Database = {
           city?: string | null
           created_at?: string
           expires_at?: string
+          gender?: string | null
           id?: string
           listing_id: string
           provider_user_id: string
@@ -45,6 +47,7 @@ export type Database = {
           city?: string | null
           created_at?: string
           expires_at?: string
+          gender?: string | null
           id?: string
           listing_id?: string
           provider_user_id?: string
@@ -80,6 +83,45 @@ export type Database = {
         }
         Relationships: []
       }
+      listing_events: {
+        Row: {
+          created_at: string
+          event_type: string
+          id: string
+          listing_id: string
+          provider_user_id: string
+          via_boost_id: string | null
+          viewer_age_group: string | null
+          viewer_city: string | null
+          viewer_gender: string | null
+          viewer_user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          event_type: string
+          id?: string
+          listing_id: string
+          provider_user_id: string
+          via_boost_id?: string | null
+          viewer_age_group?: string | null
+          viewer_city?: string | null
+          viewer_gender?: string | null
+          viewer_user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          event_type?: string
+          id?: string
+          listing_id?: string
+          provider_user_id?: string
+          via_boost_id?: string | null
+          viewer_age_group?: string | null
+          viewer_city?: string | null
+          viewer_gender?: string | null
+          viewer_user_id?: string | null
+        }
+        Relationships: []
+      }
       messages: {
         Row: {
           body: string
@@ -90,6 +132,7 @@ export type Database = {
           listing_title: string | null
           provider_user_id: string
           sender_user_id: string
+          via_boost_id: string | null
         }
         Insert: {
           body: string
@@ -100,6 +143,7 @@ export type Database = {
           listing_title?: string | null
           provider_user_id: string
           sender_user_id: string
+          via_boost_id?: string | null
         }
         Update: {
           body?: string
@@ -110,6 +154,7 @@ export type Database = {
           listing_title?: string | null
           provider_user_id?: string
           sender_user_id?: string
+          via_boost_id?: string | null
         }
         Relationships: []
       }
@@ -118,6 +163,7 @@ export type Database = {
           avatar_url: string | null
           created_at: string
           display_name: string | null
+          gender: string | null
           id: string
           subscription_expires_at: string | null
           subscription_tier: string
@@ -128,6 +174,7 @@ export type Database = {
           avatar_url?: string | null
           created_at?: string
           display_name?: string | null
+          gender?: string | null
           id?: string
           subscription_expires_at?: string | null
           subscription_tier?: string
@@ -138,6 +185,7 @@ export type Database = {
           avatar_url?: string | null
           created_at?: string
           display_name?: string | null
+          gender?: string | null
           id?: string
           subscription_expires_at?: string | null
           subscription_tier?: string

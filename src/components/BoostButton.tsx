@@ -1,21 +1,29 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Rocket } from "lucide-react";
 import { toast } from "sonner";
 import { createBoost, useActiveBoosts, isBoosted } from "@/lib/useBoosts";
 import { useAuth } from "@/lib/useAuth";
-import { Listing } from "@/lib/types";
+import { Listing, AGE_GROUPS } from "@/lib/types";
 
 interface Props {
   listing: Listing;
 }
+
+const ANY = "__any__";
 
 export function BoostButton({ listing }: Props) {
   const { user } = useAuth();
   const { boosts, refresh } = useActiveBoosts();
   const [open, setOpen] = useState(false);
   const [busy, setBusy] = useState(false);
+  const [city, setCity] = useState(listing.city ?? "");
+  const [ageGroup, setAgeGroup] = useState<string>(listing.ageGroup ?? ANY);
+  const [gender, setGender] = useState<string>(ANY);
   const boosted = isBoosted(listing.id, boosts);
 
   async function handleBoost() {
@@ -29,9 +37,10 @@ export function BoostButton({ listing }: Props) {
       await createBoost({
         listingId: listing.id,
         providerUserId: user.id,
-        city: listing.city,
+        city: city.trim() || null,
         category: listing.category,
-        ageGroup: listing.ageGroup,
+        ageGroup: ageGroup === ANY ? null : ageGroup,
+        gender: gender === ANY ? null : gender,
       });
       await refresh();
       toast.success("Class boosted for 7 days 🚀");
@@ -61,18 +70,55 @@ export function BoostButton({ listing }: Props) {
           <DialogHeader>
             <DialogTitle>Boost this class</DialogTitle>
             <DialogDescription>
-              Pin <strong>{listing.title}</strong> to the top of Discover for learners in{" "}
-              <strong>{listing.city || "your city"}</strong> looking for{" "}
-              <strong>{listing.category}</strong> classes for <strong>{listing.ageGroup}</strong>.
+              Pin <strong>{listing.title}</strong> to the top of Discover for the audience you choose.
+              Leave a field blank / Any to reach everyone.
             </DialogDescription>
           </DialogHeader>
-          <div className="rounded-lg border p-3 bg-muted/30 space-y-1 text-sm">
-            <div className="flex justify-between"><span>Duration</span><span className="font-medium">7 days</span></div>
-            <div className="flex justify-between"><span>Price</span><span className="font-bold">₹500</span></div>
-            <p className="text-[11px] text-muted-foreground pt-1">
-              Razorpay test mode — payment is bypassed for now.
-            </p>
+
+          <div className="space-y-3">
+            <div className="space-y-1.5">
+              <Label htmlFor="boost-city" className="text-xs">Target city</Label>
+              <Input
+                id="boost-city"
+                value={city}
+                onChange={(e) => setCity(e.target.value)}
+                placeholder="Any city"
+              />
+            </div>
+            <div className="grid grid-cols-2 gap-3">
+              <div className="space-y-1.5">
+                <Label className="text-xs">Age group</Label>
+                <Select value={ageGroup} onValueChange={setAgeGroup}>
+                  <SelectTrigger><SelectValue /></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value={ANY}>Any</SelectItem>
+                    {AGE_GROUPS.map((a) => <SelectItem key={a} value={a}>{a}</SelectItem>)}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-1.5">
+                <Label className="text-xs">Gender</Label>
+                <Select value={gender} onValueChange={setGender}>
+                  <SelectTrigger><SelectValue /></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value={ANY}>Any</SelectItem>
+                    <SelectItem value="female">Female</SelectItem>
+                    <SelectItem value="male">Male</SelectItem>
+                    <SelectItem value="other">Other</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+
+            <div className="rounded-lg border p-3 bg-muted/30 space-y-1 text-sm">
+              <div className="flex justify-between"><span>Duration</span><span className="font-medium">7 days</span></div>
+              <div className="flex justify-between"><span>Price</span><span className="font-bold">₹500</span></div>
+              <p className="text-[11px] text-muted-foreground pt-1">
+                Razorpay test mode — payment is bypassed for now.
+              </p>
+            </div>
           </div>
+
           <DialogFooter>
             <Button variant="outline" onClick={() => setOpen(false)} disabled={busy}>Cancel</Button>
             <Button onClick={handleBoost} disabled={busy} className="gap-1.5">

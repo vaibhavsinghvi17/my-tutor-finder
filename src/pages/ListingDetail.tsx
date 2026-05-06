@@ -25,6 +25,7 @@ import { formatDuration, formatPrice } from "@/lib/listingUtils";
 import { useFxRates } from "@/lib/useFxRates";
 import { useAuth } from "@/lib/useAuth";
 import { toast } from "sonner";
+import { recordEvent } from "@/lib/useEvents";
 
 const ListingDetail = () => {
   const { id } = useParams();
@@ -70,6 +71,18 @@ const ListingDetail = () => {
     setVerifyOpen(!verified);
   }, [verified]);
 
+  // Track a 'view' event for insights & boost attribution
+  useEffect(() => {
+    if (!listing) return;
+    recordEvent(listing, "view", {
+      userId: user?.id,
+      city: learner.city,
+      dob: learner.dob,
+      gender: (learner as any).gender,
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [listing?.id, user?.id]);
+
   const activeKid = learner.activeKidId ? learner.kids.find((k) => k.id === learner.activeKidId) : null;
   const freeSlots = blocksToSlots(activeKid ? activeKid.freeBlocks : learner.freeBlocks);
   const allSlots = [...listing.slots, ...((listing.onlineSlots ?? []) as typeof listing.slots)];
@@ -98,6 +111,12 @@ const ListingDetail = () => {
       note: finalNote,
       isTrial,
     } as any);
+    recordEvent(listing!, "request_click", {
+      userId: user?.id,
+      city: learner.city,
+      dob: learner.dob,
+      gender: (learner as any).gender,
+    });
     toast.success(isTrial ? "Trial class request sent!" : "Request sent! The provider will reply soon.");
     navigate("/requests");
   }
@@ -131,7 +150,10 @@ const ListingDetail = () => {
             </div>
           </div>
           {hasContact && (
-            <div className="rounded-lg bg-background/95 backdrop-blur-sm p-1.5 shadow-sm flex items-center gap-1.5 flex-wrap">
+            <div
+              className="rounded-lg bg-background/95 backdrop-blur-sm p-1.5 shadow-sm flex items-center gap-1.5 flex-wrap"
+              onClickCapture={() => recordEvent(listing!, "contact_click", { userId: user?.id, city: learner.city, dob: learner.dob, gender: (learner as any).gender })}
+            >
               <ContactActions contact={contact} fallbackAddress={contactFallback} size="sm" />
             </div>
           )}
