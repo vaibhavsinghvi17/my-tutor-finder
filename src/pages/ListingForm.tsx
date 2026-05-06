@@ -24,6 +24,7 @@ import { store, useStore } from "@/lib/store";
 import { VerifyProfileDialog } from "@/components/VerifyProfileDialog";
 
 import { toast } from "sonner";
+import { useSubscription } from "@/lib/useSubscription";
 
 const ListingForm = () => {
   const { id } = useParams();
@@ -100,6 +101,15 @@ const ListingForm = () => {
   function save(asDraft = false) {
     if (!verified) { setVerifyOpen(true); return; }
     if (!title.trim()) return toast.error("Add a title");
+    // Starter plan limit: only 1 active (non-draft) class.
+    if (!asDraft && !isGrowth) {
+      const activeCount = allListings.filter((l) => !l.draft && l.id !== existing?.id).length;
+      if (activeCount >= 1) {
+        toast.error("Starter plan allows 1 active class. Upgrade to Growth for unlimited classes.");
+        navigate("/pricing");
+        return;
+      }
+    }
     if (!asDraft) {
       if (!description.trim()) return toast.error("Add a description");
       if (mode !== "Online") {
