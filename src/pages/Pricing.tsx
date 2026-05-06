@@ -9,10 +9,11 @@ import { useAuth } from "@/lib/useAuth";
 import { toast } from "sonner";
 
 const STARTER = [
-  "Up to 2 active classes",
+  "1 active class",
   "Receive learner requests",
   "Limited learner contact (name + city only)",
   "Standard listing position in Discover",
+  "Boost add-on: ₹500 for 3 days",
 ];
 
 const GROWTH = [
@@ -20,8 +21,9 @@ const GROWTH = [
   "Full learner contact details (phone, email, address)",
   "Verified tutor badge",
   "Priority listing in Discover",
+  "Insights dashboard (views, clicks, audience)",
   "Pending message inbox",
-  "Boost add-on available (₹500 / 7 days)",
+  "Boost add-on: ₹500 for 7 days — ranks above Starter boosts",
 ];
 
 export default function Pricing() {
