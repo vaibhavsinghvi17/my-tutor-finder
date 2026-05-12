@@ -54,6 +54,7 @@ const LearnerDashboard = () => {
           </div>
         </div>
 
+        <PendingTrials side="learner" />
         <UpcomingTrials side="learner" />
 
         <section className="grid gap-3 grid-cols-2 lg:grid-cols-4">
