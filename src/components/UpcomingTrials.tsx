@@ -1,11 +1,13 @@
 import { Link } from "react-router-dom";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { ClassChat } from "@/components/ClassChat";
-import { CalendarClock, Sparkles } from "lucide-react";
-import { useStore, getAllListings } from "@/lib/store";
+import { CalendarClock, Sparkles, X } from "lucide-react";
+import { store, useStore, getAllListings } from "@/lib/store";
 import { JoinRequest, SlotKey } from "@/lib/types";
 import { fmtHour } from "@/lib/timeUtils";
+import { toast } from "sonner";
 
 function parseSlot(slot: SlotKey): { day: string; hour: number } {
   const [day, h] = String(slot).split("-");
@@ -77,29 +79,43 @@ export function UpcomingTrials({ side }: Props) {
                   {req.startDate ? `${req.startDate} · ` : ""}{day} · {fmtHour(hour)}
                 </div>
               </div>
-              {side === "learner" ? (
-                listing?.providerUserId ? (
-                  <ClassChat
-                    listingId={req.listingId}
-                    listingTitle={listing?.title || "Class"}
-                    providerUserId={listing.providerUserId}
-                    otherPartyName={listing?.providerName || "Tutor"}
-                    triggerVariant="outline"
-                    triggerLabel="Chat"
-                  />
-                ) : null
-              ) : (
-                req.learnerUserId ? (
-                  <ClassChat
-                    listingId={req.listingId}
-                    listingTitle={listing?.title || "Class"}
-                    learnerUserId={req.learnerUserId}
-                    otherPartyName={otherName}
-                    triggerVariant="outline"
-                    triggerLabel="Chat"
-                  />
-                ) : null
-              )}
+              <div className="flex items-center gap-1 shrink-0">
+                {side === "learner"
+                  ? listing?.providerUserId && (
+                      <ClassChat
+                        listingId={req.listingId}
+                        listingTitle={listing?.title || "Class"}
+                        providerUserId={listing.providerUserId}
+                        otherPartyName={listing?.providerName || "Tutor"}
+                        triggerVariant="outline"
+                        triggerLabel="Chat"
+                      />
+                    )
+                  : req.learnerUserId && (
+                      <ClassChat
+                        listingId={req.listingId}
+                        listingTitle={listing?.title || "Class"}
+                        learnerUserId={req.learnerUserId}
+                        otherPartyName={otherName}
+                        triggerVariant="outline"
+                        triggerLabel="Chat"
+                      />
+                    )}
+                <Button
+                  size="icon"
+                  variant="ghost"
+                  className="h-8 w-8 text-muted-foreground hover:text-destructive"
+                  title="Remove this request"
+                  onClick={() => {
+                    if (confirm(`Remove this trial request for "${listing?.title || "this class"}"?`)) {
+                      (store as any).removeRequest(req.id);
+                      toast.success("Request removed");
+                    }
+                  }}
+                >
+                  <X className="h-4 w-4" />
+                </Button>
+              </div>
             </div>
           );
         })}
