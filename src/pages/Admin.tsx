@@ -496,3 +496,155 @@ function CategoriesTab() {
     </div>
   );
 }
+
+/* -------------------------------- Reports -------------------------------- */
+
+interface ReportRow {
+  id: string;
+  reporter_user_id: string;
+  reporter_name: string | null;
+  target_type: string;
+  target_id: string;
+  reason: string;
+  details: string | null;
+  status: string;
+  admin_notes: string | null;
+  created_at: string;
+}
+
+function ReportsTab() {
+  const [rows, setRows] = useState<ReportRow[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [filter, setFilter] = useState<string>("open");
+  const [editing, setEditing] = useState<ReportRow | null>(null);
+
+  async function refresh() {
+    setLoading(true);
+    let q = supabase.from("reports").select("*").order("created_at", { ascending: false }).limit(200);
+    if (filter !== "all") q = q.eq("status", filter);
+    const { data } = await q;
+    setRows((data as ReportRow[]) ?? []);
+    setLoading(false);
+  }
+  useEffect(() => { refresh(); /* eslint-disable-next-line */ }, [filter]);
+
+  function targetLink(r: ReportRow) {
+    if (r.target_type === "listing") return <Link to={`/listing/${r.target_id}`} className="text-primary underline">View listing</Link>;
+    return <span className="text-muted-foreground">{r.target_type}: {r.target_id.slice(0, 8)}…</span>;
+  }
+
+  return (
+    <div className="space-y-3">
+      <div className="flex items-center justify-between gap-2">
+        <Select value={filter} onValueChange={setFilter}>
+          <SelectTrigger className="w-40"><SelectValue /></SelectTrigger>
+          <SelectContent>
+            <SelectItem value="open">Open</SelectItem>
+            <SelectItem value="reviewing">Reviewing</SelectItem>
+            <SelectItem value="resolved">Resolved</SelectItem>
+            <SelectItem value="dismissed">Dismissed</SelectItem>
+            <SelectItem value="all">All</SelectItem>
+          </SelectContent>
+        </Select>
+        <div className="text-xs text-muted-foreground">{rows.length} report{rows.length === 1 ? "" : "s"}</div>
+      </div>
+
+      {loading ? (
+        <div className="text-sm text-muted-foreground">Loading…</div>
+      ) : (
+        <div className="space-y-2">
+          {rows.map((r) => (
+            <Card key={r.id} className="p-3 space-y-1.5">
+              <div className="flex items-center gap-2 flex-wrap">
+                <Badge variant="outline" className="text-[10px] capitalize">{r.target_type}</Badge>
+                <Badge variant="outline" className="text-[10px] capitalize">{r.reason}</Badge>
+                <Badge
+                  variant={r.status === "open" ? "destructive" : r.status === "resolved" ? "default" : "outline"}
+                  className="text-[10px] capitalize"
+                >
+                  {r.status}
+                </Badge>
+                <span className="text-[11px] text-muted-foreground ml-auto">
+                  {new Date(r.created_at).toLocaleString()}
+                </span>
+              </div>
+              {r.details && <p className="text-sm">{r.details}</p>}
+              <div className="flex items-center justify-between gap-2 text-[11px] text-muted-foreground">
+                <span>Reported by {r.reporter_name ?? "user"} · {targetLink(r)}</span>
+                <Button size="sm" variant="outline" onClick={() => setEditing(r)}>Manage</Button>
+              </div>
+            </Card>
+          ))}
+          {rows.length === 0 && <div className="text-sm text-muted-foreground py-6 text-center">No reports.</div>}
+        </div>
+      )}
+
+      {editing && <ReportEditDialog row={editing} onClose={() => setEditing(null)} onSaved={() => { setEditing(null); refresh(); }} />}
+    </div>
+  );
+}
+
+function ReportEditDialog({ row, onClose, onSaved }: { row: ReportRow; onClose: () => void; onSaved: () => void }) {
+  const [status, setStatus] = useState(row.status);
+  const [notes, setNotes] = useState(row.admin_notes ?? "");
+  const [busy, setBusy] = useState(false);
+
+  async function save() {
+    setBusy(true);
+    const { error } = await supabase
+      .from("reports")
+      .update({ status, admin_notes: notes.trim() || null })
+      .eq("id", row.id);
+    setBusy(false);
+    if (error) return toast.error(error.message);
+    toast.success("Report updated");
+    onSaved();
+  }
+
+  async function remove() {
+    if (!confirm("Delete this report?")) return;
+    const { error } = await supabase.from("reports").delete().eq("id", row.id);
+    if (error) return toast.error(error.message);
+    toast.success("Report deleted");
+    onSaved();
+  }
+
+  return (
+    <Dialog open onOpenChange={onClose}>
+      <DialogContent className="max-w-md">
+        <DialogHeader><DialogTitle>Manage report</DialogTitle></DialogHeader>
+        <div className="space-y-3">
+          <div className="text-xs space-y-0.5">
+            <div><span className="text-muted-foreground">Target:</span> {row.target_type} <span className="font-mono">{row.target_id}</span></div>
+            <div><span className="text-muted-foreground">Reason:</span> <span className="capitalize">{row.reason}</span></div>
+            <div><span className="text-muted-foreground">Reporter:</span> {row.reporter_name ?? row.reporter_user_id.slice(0, 8)}</div>
+          </div>
+          {row.details && <div className="rounded border p-2 text-sm bg-muted/30">{row.details}</div>}
+          <div className="space-y-1.5">
+            <Label className="text-xs">Status</Label>
+            <Select value={status} onValueChange={setStatus}>
+              <SelectTrigger><SelectValue /></SelectTrigger>
+              <SelectContent>
+                <SelectItem value="open">Open</SelectItem>
+                <SelectItem value="reviewing">Reviewing</SelectItem>
+                <SelectItem value="resolved">Resolved</SelectItem>
+                <SelectItem value="dismissed">Dismissed</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          <div className="space-y-1.5">
+            <Label className="text-xs">Internal notes</Label>
+            <Textarea value={notes} onChange={(e) => setNotes(e.target.value)} rows={3} placeholder="What action did you take?" />
+          </div>
+        </div>
+        <DialogFooter>
+          <Button variant="ghost" className="text-destructive mr-auto" onClick={remove} disabled={busy}>
+            <Trash2 className="h-4 w-4" />
+          </Button>
+          <Button variant="outline" onClick={onClose} disabled={busy}>Close</Button>
+          <Button onClick={save} disabled={busy}>{busy ? "Saving…" : "Save"}</Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+}
