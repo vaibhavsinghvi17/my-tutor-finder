@@ -63,6 +63,34 @@ const Discover = () => {
   const [viewMode, setViewMode] = useState<"interests" | "all">("all");
   // Pin code is auto-derived from learner profile (no manual filter input)
   const pinFilter = state.learner.pinCode ?? "";
+  const [aiQuery, setAiQuery] = useState("");
+  const [aiLoading, setAiLoading] = useState(false);
+
+  async function runAiSearch() {
+    if (!aiQuery.trim()) return;
+    setAiLoading(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("ai-listing", {
+        body: { action: "parse-search", query: aiQuery.trim(), categories: allCategories },
+      });
+      if (error) throw error;
+      if ((data as any)?.error) throw new Error((data as any).error);
+      const f = (data as any)?.filters ?? {};
+      setQuery(typeof f.keywords === "string" ? f.keywords : "");
+      if (f.category && allCategories.includes(f.category)) setCategory(f.category);
+      else setCategory("all");
+      if (f.mode === "Online" || f.mode === "Offline") setMode(f.mode);
+      else setMode("all");
+      if (["morning", "afternoon", "evening", "all"].includes(f.timeOfDay)) setTimeOfDay(f.timeOfDay);
+      else setTimeOfDay("all");
+      setViewMode("all");
+      toast.success("Filters updated from your request");
+    } catch (e: any) {
+      toast.error(e?.message || "AI search failed");
+    } finally {
+      setAiLoading(false);
+    }
+  }
 
   const allListings = getAllListings();
   const allCategories = Array.from(new Set([...categoryNames, ...CATEGORIES])).sort();
