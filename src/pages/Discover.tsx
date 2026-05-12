@@ -10,11 +10,13 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
-import { Search, UserCircle2, Baby, Plus, MapPin, Home, Globe2, Clock, SlidersHorizontal, Check, ArrowLeft } from "lucide-react";
+import { Search, UserCircle2, Baby, Plus, MapPin, Home, Globe2, Clock, SlidersHorizontal, Check, ArrowLeft, Sparkles, Loader2 } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { Card } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import { useActiveBoosts } from "@/lib/useBoosts";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
 
 import {
   DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel,
@@ -61,6 +63,34 @@ const Discover = () => {
   const [viewMode, setViewMode] = useState<"interests" | "all">("all");
   // Pin code is auto-derived from learner profile (no manual filter input)
   const pinFilter = state.learner.pinCode ?? "";
+  const [aiQuery, setAiQuery] = useState("");
+  const [aiLoading, setAiLoading] = useState(false);
+
+  async function runAiSearch() {
+    if (!aiQuery.trim()) return;
+    setAiLoading(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("ai-listing", {
+        body: { action: "parse-search", query: aiQuery.trim(), categories: allCategories },
+      });
+      if (error) throw error;
+      if ((data as any)?.error) throw new Error((data as any).error);
+      const f = (data as any)?.filters ?? {};
+      setQuery(typeof f.keywords === "string" ? f.keywords : "");
+      if (f.category && allCategories.includes(f.category)) setCategory(f.category);
+      else setCategory("all");
+      if (f.mode === "Online" || f.mode === "Offline") setMode(f.mode);
+      else setMode("all");
+      if (["morning", "afternoon", "evening", "all"].includes(f.timeOfDay)) setTimeOfDay(f.timeOfDay);
+      else setTimeOfDay("all");
+      setViewMode("all");
+      toast.success("Filters updated from your request");
+    } catch (e: any) {
+      toast.error(e?.message || "AI search failed");
+    } finally {
+      setAiLoading(false);
+    }
+  }
 
   const allListings = getAllListings();
   const allCategories = Array.from(new Set([...categoryNames, ...CATEGORIES])).sort();
@@ -250,6 +280,28 @@ const Discover = () => {
             </span>
           </button>
         </div>
+
+        <Card className="p-3 sm:p-4 bg-gradient-hero border-primary/20 space-y-2">
+          <div className="flex items-center gap-1.5 text-sm font-semibold">
+            <Sparkles className="h-4 w-4 text-primary" />
+            Find a class with AI
+          </div>
+          <p className="text-xs text-muted-foreground">
+            Try "guitar lessons for my 8-year-old on weekend mornings" or "online French class for adults".
+          </p>
+          <div className="flex gap-2">
+            <Input
+              placeholder="Describe what you're looking for…"
+              value={aiQuery}
+              onChange={(e) => setAiQuery(e.target.value)}
+              onKeyDown={(e) => { if (e.key === "Enter") runAiSearch(); }}
+            />
+            <Button onClick={runAiSearch} disabled={aiLoading || !aiQuery.trim()} className="gap-1.5 shrink-0">
+              {aiLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Sparkles className="h-4 w-4" />}
+              {aiLoading ? "Finding…" : "Find"}
+            </Button>
+          </div>
+        </Card>
 
         <section className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
           <div className="relative sm:col-span-2 lg:col-span-1">

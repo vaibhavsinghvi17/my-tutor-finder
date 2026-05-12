@@ -19,9 +19,11 @@ import { Combobox } from "@/components/Combobox";
 import { AGE_GROUPS, AgeGroup, Category, Mode, PriceUnit, SeatInfo, SlotKey } from "@/lib/types";
 import { useCategories } from "@/lib/useCategories";
 import { useAuth } from "@/lib/useAuth";
-import { Plus, Globe2, Users, Wifi, MapPin, Locate } from "lucide-react";
+import { Plus, Globe2, Users, Wifi, MapPin, Locate, Sparkles, Loader2 } from "lucide-react";
 import { store, useStore } from "@/lib/store";
 import { VerifyProfileDialog } from "@/components/VerifyProfileDialog";
+import { FliersUploader } from "@/components/FliersUploader";
+import { supabase } from "@/integrations/supabase/client";
 
 import { toast } from "sonner";
 import { useSubscription } from "@/lib/useSubscription";
@@ -73,6 +75,35 @@ const ListingForm = () => {
   const [continuous, setContinuous] = useState<boolean>(existing?.continuous ?? !existing?.endDate);
   const [startDate, setStartDate] = useState<string>(existing?.startDate ?? "");
   const [endDate, setEndDate] = useState<string>(existing?.endDate ?? "");
+  const [fliers, setFliers] = useState<string[]>(existing?.fliers ?? []);
+  const [aiLoading, setAiLoading] = useState(false);
+
+  async function generateDescription() {
+    if (!title.trim()) { toast.error("Add a title first so AI knows what to write"); return; }
+    setAiLoading(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("ai-listing", {
+        body: {
+          action: "generate-description",
+          title: title.trim(),
+          category, ageGroup, mode,
+          languages,
+          durationMins: Number(durationMins) || undefined,
+          extra: description.trim() || undefined,
+        },
+      });
+      if (error) throw error;
+      if ((data as any)?.error) throw new Error((data as any).error);
+      const text = (data as any)?.description?.trim();
+      if (!text) throw new Error("No description generated");
+      setDescription(text.slice(0, 800));
+      toast.success("Description generated — edit as you like");
+    } catch (e: any) {
+      toast.error(e?.message || "Could not generate description");
+    } finally {
+      setAiLoading(false);
+    }
+  }
 
   // Bracket span = full hours of duration (1-5). For 30/45/75/90, round to nearest hour, min 1.
   const slotHours = Math.max(1, Math.min(5, Math.round((Number(durationMins) || 60) / 60)));
@@ -164,6 +195,7 @@ const ListingForm = () => {
       endDate: continuous ? undefined : (endDate || undefined),
       continuous,
       draft: asDraft || undefined,
+      fliers: fliers.length ? fliers : undefined,
     };
 
     if (id && existing) {
@@ -202,12 +234,25 @@ const ListingForm = () => {
             />
           </div>
           <div className="space-y-1.5">
-            <Label>Description</Label>
+            <div className="flex items-center justify-between gap-2">
+              <Label>Description</Label>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                className="h-7 gap-1.5 text-xs"
+                onClick={generateDescription}
+                disabled={aiLoading}
+              >
+                {aiLoading ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Sparkles className="h-3.5 w-3.5 text-primary" />}
+                {aiLoading ? "Writing…" : "Write with AI"}
+              </Button>
+            </div>
             <Textarea
               value={description}
               onChange={(e) => setDescription(e.target.value.slice(0, 800))}
               rows={4}
-              placeholder="What will learners do? Who is it for?"
+              placeholder="What will learners do? Who is it for? Tap 'Write with AI' to draft from your title."
             />
           </div>
 
@@ -511,6 +556,11 @@ const ListingForm = () => {
           </div>
 
           <LanguagesEditor value={languages} onChange={setLanguages} />
+
+          <div className="space-y-2">
+            <Label className="text-sm">Class fliers (optional)</Label>
+            <FliersUploader value={fliers} onChange={setFliers} max={4} />
+          </div>
 
           <div className="flex items-center justify-between rounded-lg border p-3">
             <div>
