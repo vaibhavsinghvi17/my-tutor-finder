@@ -234,12 +234,25 @@ const ListingForm = () => {
             />
           </div>
           <div className="space-y-1.5">
-            <Label>Description</Label>
+            <div className="flex items-center justify-between gap-2">
+              <Label>Description</Label>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                className="h-7 gap-1.5 text-xs"
+                onClick={generateDescription}
+                disabled={aiLoading}
+              >
+                {aiLoading ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Sparkles className="h-3.5 w-3.5 text-primary" />}
+                {aiLoading ? "Writing…" : "Write with AI"}
+              </Button>
+            </div>
             <Textarea
               value={description}
               onChange={(e) => setDescription(e.target.value.slice(0, 800))}
               rows={4}
-              placeholder="What will learners do? Who is it for?"
+              placeholder="What will learners do? Who is it for? Tap 'Write with AI' to draft from your title."
             />
           </div>
 
