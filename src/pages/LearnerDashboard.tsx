@@ -7,6 +7,7 @@ import { useStore, getAllListings } from "@/lib/store";
 import {
   Bookmark, GraduationCap, Hourglass, Star, UserCircle2, Search, ArrowRight,
 } from "lucide-react";
+import { UpcomingTrials } from "@/components/UpcomingTrials";
 
 const LearnerDashboard = () => {
   const learner = useStore((s) => s.learner);
@@ -51,6 +52,8 @@ const LearnerDashboard = () => {
             </Button>
           </div>
         </div>
+
+        <UpcomingTrials side="learner" />
 
         <section className="grid gap-3 grid-cols-2 lg:grid-cols-4">
           <Link to="/dashboard/joined" className="block group">
