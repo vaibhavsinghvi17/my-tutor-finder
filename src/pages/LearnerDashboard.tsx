@@ -8,6 +8,7 @@ import {
   Bookmark, GraduationCap, Hourglass, Star, UserCircle2, Search, ArrowRight,
 } from "lucide-react";
 import { UpcomingTrials } from "@/components/UpcomingTrials";
+import { PendingTrials } from "@/components/PendingTrials";
 
 const LearnerDashboard = () => {
   const learner = useStore((s) => s.learner);
