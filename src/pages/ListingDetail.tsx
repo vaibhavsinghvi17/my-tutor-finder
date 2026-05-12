@@ -38,22 +38,19 @@ const ListingDetail = () => {
   const mode = useStore((s) => s.mode);
   const { user } = useAuth();
   const fxRates = useFxRates();
-  const allRatings = useStore((s) => s.ratings);
   const allRequests = useStore((s) => s.requests);
-  const ratings = id ? allRatings.filter((r) => r.listingId === id) : [];
   const all = [...store.get().listings, ...SEED_LISTINGS];
   const listing = all.find((l) => l.id === id);
+  const { reviews: dbReviews, avg: dbAvg, count: dbCount } = useListingReviews(listing?.id);
   const requestCount = id ? allRequests.filter((r) => r.listingId === id).length : 0;
   const seedInteractions = listing && listing.providerId.startsWith("seed-")
     ? ((listing.id.charCodeAt(listing.id.length - 1) * 7) % 40) + 5
     : 0;
-  const interactions = requestCount + ratings.length + seedInteractions;
+  const interactions = requestCount + dbCount + seedInteractions;
 
   const [slot, setSlot] = useState<SlotKey | "">("");
   const [note, setNote] = useState("");
   const [isTrial, setIsTrial] = useState(false);
-  const [reviewStars, setReviewStars] = useState(0);
-  const [reviewText, setReviewText] = useState("");
 
   if (!listing) {
     return (
