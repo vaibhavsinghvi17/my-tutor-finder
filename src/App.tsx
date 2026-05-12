@@ -20,6 +20,7 @@ import ListingForm from "./pages/ListingForm";
 import Auth from "./pages/Auth";
 import Pricing from "./pages/Pricing";
 import Insights from "./pages/Insights";
+import Admin from "./pages/Admin";
 import NotFound from "./pages/NotFound.tsx";
 import ScrollToTop from "./components/ScrollToTop";
 
@@ -51,6 +52,7 @@ const App = () => (
           <Route path="/provider/listing/:id" element={<ListingForm />} />
           <Route path="/pricing" element={<Pricing />} />
           <Route path="/provider/insights" element={<Insights />} />
+          <Route path="/admin" element={<Admin />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
