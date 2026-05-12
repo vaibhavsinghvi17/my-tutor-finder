@@ -13,6 +13,7 @@ import { toast } from "sonner";
 import { BoostButton } from "@/components/BoostButton";
 import { useSubscription } from "@/lib/useSubscription";
 import { Sparkles } from "lucide-react";
+import { UpcomingTrials } from "@/components/UpcomingTrials";
 
 const ProviderDashboard = () => {
   const [viewing, setViewing] = useState<JoinRequest | null>(null);
@@ -91,6 +92,8 @@ const ProviderDashboard = () => {
             </Badge>
           </Link>
         </div>
+
+        <UpcomingTrials side="provider" />
 
         {/* At-a-glance stats */}
         <section className="grid gap-3 grid-cols-2 lg:grid-cols-3">
