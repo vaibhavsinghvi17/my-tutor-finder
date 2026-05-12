@@ -28,6 +28,7 @@ import { UsernameInput } from "@/components/UsernameInput";
 import { InterestPicker } from "@/components/InterestPicker";
 import { VerifyContact } from "@/components/VerifyContact";
 import { PinCodeInput } from "@/components/PinCodeInput";
+import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/useAuth";
 
@@ -108,6 +109,7 @@ const LearnerProfilePage = () => {
           >
             <ArrowLeft className="h-3.5 w-3.5" /> Profiles
           </button>
+          <LanguageSwitcher compact />
         </div>
 
         {/* Header */}

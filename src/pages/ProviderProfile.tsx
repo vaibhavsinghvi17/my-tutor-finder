@@ -22,6 +22,7 @@ import { AddressFields } from "@/components/AddressFields";
 import { SocialLinksRow } from "@/components/SocialLinksRow";
 import { ContactActions } from "@/components/ContactActions";
 import { PinCodeInput } from "@/components/PinCodeInput";
+import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { UseMyLocationButton } from "@/components/UseMyLocationButton";
 import { LanguagesEditor } from "@/components/LanguagesEditor";
 import { InterestPicker } from "@/components/InterestPicker";
@@ -128,6 +129,9 @@ const ProviderProfilePage = () => {
     <div className="min-h-screen">
       <TopBar />
       <main className="container py-4 space-y-4 max-w-3xl">
+        <div className="flex justify-end">
+          <LanguageSwitcher compact />
+        </div>
         {/* Header */}
         <div className="flex items-center gap-3">
           <div className="relative">
