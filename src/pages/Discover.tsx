@@ -281,6 +281,28 @@ const Discover = () => {
           </button>
         </div>
 
+        <Card className="p-3 sm:p-4 bg-gradient-hero border-primary/20 space-y-2">
+          <div className="flex items-center gap-1.5 text-sm font-semibold">
+            <Sparkles className="h-4 w-4 text-primary" />
+            Find a class with AI
+          </div>
+          <p className="text-xs text-muted-foreground">
+            Try "guitar lessons for my 8-year-old on weekend mornings" or "online French class for adults".
+          </p>
+          <div className="flex gap-2">
+            <Input
+              placeholder="Describe what you're looking for…"
+              value={aiQuery}
+              onChange={(e) => setAiQuery(e.target.value)}
+              onKeyDown={(e) => { if (e.key === "Enter") runAiSearch(); }}
+            />
+            <Button onClick={runAiSearch} disabled={aiLoading || !aiQuery.trim()} className="gap-1.5 shrink-0">
+              {aiLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Sparkles className="h-4 w-4" />}
+              {aiLoading ? "Finding…" : "Find"}
+            </Button>
+          </div>
+        </Card>
+
         <section className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
           <div className="relative sm:col-span-2 lg:col-span-1">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
