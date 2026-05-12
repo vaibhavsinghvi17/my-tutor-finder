@@ -19,9 +19,11 @@ import { Combobox } from "@/components/Combobox";
 import { AGE_GROUPS, AgeGroup, Category, Mode, PriceUnit, SeatInfo, SlotKey } from "@/lib/types";
 import { useCategories } from "@/lib/useCategories";
 import { useAuth } from "@/lib/useAuth";
-import { Plus, Globe2, Users, Wifi, MapPin, Locate } from "lucide-react";
+import { Plus, Globe2, Users, Wifi, MapPin, Locate, Sparkles, Loader2 } from "lucide-react";
 import { store, useStore } from "@/lib/store";
 import { VerifyProfileDialog } from "@/components/VerifyProfileDialog";
+import { FliersUploader } from "@/components/FliersUploader";
+import { supabase } from "@/integrations/supabase/client";
 
 import { toast } from "sonner";
 import { useSubscription } from "@/lib/useSubscription";
