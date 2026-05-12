@@ -3,11 +3,10 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ClassChat } from "@/components/ClassChat";
-import { CalendarClock, Sparkles, X } from "lucide-react";
-import { store, useStore, getAllListings } from "@/lib/store";
+import { CalendarClock, Sparkles } from "lucide-react";
+import { useStore, getAllListings } from "@/lib/store";
 import { JoinRequest, SlotKey } from "@/lib/types";
 import { fmtHour } from "@/lib/timeUtils";
-import { toast } from "sonner";
 
 function parseSlot(slot: SlotKey): { day: string; hour: number } {
   const [day, h] = String(slot).split("-");
