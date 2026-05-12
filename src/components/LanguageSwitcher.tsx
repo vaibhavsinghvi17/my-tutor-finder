@@ -1,9 +1,12 @@
 import { useEffect, useState } from "react";
-import { Globe } from "lucide-react";
-import {
-  Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
-} from "@/components/ui/select";
+import { Check, ChevronsUpDown, Globe } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import {
+  Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList,
+} from "@/components/ui/command";
+import { cn } from "@/lib/utils";
 
 // Subset of widely-used Google Translate supported languages.
 // (Google Translate supports 130+ languages; this covers the most common ones.)
@@ -135,6 +138,7 @@ function loadGoogleTranslate() {
 
 export function LanguageSwitcher({ compact = false }: { compact?: boolean }) {
   const [lang, setLang] = useState<string>("en");
+  const [open, setOpen] = useState(false);
 
   useEffect(() => {
     loadGoogleTranslate();
@@ -143,15 +147,12 @@ export function LanguageSwitcher({ compact = false }: { compact?: boolean }) {
 
   function handleChange(code: string) {
     setLang(code);
-    if (code === "en") {
-      // Clear cookie to restore original.
-      setCookie("/en/en");
-    } else {
-      setCookie(`/en/${code}`);
-    }
-    // Reload so the widget picks up the new cookie cleanly.
+    setOpen(false);
+    setCookie(code === "en" ? "/en/en" : `/en/${code}`);
     window.location.reload();
   }
+
+  const current = LANGUAGES.find((l) => l.code === lang) ?? LANGUAGES[0];
 
   return (
     <div className={compact ? "flex items-center gap-2" : "space-y-1.5"}>
@@ -161,18 +162,48 @@ export function LanguageSwitcher({ compact = false }: { compact?: boolean }) {
         </Label>
       )}
       {compact && <Globe className="h-4 w-4 text-muted-foreground shrink-0" />}
-      <Select value={lang} onValueChange={handleChange}>
-        <SelectTrigger className={compact ? "h-8 text-xs w-[160px]" : "h-9 text-sm"}>
-          <SelectValue placeholder="Select language" />
-        </SelectTrigger>
-        <SelectContent className="max-h-[300px]">
-          {LANGUAGES.map((l) => (
-            <SelectItem key={l.code} value={l.code} className="text-sm">
-              {l.label}
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
+      <Popover open={open} onOpenChange={setOpen}>
+        <PopoverTrigger asChild>
+          <Button
+            variant="outline"
+            role="combobox"
+            aria-expanded={open}
+            className={cn(
+              "justify-between font-normal",
+              compact ? "h-8 text-xs w-[170px] px-2.5" : "h-9 text-sm w-full",
+            )}
+          >
+            <span className="truncate">{current.label}</span>
+            <ChevronsUpDown className="ml-2 h-3.5 w-3.5 shrink-0 opacity-50" />
+          </Button>
+        </PopoverTrigger>
+        <PopoverContent className="w-[260px] p-0" align="end">
+          <Command>
+            <CommandInput placeholder="Search language..." className="h-9" />
+            <CommandList>
+              <CommandEmpty>No language found.</CommandEmpty>
+              <CommandGroup>
+                {LANGUAGES.map((l) => (
+                  <CommandItem
+                    key={l.code}
+                    value={l.label + " " + l.code}
+                    onSelect={() => handleChange(l.code)}
+                    className="text-sm"
+                  >
+                    <Check
+                      className={cn(
+                        "mr-2 h-4 w-4",
+                        lang === l.code ? "opacity-100" : "opacity-0",
+                      )}
+                    />
+                    {l.label}
+                  </CommandItem>
+                ))}
+              </CommandGroup>
+            </CommandList>
+          </Command>
+        </PopoverContent>
+      </Popover>
       {!compact && (
         <p className="text-[10px] text-muted-foreground">
           Powered by Google Translate. Switching reloads the page.
@@ -181,3 +212,4 @@ export function LanguageSwitcher({ compact = false }: { compact?: boolean }) {
     </div>
   );
 }
+
