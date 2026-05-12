@@ -557,6 +557,11 @@ const ListingForm = () => {
 
           <LanguagesEditor value={languages} onChange={setLanguages} />
 
+          <div className="space-y-2">
+            <Label className="text-sm">Class fliers (optional)</Label>
+            <FliersUploader value={fliers} onChange={setFliers} max={4} />
+          </div>
+
           <div className="flex items-center justify-between rounded-lg border p-3">
             <div>
               <Label className="text-sm">Free trial available</Label>
