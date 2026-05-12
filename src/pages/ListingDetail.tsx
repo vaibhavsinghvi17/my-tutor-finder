@@ -239,6 +239,22 @@ const ListingDetail = () => {
 
             <p className="text-sm leading-relaxed">{listing.description}</p>
 
+            {Array.isArray(listing.fliers) && listing.fliers.length > 0 && (
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                {listing.fliers.map((src, i) => (
+                  <a
+                    key={i}
+                    href={src}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="block aspect-[3/4] rounded-md overflow-hidden border bg-muted hover:opacity-90 transition-opacity"
+                  >
+                    <img src={src} alt={`${listing.title} flier ${i + 1}`} className="h-full w-full object-cover" loading="lazy" />
+                  </a>
+                ))}
+              </div>
+            )}
+
             <div className="grid gap-3 sm:grid-cols-2 text-sm">
               <div className="flex items-start gap-2">
                 <MapPin className="h-4 w-4 mt-0.5 text-muted-foreground" />
