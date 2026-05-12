@@ -195,6 +195,7 @@ const ListingForm = () => {
       endDate: continuous ? undefined : (endDate || undefined),
       continuous,
       draft: asDraft || undefined,
+      fliers: fliers.length ? fliers : undefined,
     };
 
     if (id && existing) {
