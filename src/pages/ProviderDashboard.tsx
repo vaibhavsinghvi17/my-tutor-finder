@@ -14,6 +14,7 @@ import { BoostButton } from "@/components/BoostButton";
 import { useSubscription } from "@/lib/useSubscription";
 import { Sparkles } from "lucide-react";
 import { UpcomingTrials } from "@/components/UpcomingTrials";
+import { PendingTrials } from "@/components/PendingTrials";
 
 const ProviderDashboard = () => {
   const [viewing, setViewing] = useState<JoinRequest | null>(null);
@@ -93,6 +94,7 @@ const ProviderDashboard = () => {
           </Link>
         </div>
 
+        <PendingTrials side="provider" />
         <UpcomingTrials side="provider" />
 
         {/* At-a-glance stats */}

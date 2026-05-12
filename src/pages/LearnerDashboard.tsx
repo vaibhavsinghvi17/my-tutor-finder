@@ -8,6 +8,7 @@ import {
   Bookmark, GraduationCap, Hourglass, Star, UserCircle2, Search, ArrowRight,
 } from "lucide-react";
 import { UpcomingTrials } from "@/components/UpcomingTrials";
+import { PendingTrials } from "@/components/PendingTrials";
 
 const LearnerDashboard = () => {
   const learner = useStore((s) => s.learner);
@@ -53,6 +54,7 @@ const LearnerDashboard = () => {
           </div>
         </div>
 
+        <PendingTrials side="learner" />
         <UpcomingTrials side="learner" />
 
         <section className="grid gap-3 grid-cols-2 lg:grid-cols-4">
