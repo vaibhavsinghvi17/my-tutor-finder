@@ -237,6 +237,9 @@ export const store = {
   updateRequest(id: string, patch: Partial<JoinRequest>) {
     set((s) => ({ ...s, requests: s.requests.map((r) => (r.id === id ? { ...r, ...patch } : r)) }));
   },
+  removeRequest(id: string) {
+    set((s) => ({ ...s, requests: s.requests.filter((r) => r.id !== id) }));
+  },
   addRequestRaw(req: Omit<JoinRequest, "id" | "createdAt">) {
     set((s) => ({
       ...s,
