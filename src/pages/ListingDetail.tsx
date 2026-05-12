@@ -26,6 +26,9 @@ import { useFxRates } from "@/lib/useFxRates";
 import { useAuth } from "@/lib/useAuth";
 import { toast } from "sonner";
 import { recordEvent } from "@/lib/useEvents";
+import { ReviewsSection } from "@/components/ReviewsSection";
+import { ReportButton } from "@/components/ReportButton";
+import { useListingReviews } from "@/lib/useReviews";
 
 const ListingDetail = () => {
   const { id } = useParams();
