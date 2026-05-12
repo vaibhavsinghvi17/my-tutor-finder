@@ -75,6 +75,35 @@ const ListingForm = () => {
   const [continuous, setContinuous] = useState<boolean>(existing?.continuous ?? !existing?.endDate);
   const [startDate, setStartDate] = useState<string>(existing?.startDate ?? "");
   const [endDate, setEndDate] = useState<string>(existing?.endDate ?? "");
+  const [fliers, setFliers] = useState<string[]>(existing?.fliers ?? []);
+  const [aiLoading, setAiLoading] = useState(false);
+
+  async function generateDescription() {
+    if (!title.trim()) { toast.error("Add a title first so AI knows what to write"); return; }
+    setAiLoading(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("ai-listing", {
+        body: {
+          action: "generate-description",
+          title: title.trim(),
+          category, ageGroup, mode,
+          languages,
+          durationMins: Number(durationMins) || undefined,
+          extra: description.trim() || undefined,
+        },
+      });
+      if (error) throw error;
+      if ((data as any)?.error) throw new Error((data as any).error);
+      const text = (data as any)?.description?.trim();
+      if (!text) throw new Error("No description generated");
+      setDescription(text.slice(0, 800));
+      toast.success("Description generated — edit as you like");
+    } catch (e: any) {
+      toast.error(e?.message || "Could not generate description");
+    } finally {
+      setAiLoading(false);
+    }
+  }
 
   // Bracket span = full hours of duration (1-5). For 30/45/75/90, round to nearest hour, min 1.
   const slotHours = Math.max(1, Math.min(5, Math.round((Number(durationMins) || 60) / 60)));
