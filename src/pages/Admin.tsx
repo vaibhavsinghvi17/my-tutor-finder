@@ -9,7 +9,8 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
-import { Shield, Users, Rocket, Tag, Sparkles, Search, Gift, XCircle, Trash2, CheckCircle2 } from "lucide-react";
+import { Textarea } from "@/components/ui/textarea";
+import { Shield, Users, Rocket, Tag, Sparkles, Search, Gift, XCircle, Trash2, CheckCircle2, Flag } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useIsAdmin } from "@/lib/useIsAdmin";
 import { useAuth } from "@/lib/useAuth";
@@ -84,13 +85,15 @@ export default function Admin() {
         <StatsRow />
 
         <Tabs defaultValue="users">
-          <TabsList className="w-full grid grid-cols-3">
+          <TabsList className="w-full grid grid-cols-4">
             <TabsTrigger value="users" className="gap-1.5"><Users className="h-3.5 w-3.5" />Users</TabsTrigger>
             <TabsTrigger value="boosts" className="gap-1.5"><Rocket className="h-3.5 w-3.5" />Boosts</TabsTrigger>
+            <TabsTrigger value="reports" className="gap-1.5"><Flag className="h-3.5 w-3.5" />Reports</TabsTrigger>
             <TabsTrigger value="categories" className="gap-1.5"><Tag className="h-3.5 w-3.5" />Categories</TabsTrigger>
           </TabsList>
           <TabsContent value="users" className="mt-4"><UsersTab /></TabsContent>
           <TabsContent value="boosts" className="mt-4"><BoostsTab /></TabsContent>
+          <TabsContent value="reports" className="mt-4"><ReportsTab /></TabsContent>
           <TabsContent value="categories" className="mt-4"><CategoriesTab /></TabsContent>
         </Tabs>
       </div>
