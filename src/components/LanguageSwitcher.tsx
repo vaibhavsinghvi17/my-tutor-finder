@@ -1,9 +1,12 @@
 import { useEffect, useState } from "react";
-import { Globe } from "lucide-react";
-import {
-  Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
-} from "@/components/ui/select";
+import { Check, ChevronsUpDown, Globe } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import {
+  Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList,
+} from "@/components/ui/command";
+import { cn } from "@/lib/utils";
 
 // Subset of widely-used Google Translate supported languages.
 // (Google Translate supports 130+ languages; this covers the most common ones.)
