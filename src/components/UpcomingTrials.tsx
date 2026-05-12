@@ -100,20 +100,6 @@ export function UpcomingTrials({ side }: Props) {
                         triggerLabel="Chat"
                       />
                     )}
-                <Button
-                  size="icon"
-                  variant="ghost"
-                  className="h-8 w-8 text-muted-foreground hover:text-destructive"
-                  title="Remove this request"
-                  onClick={() => {
-                    if (confirm(`Remove this trial request for "${listing?.title || "this class"}"?`)) {
-                      (store as any).removeRequest(req.id);
-                      toast.success("Request removed");
-                    }
-                  }}
-                >
-                  <X className="h-4 w-4" />
-                </Button>
               </div>
             </div>
           );
