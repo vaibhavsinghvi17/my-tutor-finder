@@ -212,7 +212,6 @@ const ListingDetail = () => {
 
             {(() => {
               const yearsExp = listing.providerId === "self" ? provider.yearsExperience : undefined;
-              const avgRating = ratings.length ? ratings.reduce((a, r) => a + r.stars, 0) / ratings.length : 0;
               return (
                 <div className="space-y-1.5">
                   <Link
@@ -222,10 +221,10 @@ const ListingDetail = () => {
                     {listing.providerName}
                   </Link>
                   <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-muted-foreground">
-                    {ratings.length > 0 && (
+                    {dbCount > 0 && (
                       <span className="inline-flex items-center gap-1">
-                        <StarRating value={avgRating} size="sm" />
-                        <span>{avgRating.toFixed(1)} ({ratings.length})</span>
+                        <StarRating value={dbAvg} size="sm" />
+                        <span>{dbAvg.toFixed(1)} ({dbCount})</span>
                       </span>
                     )}
                     {yearsExp != null && yearsExp > 0 && (
@@ -401,71 +400,20 @@ const ListingDetail = () => {
           </div>
         </Card>
 
-        {ratings.length > 0 && (
-          <Card className="p-6 space-y-4">
-            <div className="flex items-center justify-between gap-3 flex-wrap">
-              <div>
-                <h2 className="font-semibold text-lg">Ratings & reviews</h2>
-                <p className="text-sm text-muted-foreground">
-                  {ratings.length} review{ratings.length > 1 ? "s" : ""}
-                </p>
-              </div>
-              <div className="flex items-center gap-2">
-                <span className="text-2xl font-bold">
-                  {(ratings.reduce((a, r) => a + r.stars, 0) / ratings.length).toFixed(1)}
-                </span>
-                <StarRating value={ratings.reduce((a, r) => a + r.stars, 0) / ratings.length} />
-              </div>
-            </div>
+        <ReviewsSection
+          listingId={listing.id}
+          providerUserId={listing.providerUserId}
+          reviewerName={learner.name || "Anonymous"}
+        />
 
-            <div className="space-y-3">
-              {ratings.map((r) => (
-                <div key={r.id} className="rounded-lg border p-3 space-y-1.5 bg-muted/30">
-                  <div className="flex items-center justify-between gap-2">
-                    <div className="text-sm font-medium">{r.byName}</div>
-                    <StarRating value={r.stars} size="sm" />
-                  </div>
-                  {r.comment && <p className="text-sm text-muted-foreground">{r.comment}</p>}
-                </div>
-              ))}
-            </div>
-
-            <div className="rounded-lg border p-4 space-y-3 bg-card">
-              <div className="text-sm font-medium">Leave a review</div>
-              <div className="flex items-center gap-3">
-                <StarRating value={reviewStars} size="lg" onChange={setReviewStars} />
-                <span className="text-xs text-muted-foreground">
-                  {reviewStars > 0 ? `${reviewStars} / 5` : "Tap stars"}
-                </span>
-              </div>
-              <Textarea
-                placeholder="Share your experience (optional)"
-                value={reviewText}
-                onChange={(e) => setReviewText(e.target.value.slice(0, 500))}
-                rows={2}
-              />
-              <div className="flex justify-end">
-                <Button
-                  size="sm"
-                  disabled={reviewStars === 0}
-                  onClick={() => {
-                    store.addRating({
-                      listingId: listing!.id,
-                      byName: learner.name || "Anonymous",
-                      stars: reviewStars,
-                      comment: reviewText.trim(),
-                    });
-                    setReviewStars(0);
-                    setReviewText("");
-                    toast.success("Thanks for your review!");
-                  }}
-                >
-                  Submit review
-                </Button>
-              </div>
-            </div>
-          </Card>
-        )}
+        <div className="flex justify-center">
+          <ReportButton
+            targetType="listing"
+            targetId={listing.id}
+            reporterName={learner.name || "Anonymous"}
+            label="Report this listing"
+          />
+        </div>
       </main>
       <VerifyProfileDialog
         open={verifyOpen}
