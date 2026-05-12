@@ -4,7 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { ClassChat } from "@/components/ClassChat";
 import { CalendarClock, Sparkles } from "lucide-react";
 import { useStore, getAllListings } from "@/lib/store";
-import { SlotKey } from "@/lib/types";
+import { JoinRequest, SlotKey } from "@/lib/types";
 import { fmtHour } from "@/lib/timeUtils";
 
 function parseSlot(slot: SlotKey): { day: string; hour: number } {
