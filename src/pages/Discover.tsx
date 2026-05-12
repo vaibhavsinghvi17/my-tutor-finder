@@ -10,11 +10,13 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
-import { Search, UserCircle2, Baby, Plus, MapPin, Home, Globe2, Clock, SlidersHorizontal, Check, ArrowLeft } from "lucide-react";
+import { Search, UserCircle2, Baby, Plus, MapPin, Home, Globe2, Clock, SlidersHorizontal, Check, ArrowLeft, Sparkles, Loader2 } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { Card } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import { useActiveBoosts } from "@/lib/useBoosts";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
 
 import {
   DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel,
