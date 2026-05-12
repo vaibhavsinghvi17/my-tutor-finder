@@ -7,6 +7,7 @@ import { useStore, getAllListings } from "@/lib/store";
 import {
   Bookmark, GraduationCap, Hourglass, Star, UserCircle2, Search, ArrowRight,
 } from "lucide-react";
+import { UpcomingTrials } from "@/components/UpcomingTrials";
 
 const LearnerDashboard = () => {
   const learner = useStore((s) => s.learner);
@@ -52,7 +53,7 @@ const LearnerDashboard = () => {
           </div>
         </div>
 
-        <section className="grid gap-3 grid-cols-2 lg:grid-cols-4">
+        <UpcomingTrials side="learner" />
           <Link to="/dashboard/joined" className="block group">
             <StatCard icon={GraduationCap} label="Classes joined" value={approved} tint="primary"
               sub={`${trialJoined} trial · ${classJoined} joined`} />
