@@ -164,6 +164,7 @@ export interface Listing {
   endDate?: string;           // YYYY-MM-DD — class end (omit when continuous)
   continuous?: boolean;       // runs continuously until stopped
   draft?: boolean;            // true = saved as draft, hidden from public discovery
+  fliers?: string[];          // up to 4 flier images (data URLs) for the class
   createdAt: number;
   socials?: SocialLinks;     // optional override / for seed providers
   contactInfo?: ContactInfo; // optional override; falls back to provider's
