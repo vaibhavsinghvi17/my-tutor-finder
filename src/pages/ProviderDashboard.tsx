@@ -94,6 +94,7 @@ const ProviderDashboard = () => {
           </Link>
         </div>
 
+        <PendingTrials side="provider" />
         <UpcomingTrials side="provider" />
 
         {/* At-a-glance stats */}
