@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { TopBar } from "@/components/TopBar";
 import { Input } from "@/components/ui/input";
@@ -31,6 +31,8 @@ import { PinCodeInput } from "@/components/PinCodeInput";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/useAuth";
+import { ProfileWizard } from "@/components/ProfileWizard";
+import { ProfileCompletion } from "@/components/ProfileCompletion";
 
 function SignOutFooter() {
   const { user } = useAuth();
