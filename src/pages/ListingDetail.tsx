@@ -332,7 +332,7 @@ const ListingDetail = () => {
                 <Pencil className="h-5 w-5" />
               </div>
               <div className="flex-1 min-w-0">
-                <h2 className="font-semibold text-lg leading-tight">This is your class</h2>
+                <h2 className="font-semibold text-lg leading-tight">Edit Your Class</h2>
                 <p className="text-sm text-muted-foreground mt-0.5">
                   You're viewing your own listing. Edit any detail — schedule, price, address, fliers, seats — from the editor.
                 </p>
