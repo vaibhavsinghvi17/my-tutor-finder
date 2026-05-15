@@ -27,7 +27,17 @@ export function BoostButton({ listing }: Props) {
   const [ageGroup, setAgeGroup] = useState<string>(listing.ageGroup ?? ANY);
   const [gender, setGender] = useState<string>(ANY);
   const boosted = isBoosted(listing.id, boosts);
-  const durationDays = isGrowth ? 7 : 3;
+
+  const DURATION_OPTIONS: { days: number; label: string; price: number }[] = [
+    { days: 3, label: "3 days", price: 500 },
+    { days: 5, label: "5 days", price: 900 },
+    { days: 7, label: "7 days", price: 1500 },
+    { days: 15, label: "15 days", price: 2900 },
+    { days: 30, label: "1 month", price: 5500 },
+  ];
+  const [durationDays, setDurationDays] = useState<number>(isGrowth ? 7 : 3);
+  const selected = DURATION_OPTIONS.find((d) => d.days === durationDays) ?? DURATION_OPTIONS[0];
+  const price = selected.price;
 
   async function handleBoost() {
     if (!user) {
@@ -36,7 +46,7 @@ export function BoostButton({ listing }: Props) {
     }
     setBusy(true);
     try {
-      // Razorpay test bypass — pretend ₹500 was paid and create the boost.
+      // Razorpay test bypass — pretend payment was made and create the boost.
       await createBoost({
         listingId: listing.id,
         providerUserId: user.id,
@@ -47,7 +57,7 @@ export function BoostButton({ listing }: Props) {
         gender: gender === ANY ? null : gender,
       });
       await refresh();
-      toast.success(`Class boosted for ${durationDays} days 🚀`);
+      toast.success(`Class boosted for ${selected.label} 🚀`);
       setOpen(false);
     } catch (e: any) {
       toast.error(e.message ?? "Could not boost");
