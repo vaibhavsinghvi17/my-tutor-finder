@@ -63,6 +63,7 @@ const ListingForm = () => {
   const [onlineSessionsPerMonth, setOnlineSessionsPerMonth] = useState<string>(existing?.onlineSessionsPerMonth?.toString() ?? "4");
   const [onlineIntlPriceAmount, setOnlineIntlPriceAmount] = useState<string>(existing?.onlineIntlPriceAmount?.toString() ?? "");
   const [durationMins, setDurationMins] = useState<string>(existing?.durationMins?.toString() ?? "60");
+  const [courseDays, setCourseDays] = useState<string>(existing?.courseDays?.toString() ?? "");
   const [sessionsPerMonth, setSessionsPerMonth] = useState<string>(existing?.sessionsPerMonth?.toString() ?? "4");
   const [trial, setTrial] = useState(existing?.trial ?? true);
   const [slots, setSlots] = useState<SlotKey[]>(existing?.slots ?? []);
@@ -209,6 +210,7 @@ const ListingForm = () => {
       onlinePriceUnit: (mode === "Both" && onlinePriceAmount) ? onlinePriceUnit : undefined,
       onlineSessionsPerMonth: (mode === "Both" && onlinePriceUnit === "month" && onlineSessionsPerMonth) ? Number(onlineSessionsPerMonth) : undefined,
       durationMins: durationMins ? Number(durationMins) : undefined,
+      courseDays: courseDays && Number(courseDays) > 0 ? Number(courseDays) : undefined,
       sessionsPerMonth: priceUnit === "month" && sessionsPerMonth ? Number(sessionsPerMonth) : undefined,
       trial,
       slots,
@@ -329,7 +331,7 @@ const ListingForm = () => {
               )}
             </div>
             <div className="space-y-1.5">
-              <Label>Duration</Label>
+              <Label>Duration <span className="text-xs text-muted-foreground font-normal">(per session)</span></Label>
               <Select value={durationMins} onValueChange={setDurationMins}>
                 <SelectTrigger><SelectValue /></SelectTrigger>
                 <SelectContent>
@@ -340,8 +342,30 @@ const ListingForm = () => {
                   ))}
                 </SelectContent>
               </Select>
+              <p className="text-[11px] text-muted-foreground">How long one class runs.</p>
             </div>
           </div>
+
+          <div className="grid sm:grid-cols-2 gap-3">
+            <div className="space-y-1.5">
+              <Label>Course length <span className="text-xs text-muted-foreground font-normal">(optional)</span></Label>
+              <div className="flex gap-2">
+                <Input
+                  type="number"
+                  min="0"
+                  inputMode="numeric"
+                  value={courseDays}
+                  onChange={(e) => setCourseDays(e.target.value)}
+                  placeholder="e.g. 30"
+                />
+                <div className="grid place-items-center px-3 rounded-md border bg-muted text-sm text-muted-foreground shrink-0">days</div>
+              </div>
+              <p className="text-[11px] text-muted-foreground">
+                Total length of the course in days. Leave empty for ongoing / continuous classes.
+              </p>
+            </div>
+          </div>
+
 
           <div className="grid sm:grid-cols-3 gap-3">
             <div className="space-y-1.5 sm:col-span-2">

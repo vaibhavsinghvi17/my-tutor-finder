@@ -6,7 +6,7 @@ import { CategoryIcon, categoryGradient } from "./CategoryIcon";
 import { StarRating } from "./StarRating";
 import { MapPin, Wifi, Building2, Users, Sparkles, Clock, Bookmark, Share2, MessageCircle, Link as LinkIcon, Award, UsersRound, Globe2, Armchair } from "lucide-react";
 import { slotsToText } from "./ScheduleGrid";
-import { formatDuration, formatPrice } from "@/lib/listingUtils";
+import { formatDuration, formatPrice, formatCourseLength } from "@/lib/listingUtils";
 import { useFxRates } from "@/lib/useFxRates";
 import { store, useStore } from "@/lib/store";
 import { distanceKmBetween, formatDistance } from "@/lib/distance";
@@ -40,6 +40,7 @@ export function ListingCard({ listing, reasons = [] }: Props) {
   const fxRates = useFxRates();
   const priceText = formatPrice(listing, viewerCountry, fxRates);
   const durationText = formatDuration(listing.durationMins);
+  const courseLengthText = formatCourseLength(listing.courseDays);
   const isSaved = (savedListings || []).includes(listing.id);
   const shareUrl = `${window.location.origin}/listing/${listing.id}`;
   const shareText = `Check out "${listing.title}" by ${listing.providerName} on Scholarr`;
@@ -153,6 +154,11 @@ export function ListingCard({ listing, reasons = [] }: Props) {
             {durationText && (
               <Badge variant="outline" className="gap-1">
                 <Clock className="h-3 w-3" /> {durationText}
+              </Badge>
+            )}
+            {courseLengthText && (
+              <Badge variant="outline" className="gap-1">
+                <Clock className="h-3 w-3" /> {courseLengthText}
               </Badge>
             )}
             {priceText && <Badge variant="outline">{priceText}</Badge>}

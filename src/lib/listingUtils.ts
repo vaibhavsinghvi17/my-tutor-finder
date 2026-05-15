@@ -75,8 +75,22 @@ export function formatPrice(
 
 export function formatDuration(mins?: number): string | null {
   if (!mins || mins <= 0) return null;
-  if (mins < 60) return `${mins} min per class`;
+  if (mins < 60) return `${mins} min / session`;
   const h = Math.floor(mins / 60);
   const m = mins % 60;
-  return m === 0 ? `${h} hr per class` : `${h}h ${m}m per class`;
+  return m === 0 ? `${h} hr / session` : `${h}h ${m}m / session`;
+}
+
+export function formatCourseLength(days?: number): string | null {
+  if (!days || days <= 0) return null;
+  if (days < 7) return `${days} day${days === 1 ? "" : "s"} course`;
+  if (days % 7 === 0 && days < 60) {
+    const w = days / 7;
+    return `${w} week${w === 1 ? "" : "s"} course`;
+  }
+  if (days % 30 === 0) {
+    const mo = days / 30;
+    return `${mo} month${mo === 1 ? "" : "s"} course`;
+  }
+  return `${days} days course`;
 }
