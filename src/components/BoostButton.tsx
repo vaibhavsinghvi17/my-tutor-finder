@@ -81,7 +81,7 @@ export function BoostButton({ listing }: Props) {
         <Rocket className="h-4 w-4" /> Boost
       </Button>
       <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent className="max-w-sm">
+        <DialogContent className="max-w-sm w-[calc(100%-2rem)] rounded-xl">
           <DialogHeader>
             <DialogTitle>Boost this class</DialogTitle>
             <DialogDescription>
