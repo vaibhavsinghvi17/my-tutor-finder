@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
+import { NotificationBell } from "@/components/NotificationBell";
 
 const PROMPT_KEY = "scholarr-switch-prompted";
 function wasPrompted(role: "learner" | "provider") {
@@ -112,6 +113,8 @@ export function TopBar() {
               </Button>
             )}
           </div>
+
+          <NotificationBell />
 
           <div className="flex flex-col items-end gap-0.5 shrink-0">
             <span className="text-[10px] leading-none text-muted-foreground flex items-center gap-1">

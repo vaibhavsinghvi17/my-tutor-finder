@@ -158,9 +158,49 @@ export type Database = {
         }
         Relationships: []
       }
+      notifications: {
+        Row: {
+          body: string | null
+          created_at: string
+          created_by: string | null
+          id: string
+          kind: string
+          link: string | null
+          metadata: Json
+          read_at: string | null
+          title: string
+          user_id: string
+        }
+        Insert: {
+          body?: string | null
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          kind?: string
+          link?: string | null
+          metadata?: Json
+          read_at?: string | null
+          title: string
+          user_id: string
+        }
+        Update: {
+          body?: string | null
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          kind?: string
+          link?: string | null
+          metadata?: Json
+          read_at?: string | null
+          title?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           avatar_url: string | null
+          city: string | null
           created_at: string
           display_name: string | null
           gender: string | null
@@ -172,6 +212,7 @@ export type Database = {
         }
         Insert: {
           avatar_url?: string | null
+          city?: string | null
           created_at?: string
           display_name?: string | null
           gender?: string | null
@@ -183,6 +224,7 @@ export type Database = {
         }
         Update: {
           avatar_url?: string | null
+          city?: string | null
           created_at?: string
           display_name?: string | null
           gender?: string | null
