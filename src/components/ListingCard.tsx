@@ -42,7 +42,7 @@ export function ListingCard({ listing, reasons = [] }: Props) {
   const durationText = formatDuration(listing.durationMins);
   const isSaved = (savedListings || []).includes(listing.id);
   const shareUrl = `${window.location.origin}/listing/${listing.id}`;
-  const shareText = `Check out "${listing.title}" by ${listing.providerName} on LearnLocal`;
+  const shareText = `Check out "${listing.title}" by ${listing.providerName} on Scholarr`;
   const distanceKm = listing.mode !== "Online" ? distanceKmBetween(homePin, listing.locationPin) : null;
 
   function stop(e: React.MouseEvent) { e.preventDefault(); e.stopPropagation(); }

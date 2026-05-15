@@ -71,7 +71,7 @@ const Onboarding = () => {
             <Sparkles className="h-9 w-9" />
           </span>
           <div className="text-2xl font-bold tracking-tight animate-fade-in [animation-delay:300ms] opacity-0 [animation-fill-mode:forwards]">
-            LearnLocal
+            Scholarr
           </div>
           <div className="flex gap-1.5 animate-fade-in [animation-delay:600ms] opacity-0 [animation-fill-mode:forwards]">
             <span className="h-1.5 w-1.5 rounded-full bg-primary animate-bounce" />
@@ -95,7 +95,7 @@ const Onboarding = () => {
           <span className="h-12 w-12 rounded-xl bg-gradient-primary grid place-items-center text-primary-foreground shadow-elegant animate-float">
             <Sparkles className="h-5 w-5" />
           </span>
-          <span className="font-bold text-lg">LearnLocal</span>
+          <span className="font-bold text-lg">Scholarr</span>
         </div>
 
         <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-medium mb-4 animate-fade-in">
