@@ -106,6 +106,65 @@ const ProviderRequests = () => {
           </Button>
         </div>
 
+        <Card className="p-3 space-y-2.5">
+          <div className="flex items-center justify-between gap-2">
+            <div className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground">
+              <Filter className="h-3.5 w-3.5" /> Filters
+              {activeFilterCount > 0 && (
+                <Badge variant="outline" className="h-4 px-1.5 text-[10px]">{activeFilterCount}</Badge>
+              )}
+            </div>
+            {activeFilterCount > 0 && (
+              <Button size="sm" variant="ghost" className="h-7 gap-1 text-xs" onClick={resetFilters}>
+                <RotateCcw className="h-3 w-3" /> Reset
+              </Button>
+            )}
+          </div>
+
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
+            <Input
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              placeholder="Search by learner name or @username"
+              className="pl-9 h-9 text-sm"
+            />
+          </div>
+
+          <div className="grid grid-cols-2 gap-2">
+            <Select value={classFilter} onValueChange={setClassFilter}>
+              <SelectTrigger className="h-9 text-xs"><SelectValue placeholder="Class" /></SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All classes</SelectItem>
+                {listings.map((l) => <SelectItem key={l.id} value={l.id}>{l.title}</SelectItem>)}
+              </SelectContent>
+            </Select>
+
+            <Select value={slotFilter} onValueChange={setSlotFilter}>
+              <SelectTrigger className="h-9 text-xs"><SelectValue placeholder="Timing" /></SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All timings</SelectItem>
+                {slotOptions.map((s) => (
+                  <SelectItem key={s} value={s}>{slotsToText([s as SlotKey])}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+
+            <DatePicker value={dateFrom} onChange={setDateFrom} placeholder="From date" />
+            <DatePicker value={dateTo} min={dateFrom || undefined} onChange={setDateTo} placeholder="To date" />
+
+            <Select value={typeFilter} onValueChange={setTypeFilter}>
+              <SelectTrigger className="h-9 text-xs col-span-2"><SelectValue placeholder="Type" /></SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All types</SelectItem>
+                <SelectItem value="trial">Trial only</SelectItem>
+                <SelectItem value="regular">Regular only</SelectItem>
+                <SelectItem value="converted">Converted</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+        </Card>
+
         <Tabs defaultValue="pending">
           <TabsList>
             <TabsTrigger value="pending" className="gap-1.5">
