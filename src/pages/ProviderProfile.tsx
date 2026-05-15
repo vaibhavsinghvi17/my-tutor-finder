@@ -305,6 +305,13 @@ const ProviderProfilePage = () => {
           </div>
         </div>
 
+        {/* Bio preview */}
+        {provider.bio && (
+          <ProviderSection title="About" icon={Briefcase} count={1}>
+            <p className="text-sm text-foreground/80 leading-relaxed whitespace-pre-line">{provider.bio}</p>
+          </ProviderSection>
+        )}
+
         {/* My classes section — mirrors learner Section style */}
         <ProviderSection
           title="My classes"
@@ -349,13 +356,6 @@ const ProviderProfilePage = () => {
             </div>
           )}
         </ProviderSection>
-
-        {/* Bio preview */}
-        {provider.bio && (
-          <ProviderSection title="About" icon={Briefcase} count={1}>
-            <p className="text-sm text-foreground/80 leading-relaxed whitespace-pre-line">{provider.bio}</p>
-          </ProviderSection>
-        )}
 
         {/* Social preview */}
         {provider.socials && Object.values(provider.socials).some(Boolean) && (
