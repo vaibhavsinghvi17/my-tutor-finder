@@ -27,7 +27,17 @@ export function BoostButton({ listing }: Props) {
   const [ageGroup, setAgeGroup] = useState<string>(listing.ageGroup ?? ANY);
   const [gender, setGender] = useState<string>(ANY);
   const boosted = isBoosted(listing.id, boosts);
-  const durationDays = isGrowth ? 7 : 3;
+
+  const DURATION_OPTIONS: { days: number; label: string; price: number }[] = [
+    { days: 3, label: "3 days", price: 500 },
+    { days: 5, label: "5 days", price: 900 },
+    { days: 7, label: "7 days", price: 1500 },
+    { days: 15, label: "15 days", price: 2900 },
+    { days: 30, label: "1 month", price: 5500 },
+  ];
+  const [durationDays, setDurationDays] = useState<number>(isGrowth ? 7 : 3);
+  const selected = DURATION_OPTIONS.find((d) => d.days === durationDays) ?? DURATION_OPTIONS[0];
+  const price = selected.price;
 
   async function handleBoost() {
     if (!user) {
@@ -36,7 +46,7 @@ export function BoostButton({ listing }: Props) {
     }
     setBusy(true);
     try {
-      // Razorpay test bypass — pretend ₹500 was paid and create the boost.
+      // Razorpay test bypass — pretend payment was made and create the boost.
       await createBoost({
         listingId: listing.id,
         providerUserId: user.id,
@@ -47,7 +57,7 @@ export function BoostButton({ listing }: Props) {
         gender: gender === ANY ? null : gender,
       });
       await refresh();
-      toast.success(`Class boosted for ${durationDays} days 🚀`);
+      toast.success(`Class boosted for ${selected.label} 🚀`);
       setOpen(false);
     } catch (e: any) {
       toast.error(e.message ?? "Could not boost");
@@ -114,6 +124,20 @@ export function BoostButton({ listing }: Props) {
               </div>
             </div>
 
+            <div className="space-y-1.5">
+              <Label className="text-xs">Boost duration</Label>
+              <Select value={String(durationDays)} onValueChange={(v) => setDurationDays(Number(v))}>
+                <SelectTrigger><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  {DURATION_OPTIONS.map((d) => (
+                    <SelectItem key={d.days} value={String(d.days)}>
+                      {d.label} — ₹{d.price.toLocaleString("en-IN")}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
             <div className="rounded-lg border p-3 bg-muted/30 space-y-1 text-sm">
               <div className="flex justify-between">
                 <span>Plan</span>
@@ -121,16 +145,12 @@ export function BoostButton({ listing }: Props) {
               </div>
               <div className="flex justify-between">
                 <span>Duration</span>
-                <span className="font-medium">{durationDays} days</span>
+                <span className="font-medium">{selected.label}</span>
               </div>
-              <div className="flex justify-between"><span>Price</span><span className="font-bold">₹500</span></div>
-              {!isGrowth ? (
+              <div className="flex justify-between"><span>Price</span><span className="font-bold">₹{price.toLocaleString("en-IN")}</span></div>
+              {isGrowth && (
                 <p className="text-[11px] text-muted-foreground pt-1 leading-snug">
-                  Starter boosts run for <strong>3 days</strong> at ₹500. Growth members get <strong>7 days</strong> for the same price and rank above Starter boosts in Discover.
-                </p>
-              ) : (
-                <p className="text-[11px] text-muted-foreground pt-1 leading-snug">
-                  Growth boosts run for <strong>7 days</strong> and appear above Starter-plan boosts in Discover.
+                  Growth boosts rank above Starter-plan boosts in Discover for the same duration.
                 </p>
               )}
               <p className="text-[11px] text-muted-foreground italic pt-0.5">
@@ -142,7 +162,7 @@ export function BoostButton({ listing }: Props) {
           <DialogFooter>
             <Button variant="outline" onClick={() => setOpen(false)} disabled={busy}>Cancel</Button>
             <Button onClick={handleBoost} disabled={busy} className="gap-1.5">
-              <Rocket className="h-4 w-4" /> {busy ? "Boosting..." : "Pay ₹500 & Boost"}
+              <Rocket className="h-4 w-4" /> {busy ? "Boosting..." : `Pay ₹${price.toLocaleString("en-IN")} & Boost`}
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -150,3 +170,4 @@ export function BoostButton({ listing }: Props) {
     </>
   );
 }
+
