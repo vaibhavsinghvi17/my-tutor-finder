@@ -150,7 +150,8 @@ export interface Listing {
   onlineIntlPriceAmount?: number; // international price for online sessions
   onlinePriceUnit?: PriceUnit;     // per session or per month for online (defaults to priceUnit)
   onlineSessionsPerMonth?: number; // shown when onlinePriceUnit === "month"
-  durationMins?: number;     // class duration in minutes
+  durationMins?: number;     // class duration in minutes (per session)
+  courseDays?: number;       // total length of the course in days (optional)
   sessionsPerMonth?: number; // shown when priceUnit === "month"
   trial: boolean;
   slots: SlotKey[];          // Offline slots when mode === "Both"; otherwise the class's only schedule
