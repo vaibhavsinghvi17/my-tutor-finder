@@ -362,6 +362,9 @@ const ListingForm = () => {
               <p className="text-[11px] text-muted-foreground">
                 Total length of the course in days. Leave empty for ongoing / continuous classes.
               </p>
+            </div>
+          </div>
+
 
           <div className="grid sm:grid-cols-3 gap-3">
             <div className="space-y-1.5 sm:col-span-2">
