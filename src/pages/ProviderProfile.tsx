@@ -216,6 +216,10 @@ const ProviderProfilePage = () => {
           </div>
         </div>
 
+        <ProfileCompletion items={completionItems} onSetup={() => setWizardOpen(true)} />
+
+        <ProfileWizard mode="provider" open={wizardOpen} onClose={() => setWizardOpen(false)} />
+
 
         {(!provider.city || !provider.pinCode) && (
           <div className="rounded-xl border border-destructive/30 bg-destructive/5 p-3 text-xs flex items-start gap-2">
