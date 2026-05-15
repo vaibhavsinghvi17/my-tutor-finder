@@ -11,6 +11,7 @@ import { createBoost, useActiveBoosts, isBoosted } from "@/lib/useBoosts";
 import { useSubscription } from "@/lib/useSubscription";
 import { useAuth } from "@/lib/useAuth";
 import { Listing, AGE_GROUPS } from "@/lib/types";
+import { LocationTargeter, TargetEntry, targetsToString } from "@/components/LocationTargeter";
 
 interface Props {
   listing: Listing;
