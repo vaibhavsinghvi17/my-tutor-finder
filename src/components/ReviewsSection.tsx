@@ -67,7 +67,7 @@ export function ReviewsSection({ listingId, providerUserId, reviewerName, isOwne
         <div>
           <h2 className="font-semibold text-lg">Ratings & reviews</h2>
           <p className="text-sm text-muted-foreground">
-            {count === 0 ? "No reviews yet — be the first!" : `${count} review${count > 1 ? "s" : ""}`}
+            {count === 0 ? (isOwnListing ? "No reviews yet." : "No reviews yet — be the first!") : `${count} review${count > 1 ? "s" : ""}`}
           </p>
         </div>
         {count > 0 && (
