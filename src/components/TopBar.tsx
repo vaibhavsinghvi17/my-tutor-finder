@@ -170,6 +170,14 @@ export function TopBar() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      {wizardRole && (
+        <ProfileWizard
+          mode={wizardRole}
+          open={!!wizardRole}
+          onClose={() => setWizardRole(null)}
+        />
+      )}
     </header>
   );
 }
