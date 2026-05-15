@@ -373,32 +373,77 @@ const ProviderProfilePage = () => {
             <Empty text="No classes yet — add your first one." />
           ) : (
             <div className="space-y-2">
-              {listings.map((l) => (
-                <div key={l.id} className="rounded-lg border bg-card/60 p-3 flex items-center gap-2">
-                  <Link to={`/listing/${l.id}`} className="flex-1 min-w-0 hover:text-primary">
-                    <div className="text-sm font-medium truncate">{l.title}</div>
-                    <div className="text-xs text-muted-foreground truncate">
-                      {l.category} · {l.mode} · {l.ageGroup}
+              {listings.map((l) => {
+                const stats = insightsByListing[l.id];
+                const boostedNow = boostIsActive(l.id, boosts);
+                const sugg = suggestForListing(stats, boostedNow);
+                const toneStyles: Record<string, string> = {
+                  hot: "bg-rose-500/10 text-rose-700 dark:text-rose-300 border-rose-500/30",
+                  boost: "bg-primary/10 text-primary border-primary/30",
+                  warm: "bg-amber-500/10 text-amber-700 dark:text-amber-300 border-amber-500/30",
+                  cold: "bg-muted text-muted-foreground border-border",
+                  neutral: "bg-muted/60 text-muted-foreground border-border",
+                };
+                return (
+                  <div key={l.id} className="rounded-lg border bg-card/60 p-3 space-y-2">
+                    <div className="flex items-center gap-2">
+                      <Link to={`/listing/${l.id}`} className="flex-1 min-w-0 hover:text-primary">
+                        <div className="text-sm font-medium truncate">{l.title}</div>
+                        <div className="text-xs text-muted-foreground truncate">
+                          {l.category} · {l.mode} · {l.ageGroup}
+                        </div>
+                      </Link>
+                      <Button asChild variant="ghost" size="icon" className="h-8 w-8">
+                        <Link to={`/provider/listing/${l.id}`} title="Edit"><Pencil className="h-3.5 w-3.5" /></Link>
+                      </Button>
+                      <Button
+                        variant="ghost" size="icon"
+                        className="h-8 w-8 text-destructive hover:text-destructive"
+                        onClick={() => {
+                          if (confirm(`Delete "${l.title}"?`)) {
+                            store.removeListing(l.id);
+                            toast.success("Class deleted");
+                          }
+                        }}
+                        title="Delete"
+                      >
+                        <Trash2 className="h-3.5 w-3.5" />
+                      </Button>
                     </div>
-                  </Link>
-                  <Button asChild variant="ghost" size="icon" className="h-8 w-8">
-                    <Link to={`/provider/listing/${l.id}`} title="Edit"><Pencil className="h-3.5 w-3.5" /></Link>
-                  </Button>
-                  <Button
-                    variant="ghost" size="icon"
-                    className="h-8 w-8 text-destructive hover:text-destructive"
-                    onClick={() => {
-                      if (confirm(`Delete "${l.title}"?`)) {
-                        store.removeListing(l.id);
-                        toast.success("Class deleted");
-                      }
-                    }}
-                    title="Delete"
-                  >
-                    <Trash2 className="h-3.5 w-3.5" />
-                  </Button>
-                </div>
-              ))}
+
+                    {/* Stats row */}
+                    <div className="flex items-center gap-3 text-[11px] text-muted-foreground border-t pt-2">
+                      <span className="flex items-center gap-1" title="Total views">
+                        <Eye className="h-3 w-3" /> {stats?.views ?? 0}
+                        <span className="opacity-60">views</span>
+                      </span>
+                      <span className="flex items-center gap-1" title="Total clicks (contact / request / message)">
+                        <MousePointerClick className="h-3 w-3" /> {stats?.clicks ?? 0}
+                        <span className="opacity-60">clicks</span>
+                      </span>
+                      {stats && stats.views7d > 0 && (
+                        <span className="flex items-center gap-1" title="Last 7 days">
+                          <TrendingUp className="h-3 w-3" /> {stats.views7d} this week
+                        </span>
+                      )}
+                      {boostedNow && (
+                        <Badge variant="outline" className="ml-auto h-5 px-1.5 text-[10px] gap-1 border-primary/40 text-primary">
+                          <Rocket className="h-3 w-3" /> Boosted
+                        </Badge>
+                      )}
+                    </div>
+
+                    {/* AI suggestion */}
+                    <div className={cn(
+                      "rounded-md border px-2 py-1.5 text-[11px] leading-snug flex items-start gap-1.5",
+                      toneStyles[sugg.tone] ?? toneStyles.neutral,
+                    )}>
+                      <Lightbulb className="h-3 w-3 mt-0.5 shrink-0" />
+                      <span>{sugg.text}</span>
+                    </div>
+                  </div>
+                );
+              })}
             </div>
           )}
         </ProviderSection>
