@@ -78,6 +78,33 @@ const ListingForm = () => {
   const [fliers, setFliers] = useState<string[]>(existing?.fliers ?? []);
   const [aiLoading, setAiLoading] = useState(false);
 
+  const profileAddrLine = (provider.address ?? "").trim();
+  const initialMatchesProfile =
+    !!existing &&
+    (existing.country ?? "") === (provider.country ?? "") &&
+    (existing.state ?? "") === (provider.state ?? "") &&
+    (existing.city ?? "") === (provider.city ?? "") &&
+    (existing.area ?? "") === (provider.area ?? "") &&
+    (existing.pinCode ?? "") === (provider.pinCode ?? "") &&
+    (existing.venue ?? "") === profileAddrLine;
+  const [useProfileAddress, setUseProfileAddress] = useState<boolean>(
+    existing ? initialMatchesProfile : true,
+  );
+
+  useEffect(() => {
+    if (!useProfileAddress) return;
+    setCountry(provider.country ?? "");
+    setStateName(provider.state ?? "");
+    setCity(provider.city ?? "");
+    setArea(provider.area ?? "");
+    setPinCode(provider.pinCode ?? "");
+    setVenueLine1(profileAddrLine);
+    setVenueLine2("");
+    setVenueLine3("");
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [useProfileAddress, provider.country, provider.state, provider.city, provider.area, provider.pinCode, profileAddrLine]);
+
+
   async function generateDescription() {
     if (!title.trim()) { toast.error("Add a title first so AI knows what to write"); return; }
     setAiLoading(true);
@@ -460,6 +487,27 @@ const ListingForm = () => {
             </div>
           )}
 
+          <div className="rounded-lg border bg-muted/30 p-3 flex items-start gap-3">
+            <input
+              id="useProfileAddress"
+              type="checkbox"
+              className="mt-0.5 h-4 w-4 accent-primary cursor-pointer"
+              checked={useProfileAddress}
+              onChange={(e) => setUseProfileAddress(e.target.checked)}
+            />
+            <div className="flex-1 min-w-0">
+              <label htmlFor="useProfileAddress" className="text-sm font-medium cursor-pointer">
+                Same as my profile address
+              </label>
+              <p className="text-[11px] text-muted-foreground mt-0.5">
+                {useProfileAddress
+                  ? "Using your tutor profile's address for this class. Uncheck to set a different address."
+                  : "This class has its own address (different from your profile)."}
+              </p>
+            </div>
+          </div>
+
+          <div className={useProfileAddress ? "opacity-60 pointer-events-none" : ""}>
           <LocationFields
             value={{ country, state: stateName, city, area }}
             onChange={(v) => { setCountry(v.country); setStateName(v.state); setCity(v.city); setArea(v.area); }}
@@ -468,7 +516,7 @@ const ListingForm = () => {
           />
 
           {mode !== "Online" && (
-            <div className="space-y-3">
+            <div className="space-y-3 mt-3">
               <div className="space-y-1.5">
                 <Label>Class address <span className="text-destructive">*</span></Label>
                 <div className="space-y-2">
@@ -477,16 +525,19 @@ const ListingForm = () => {
                     onChange={(e) => setVenueLine1(e.target.value.slice(0, 80))}
                     placeholder="Address line 1 (building, street)"
                     required
+                    disabled={useProfileAddress}
                   />
                   <Input
                     value={venueLine2}
                     onChange={(e) => setVenueLine2(e.target.value.slice(0, 80))}
                     placeholder="Address line 2 (landmark, area)"
+                    disabled={useProfileAddress}
                   />
                   <Input
                     value={venueLine3}
                     onChange={(e) => setVenueLine3(e.target.value.slice(0, 80))}
                     placeholder="Address line 3 (optional)"
+                    disabled={useProfileAddress}
                   />
                 </div>
               </div>
@@ -517,6 +568,7 @@ const ListingForm = () => {
               </div>
             </div>
           )}
+          </div>
 
           {mode === "Online" && (
             <div className="space-y-1.5 sm:max-w-xs">
