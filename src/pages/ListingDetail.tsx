@@ -117,7 +117,7 @@ const ListingDetail = () => {
       dob: learner.dob,
       gender: (learner as any).gender,
     });
-    toast.success(isTrial ? "Trial class request sent!" : "Request sent! The provider will reply soon.");
+    toast.success(isTrial ? "Trial class request sent!" : "Request sent! The tutor will reply soon.");
     navigate("/requests");
   }
 
@@ -329,7 +329,7 @@ const ListingDetail = () => {
           <div>
             <h2 className="font-semibold text-lg">Request to join</h2>
             <p className="text-sm text-muted-foreground">
-              The provider will review your request and confirm if a spot is available.
+              The tutor will review your request and confirm if a spot is available.
             </p>
           </div>
 
@@ -404,7 +404,7 @@ const ListingDetail = () => {
           <div className="space-y-1.5">
             <label className="text-sm font-medium">Note (optional)</label>
             <Textarea
-              placeholder={isTrial ? "Anything the provider should know about your trial?" : "Anything the provider should know? Prior experience, questions..."}
+              placeholder={isTrial ? "Anything the tutor should know about your trial?" : "Anything the tutor should know? Prior experience, questions..."}
               value={note}
               onChange={(e) => setNote(e.target.value.slice(0, 500))}
               rows={3}

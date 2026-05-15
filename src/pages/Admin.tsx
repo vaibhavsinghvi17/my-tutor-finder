@@ -401,7 +401,7 @@ function CreateBoostDialog({ onClose, onCreated }: { onClose: () => void; onCrea
   const [busy, setBusy] = useState(false);
 
   async function create() {
-    if (!listingId.trim() || !providerId.trim()) return toast.error("Listing ID and provider user ID required");
+    if (!listingId.trim() || !providerId.trim()) return toast.error("Listing ID and tutor user ID required");
     setBusy(true);
     const expires = new Date(Date.now() + days * 24 * 3600 * 1000).toISOString();
     const { error } = await supabase.from("boosts").insert({
@@ -426,7 +426,7 @@ function CreateBoostDialog({ onClose, onCreated }: { onClose: () => void; onCrea
             <Input value={listingId} onChange={(e) => setListingId(e.target.value)} placeholder="e.g. listing_abc123" />
           </div>
           <div className="space-y-1.5">
-            <Label className="text-xs">Provider user ID</Label>
+            <Label className="text-xs">Tutor user ID</Label>
             <Input value={providerId} onChange={(e) => setProviderId(e.target.value)} placeholder="uuid of the tutor" />
           </div>
           <div className="grid grid-cols-2 gap-3">
@@ -440,7 +440,7 @@ function CreateBoostDialog({ onClose, onCreated }: { onClose: () => void; onCrea
             </div>
           </div>
           <p className="text-[11px] text-muted-foreground">
-            Tip: open the listing page → the URL ends with the listing ID. The provider user ID is in the user's admin profile dialog.
+            Tip: open the listing page → the URL ends with the listing ID. The tutor user ID is in the user's admin profile dialog.
           </p>
         </div>
         <DialogFooter>

@@ -149,7 +149,7 @@ const Onboarding = () => {
               onClick={() => pick("learner")}
             />
             <RoleCard
-              title="I'm a Provider"
+              title="I'm a Tutor"
               subtitle="List my classes & studio"
               icon={<Briefcase className="h-5 w-5" />}
               tone="cool"
