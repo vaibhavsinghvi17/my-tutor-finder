@@ -124,6 +124,20 @@ export function BoostButton({ listing }: Props) {
               </div>
             </div>
 
+            <div className="space-y-1.5">
+              <Label className="text-xs">Boost duration</Label>
+              <Select value={String(durationDays)} onValueChange={(v) => setDurationDays(Number(v))}>
+                <SelectTrigger><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  {DURATION_OPTIONS.map((d) => (
+                    <SelectItem key={d.days} value={String(d.days)}>
+                      {d.label} — ₹{d.price.toLocaleString("en-IN")}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
             <div className="rounded-lg border p-3 bg-muted/30 space-y-1 text-sm">
               <div className="flex justify-between">
                 <span>Plan</span>
@@ -131,16 +145,12 @@ export function BoostButton({ listing }: Props) {
               </div>
               <div className="flex justify-between">
                 <span>Duration</span>
-                <span className="font-medium">{durationDays} days</span>
+                <span className="font-medium">{selected.label}</span>
               </div>
-              <div className="flex justify-between"><span>Price</span><span className="font-bold">₹500</span></div>
-              {!isGrowth ? (
+              <div className="flex justify-between"><span>Price</span><span className="font-bold">₹{price.toLocaleString("en-IN")}</span></div>
+              {isGrowth && (
                 <p className="text-[11px] text-muted-foreground pt-1 leading-snug">
-                  Starter boosts run for <strong>3 days</strong> at ₹500. Growth members get <strong>7 days</strong> for the same price and rank above Starter boosts in Discover.
-                </p>
-              ) : (
-                <p className="text-[11px] text-muted-foreground pt-1 leading-snug">
-                  Growth boosts run for <strong>7 days</strong> and appear above Starter-plan boosts in Discover.
+                  Growth boosts rank above Starter-plan boosts in Discover for the same duration.
                 </p>
               )}
               <p className="text-[11px] text-muted-foreground italic pt-0.5">
@@ -152,11 +162,6 @@ export function BoostButton({ listing }: Props) {
           <DialogFooter>
             <Button variant="outline" onClick={() => setOpen(false)} disabled={busy}>Cancel</Button>
             <Button onClick={handleBoost} disabled={busy} className="gap-1.5">
-              <Rocket className="h-4 w-4" /> {busy ? "Boosting..." : "Pay ₹500 & Boost"}
+              <Rocket className="h-4 w-4" /> {busy ? "Boosting..." : `Pay ₹${price.toLocaleString("en-IN")} & Boost`}
             </Button>
           </DialogFooter>
-        </DialogContent>
-      </Dialog>
-    </>
-  );
-}
