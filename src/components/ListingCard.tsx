@@ -6,7 +6,7 @@ import { CategoryIcon, categoryGradient } from "./CategoryIcon";
 import { StarRating } from "./StarRating";
 import { MapPin, Wifi, Building2, Users, Sparkles, Clock, Bookmark, Share2, MessageCircle, Link as LinkIcon, Award, UsersRound, Globe2, Armchair } from "lucide-react";
 import { slotsToText } from "./ScheduleGrid";
-import { formatDuration, formatPrice } from "@/lib/listingUtils";
+import { formatDuration, formatPrice, formatCourseLength } from "@/lib/listingUtils";
 import { useFxRates } from "@/lib/useFxRates";
 import { store, useStore } from "@/lib/store";
 import { distanceKmBetween, formatDistance } from "@/lib/distance";
