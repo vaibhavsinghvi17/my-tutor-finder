@@ -63,6 +63,7 @@ const ListingForm = () => {
   const [onlineSessionsPerMonth, setOnlineSessionsPerMonth] = useState<string>(existing?.onlineSessionsPerMonth?.toString() ?? "4");
   const [onlineIntlPriceAmount, setOnlineIntlPriceAmount] = useState<string>(existing?.onlineIntlPriceAmount?.toString() ?? "");
   const [durationMins, setDurationMins] = useState<string>(existing?.durationMins?.toString() ?? "60");
+  const [courseDays, setCourseDays] = useState<string>(existing?.courseDays?.toString() ?? "");
   const [sessionsPerMonth, setSessionsPerMonth] = useState<string>(existing?.sessionsPerMonth?.toString() ?? "4");
   const [trial, setTrial] = useState(existing?.trial ?? true);
   const [slots, setSlots] = useState<SlotKey[]>(existing?.slots ?? []);
