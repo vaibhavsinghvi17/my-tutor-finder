@@ -448,16 +448,19 @@ const ListingDetail = () => {
           listingId={listing.id}
           providerUserId={listing.providerUserId}
           reviewerName={learner.name || "Anonymous"}
+          isOwner={!!user && user.id === listing.providerUserId}
         />
 
-        <div className="flex justify-center">
-          <ReportButton
-            targetType="listing"
-            targetId={listing.id}
-            reporterName={learner.name || "Anonymous"}
-            label="Report this listing"
-          />
-        </div>
+        {user?.id !== listing.providerUserId && (
+          <div className="flex justify-center">
+            <ReportButton
+              targetType="listing"
+              targetId={listing.id}
+              reporterName={learner.name || "Anonymous"}
+              label="Report this listing"
+            />
+          </div>
+        )}
       </main>
       <VerifyProfileDialog
         open={verifyOpen}
