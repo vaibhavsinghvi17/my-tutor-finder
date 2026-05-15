@@ -448,7 +448,6 @@ const ListingDetail = () => {
           listingId={listing.id}
           providerUserId={listing.providerUserId}
           reviewerName={learner.name || "Anonymous"}
-          isOwner={!!user && user.id === listing.providerUserId}
         />
 
         {user?.id !== listing.providerUserId && (
