@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
+import { NotificationBell } from "@/components/NotificationBell";
 
 const PROMPT_KEY = "scholarr-switch-prompted";
 function wasPrompted(role: "learner" | "provider") {
