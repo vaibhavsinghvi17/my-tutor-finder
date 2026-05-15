@@ -96,7 +96,7 @@ const ProviderProfilePage = () => {
 
   const phoneVerified = !!provider.phone && provider.verifiedPhone === provider.phone;
   const completionItems = [
-    { label: "Class name", done: !!provider.businessName?.trim() },
+    { label: "Business name", done: !!provider.businessName?.trim() },
     { label: "City", done: !!provider.city?.trim() },
     { label: "Pin code", done: !!provider.pinCode?.trim() },
     { label: "Address", done: !!provider.address?.trim() },
@@ -195,7 +195,7 @@ const ProviderProfilePage = () => {
           </div>
           <div className="min-w-0 flex-1">
             <h1 className="text-lg font-bold leading-tight truncate">
-              {provider.businessName || "Your class name"}
+              {provider.businessName || "Your business name"}
             </h1>
             <p className="text-xs text-muted-foreground truncate">
               {provider.yearsExperience ? `${provider.yearsExperience}+ yrs experience` : "Add your details"}
@@ -418,7 +418,7 @@ const ProviderProfilePage = () => {
         <DialogContent className="max-w-lg">
           <DialogHeader><DialogTitle>About your class</DialogTitle></DialogHeader>
           <div className="space-y-3 max-h-[65vh] overflow-y-auto pr-1">
-            <Field label="Business / class name">
+            <Field label="Business name">
               <Input
                 value={provider.businessName}
                 onChange={(e) => store.updateProvider({ businessName: e.target.value.slice(0, 80) })}
