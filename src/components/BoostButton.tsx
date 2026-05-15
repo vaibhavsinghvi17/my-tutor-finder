@@ -24,7 +24,8 @@ export function BoostButton({ listing }: Props) {
   const [open, setOpen] = useState(false);
   const [busy, setBusy] = useState(false);
   const [city, setCity] = useState(listing.city ?? "");
-  const [ageGroup, setAgeGroup] = useState<string>(listing.ageGroup ?? ANY);
+  const [minAge, setMinAge] = useState<number>(3);
+  const [maxAge, setMaxAge] = useState<number>(90);
   const [gender, setGender] = useState<string>(ANY);
   const boosted = isBoosted(listing.id, boosts);
 
