@@ -84,6 +84,8 @@ const ProviderProfilePage = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
   const fileRef = useRef<HTMLInputElement>(null);
+  const { byListing: insightsByListing } = useProviderListingInsights();
+  const { boosts } = useActiveBoosts();
 
   async function handleSignOut() {
     await supabase.auth.signOut();
