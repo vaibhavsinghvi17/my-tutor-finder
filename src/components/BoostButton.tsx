@@ -101,43 +101,34 @@ export function BoostButton({ listing }: Props) {
               />
             </div>
             <div className="space-y-1.5">
-              <div className="flex items-center justify-between">
-                <Label className="text-xs">Age range</Label>
-                <span className="text-[11px] text-muted-foreground">
-                  {Math.min(minAge, maxAge)}–{Math.max(minAge, maxAge)} yrs
-                </span>
-              </div>
-              <div className="grid grid-cols-2 gap-2">
-                <div className="space-y-1">
-                  <Label htmlFor="boost-min-age" className="text-[10px] text-muted-foreground">Min</Label>
-                  <Input
-                    id="boost-min-age"
-                    type="number"
-                    min={3}
-                    max={90}
-                    value={minAge}
-                    onChange={(e) => {
-                      const v = Math.max(3, Math.min(90, Number(e.target.value) || 3));
-                      setMinAge(v);
-                      if (v > maxAge) setMaxAge(v);
-                    }}
-                  />
-                </div>
-                <div className="space-y-1">
-                  <Label htmlFor="boost-max-age" className="text-[10px] text-muted-foreground">Max</Label>
-                  <Input
-                    id="boost-max-age"
-                    type="number"
-                    min={3}
-                    max={90}
-                    value={maxAge}
-                    onChange={(e) => {
-                      const v = Math.max(3, Math.min(90, Number(e.target.value) || 90));
-                      setMaxAge(v);
-                      if (v < minAge) setMinAge(v);
-                    }}
-                  />
-                </div>
+              <Label className="text-xs">Age range</Label>
+              <div className="grid grid-cols-3 gap-1.5">
+                {[
+                  { label: "Kids", min: 3, max: 12 },
+                  { label: "Teens", min: 13, max: 17 },
+                  { label: "Young adults", min: 18, max: 29 },
+                  { label: "Adults", min: 30, max: 49 },
+                  { label: "Seniors", min: 50, max: 90 },
+                  { label: "All (3–90)", min: 3, max: 90 },
+                ].map((r) => {
+                  const active = minAge === r.min && maxAge === r.max;
+                  return (
+                    <button
+                      key={r.label}
+                      type="button"
+                      onClick={() => { setMinAge(r.min); setMaxAge(r.max); }}
+                      className={
+                        "rounded-md border px-2 py-1.5 text-[11px] font-medium leading-tight transition-colors " +
+                        (active
+                          ? "border-primary bg-primary/10 text-primary"
+                          : "border-input hover:bg-muted")
+                      }
+                    >
+                      <div>{r.label}</div>
+                      <div className="text-[10px] opacity-70">{r.min}–{r.max} yrs</div>
+                    </button>
+                  );
+                })}
               </div>
             </div>
             <div className="space-y-1.5">
