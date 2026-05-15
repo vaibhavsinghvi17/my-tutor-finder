@@ -78,7 +78,14 @@ const ProviderProfilePage = () => {
   const { isGrowth } = useSubscription();
   const { names: categoryNames, addCategory } = useCategories();
   const navigate = useNavigate();
+  const { user } = useAuth();
   const fileRef = useRef<HTMLInputElement>(null);
+
+  async function handleSignOut() {
+    await supabase.auth.signOut();
+    toast.success("Signed out");
+    navigate("/auth");
+  }
 
   const [open, setOpen] = useState<Section>(null);
   const [catsOpen, setCatsOpen] = useState(false);
