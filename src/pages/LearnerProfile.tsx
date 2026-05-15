@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { TopBar } from "@/components/TopBar";
 import { Input } from "@/components/ui/input";
@@ -31,6 +31,8 @@ import { PinCodeInput } from "@/components/PinCodeInput";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/useAuth";
+import { ProfileWizard } from "@/components/ProfileWizard";
+import { ProfileCompletion } from "@/components/ProfileCompletion";
 
 function SignOutFooter() {
   const { user } = useAuth();
@@ -66,7 +68,27 @@ const LearnerProfilePage = () => {
   const [interestsOpen, setInterestsOpen] = useState(false);
   const [timingsOpen, setTimingsOpen] = useState(false);
   const [customInterest, setCustomInterest] = useState("");
+  const [wizardOpen, setWizardOpen] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
+
+  const phoneVerified = !!learner.phone && learner.verifiedPhone === learner.phone;
+  const completionItems = [
+    { label: "Name", done: !!learner.name?.trim() },
+    { label: "Date of birth", done: !!learner.dob?.trim() },
+    { label: "City", done: !!learner.city?.trim() },
+    { label: "Pin code", done: !!learner.pinCode?.trim() },
+    { label: "Interests", done: (learner.interests?.length ?? 0) > 0 },
+    { label: "Phone verified", done: phoneVerified },
+  ];
+  const profileEmpty = !learner.name?.trim();
+
+  useEffect(() => {
+    if (profileEmpty && !sessionStorage.getItem("learnerWizardSeen")) {
+      setWizardOpen(true);
+      sessionStorage.setItem("learnerWizardSeen", "1");
+    }
+  }, [profileEmpty]);
+
 
   async function addCustomInterest() {
     const v = customInterest.trim();
@@ -196,6 +218,10 @@ const LearnerProfilePage = () => {
             </div>
           </div>
         )}
+
+        <ProfileCompletion items={completionItems} onSetup={() => setWizardOpen(true)} />
+
+        <ProfileWizard mode="learner" open={wizardOpen} onClose={() => setWizardOpen(false)} />
 
         {/* Interests directly under name */}
         <div className="rounded-xl border border-border/60 bg-card/40 backdrop-blur-sm p-3">

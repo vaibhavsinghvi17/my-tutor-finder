@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { TopBar } from "@/components/TopBar";
 import { Card } from "@/components/ui/card";
@@ -40,6 +40,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/useAuth";
 import { SubscriptionPanel } from "@/components/SubscriptionPanel";
 import { useSubscription } from "@/lib/useSubscription";
+import { ProfileWizard } from "@/components/ProfileWizard";
+import { ProfileCompletion } from "@/components/ProfileCompletion";
 import { Sparkles } from "lucide-react";
 
 function SignOutFooter() {
@@ -90,6 +92,25 @@ const ProviderProfilePage = () => {
   const [open, setOpen] = useState<Section>(null);
   const [catsOpen, setCatsOpen] = useState(false);
   const [newCat, setNewCat] = useState("");
+  const [wizardOpen, setWizardOpen] = useState(false);
+
+  const phoneVerified = !!provider.phone && provider.verifiedPhone === provider.phone;
+  const completionItems = [
+    { label: "Class name", done: !!provider.businessName?.trim() },
+    { label: "City", done: !!provider.city?.trim() },
+    { label: "Pin code", done: !!provider.pinCode?.trim() },
+    { label: "Address", done: !!provider.address?.trim() },
+    { label: "Categories", done: (provider.categories?.length ?? 0) > 0 },
+    { label: "Phone verified", done: phoneVerified },
+  ];
+  const profileEmpty = !provider.businessName?.trim();
+
+  useEffect(() => {
+    if (profileEmpty && !sessionStorage.getItem("providerWizardSeen")) {
+      setWizardOpen(true);
+      sessionStorage.setItem("providerWizardSeen", "1");
+    }
+  }, [profileEmpty]);
 
   const contactInfo: ContactInfo = provider.contactInfo ?? {};
 
@@ -194,6 +215,10 @@ const ProviderProfilePage = () => {
             </Link>
           </div>
         </div>
+
+        <ProfileCompletion items={completionItems} onSetup={() => setWizardOpen(true)} />
+
+        <ProfileWizard mode="provider" open={wizardOpen} onClose={() => setWizardOpen(false)} />
 
 
         {(!provider.city || !provider.pinCode) && (
