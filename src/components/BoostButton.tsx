@@ -11,6 +11,7 @@ import { createBoost, useActiveBoosts, isBoosted } from "@/lib/useBoosts";
 import { useSubscription } from "@/lib/useSubscription";
 import { useAuth } from "@/lib/useAuth";
 import { Listing, AGE_GROUPS } from "@/lib/types";
+import { LocationTargeter, TargetEntry, targetsToString } from "@/components/LocationTargeter";
 
 interface Props {
   listing: Listing;
@@ -24,7 +25,9 @@ export function BoostButton({ listing }: Props) {
   const { boosts, refresh } = useActiveBoosts();
   const [open, setOpen] = useState(false);
   const [busy, setBusy] = useState(false);
-  const [city, setCity] = useState(listing.city ?? "");
+  const [targets, setTargets] = useState<TargetEntry[]>(
+    listing.city ? [{ kind: "city", value: listing.city }] : []
+  );
   const [minAge, setMinAge] = useState<number>(3);
   const [maxAge, setMaxAge] = useState<number>(90);
   const [gender, setGender] = useState<string>(ANY);
@@ -53,7 +56,7 @@ export function BoostButton({ listing }: Props) {
         listingId: listing.id,
         providerUserId: user.id,
         durationDays,
-        city: city.trim() || null,
+        city: targetsToString(targets) || null,
         category: listing.category,
         ageGroup: `${Math.min(minAge, maxAge)}-${Math.max(minAge, maxAge)}`,
         gender: gender === ANY ? null : gender,
@@ -93,13 +96,15 @@ export function BoostButton({ listing }: Props) {
 
           <div className="space-y-3">
             <div className="space-y-1.5">
-              <Label htmlFor="boost-city" className="text-xs">Target city</Label>
-              <Input
-                id="boost-city"
-                value={city}
-                onChange={(e) => setCity(e.target.value)}
-                placeholder="Any city"
+              <Label className="text-xs">Target locations</Label>
+              <LocationTargeter
+                value={targets}
+                onChange={setTargets}
+                placeholder="Search countries, cities, areas…"
               />
+              <p className="text-[10px] text-muted-foreground">
+                Add one or more — country, state, city, or area. Leave empty to target everyone.
+              </p>
             </div>
             <div className="space-y-2">
               <div className="flex items-center justify-between">
