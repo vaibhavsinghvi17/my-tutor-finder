@@ -18,7 +18,7 @@ import { SocialLinksRow } from "@/components/SocialLinksRow";
 import { ContactActions } from "@/components/ContactActions";
 import { ClassChat } from "@/components/ClassChat";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { ArrowLeft, Building2, MapPin, Wifi, Users, Sparkles, Clock, Award, UsersRound, Globe2, Languages } from "lucide-react";
+import { ArrowLeft, Building2, MapPin, Wifi, Users, Sparkles, Clock, Award, UsersRound, Globe2, Languages, Pencil, Calendar } from "lucide-react";
 import { SlotKey } from "@/lib/types";
 import { ageFromDob, blocksToSlots } from "@/lib/timeUtils";
 import { formatDuration, formatPrice } from "@/lib/listingUtils";
@@ -325,6 +325,38 @@ const ListingDetail = () => {
           </div>
         </Card>
 
+        {listing.providerId === "self" ? (
+          <Card className="p-6 space-y-4 border-primary/30 bg-primary/5">
+            <div className="flex items-start gap-3">
+              <div className="h-10 w-10 rounded-xl bg-primary/15 text-primary grid place-items-center shrink-0">
+                <Pencil className="h-5 w-5" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <h2 className="font-semibold text-lg leading-tight">This is your class</h2>
+                <p className="text-sm text-muted-foreground mt-0.5">
+                  You're viewing your own listing. Edit any detail — schedule, price, address, fliers, seats — from the editor.
+                </p>
+              </div>
+            </div>
+            <div className="flex flex-wrap gap-2">
+              <Button asChild className="gap-1.5">
+                <Link to={`/provider/listing/${listing.id}`}>
+                  <Pencil className="h-4 w-4" /> Edit class
+                </Link>
+              </Button>
+              <Button asChild variant="outline" className="gap-1.5">
+                <Link to={`/provider/listing/${listing.id}#schedule`}>
+                  <Calendar className="h-4 w-4" /> Edit schedule
+                </Link>
+              </Button>
+              <Button asChild variant="outline" className="gap-1.5">
+                <Link to="/provider/requests">
+                  <Users className="h-4 w-4" /> View requests
+                </Link>
+              </Button>
+            </div>
+          </Card>
+        ) : (
         <Card className="p-6 space-y-4">
           <div>
             <h2 className="font-semibold text-lg">Request to join</h2>
@@ -415,6 +447,7 @@ const ListingDetail = () => {
             <Button onClick={submit}>{isTrial ? "Request trial class" : "Send request"}</Button>
           </div>
         </Card>
+        )}
 
         <ReviewsSection
           listingId={listing.id}
