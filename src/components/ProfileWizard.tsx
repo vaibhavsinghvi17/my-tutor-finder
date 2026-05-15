@@ -189,7 +189,7 @@ export function ProfileWizard({ mode, open, onClose }: Props) {
               ) : (
                 <>
                   <div className="space-y-1.5">
-                    <Label>Class / business name<Req /></Label>
+                    <Label>Business name<Req /></Label>
                     <Input
                       value={provider.businessName ?? ""}
                       onChange={(e) => update({ businessName: e.target.value.slice(0, 80) })}
