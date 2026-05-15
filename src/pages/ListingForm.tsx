@@ -387,6 +387,7 @@ const ListingForm = () => {
                   <SelectContent>
                     <SelectItem value="session">per session</SelectItem>
                     <SelectItem value="month">per month</SelectItem>
+                    <SelectItem value="course">per entire course</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -431,6 +432,7 @@ const ListingForm = () => {
                   <SelectContent>
                     <SelectItem value="session">per session</SelectItem>
                     <SelectItem value="month">per month</SelectItem>
+                    <SelectItem value="course">per entire course</SelectItem>
                   </SelectContent>
                 </Select>
               </div>

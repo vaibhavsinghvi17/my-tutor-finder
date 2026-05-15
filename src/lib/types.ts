@@ -123,7 +123,7 @@ export interface SeatInfo {
   occupied: number;
 }
 
-export type PriceUnit = "session" | "month";
+export type PriceUnit = "session" | "month" | "course";
 
 export interface Listing {
   id: string;
