@@ -210,6 +210,7 @@ const ListingForm = () => {
       onlinePriceUnit: (mode === "Both" && onlinePriceAmount) ? onlinePriceUnit : undefined,
       onlineSessionsPerMonth: (mode === "Both" && onlinePriceUnit === "month" && onlineSessionsPerMonth) ? Number(onlineSessionsPerMonth) : undefined,
       durationMins: durationMins ? Number(durationMins) : undefined,
+      courseDays: courseDays && Number(courseDays) > 0 ? Number(courseDays) : undefined,
       sessionsPerMonth: priceUnit === "month" && sessionsPerMonth ? Number(sessionsPerMonth) : undefined,
       trial,
       slots,
