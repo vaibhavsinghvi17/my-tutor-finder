@@ -48,6 +48,11 @@ const ListingDetail = () => {
     : 0;
   const interactions = requestCount + dbCount + seedInteractions;
 
+  const isOwner = !!listing && (
+    listing.providerId === "self" ||
+    (!!user && !!listing.providerUserId && user.id === listing.providerUserId)
+  );
+
   const [slot, setSlot] = useState<SlotKey | "">("");
   const [note, setNote] = useState("");
   const [isTrial, setIsTrial] = useState(false);
