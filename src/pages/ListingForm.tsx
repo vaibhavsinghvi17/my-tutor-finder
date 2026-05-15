@@ -78,6 +78,33 @@ const ListingForm = () => {
   const [fliers, setFliers] = useState<string[]>(existing?.fliers ?? []);
   const [aiLoading, setAiLoading] = useState(false);
 
+  const profileAddrLine = (provider.address ?? "").trim();
+  const initialMatchesProfile =
+    !!existing &&
+    (existing.country ?? "") === (provider.country ?? "") &&
+    (existing.state ?? "") === (provider.state ?? "") &&
+    (existing.city ?? "") === (provider.city ?? "") &&
+    (existing.area ?? "") === (provider.area ?? "") &&
+    (existing.pinCode ?? "") === (provider.pinCode ?? "") &&
+    (existing.venue ?? "") === profileAddrLine;
+  const [useProfileAddress, setUseProfileAddress] = useState<boolean>(
+    existing ? initialMatchesProfile : true,
+  );
+
+  useEffect(() => {
+    if (!useProfileAddress) return;
+    setCountry(provider.country ?? "");
+    setStateName(provider.state ?? "");
+    setCity(provider.city ?? "");
+    setArea(provider.area ?? "");
+    setPinCode(provider.pinCode ?? "");
+    setVenueLine1(profileAddrLine);
+    setVenueLine2("");
+    setVenueLine3("");
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [useProfileAddress, provider.country, provider.state, provider.city, provider.area, provider.pinCode, profileAddrLine]);
+
+
   async function generateDescription() {
     if (!title.trim()) { toast.error("Add a title first so AI knows what to write"); return; }
     setAiLoading(true);
