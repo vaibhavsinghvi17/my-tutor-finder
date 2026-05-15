@@ -28,6 +28,7 @@ import { toast } from "sonner";
 import { recordEvent } from "@/lib/useEvents";
 import { ReviewsSection } from "@/components/ReviewsSection";
 import { ReportButton } from "@/components/ReportButton";
+import { BoostButton } from "@/components/BoostButton";
 import { useListingReviews } from "@/lib/useReviews";
 
 const ListingDetail = () => {
@@ -174,6 +175,19 @@ const ListingDetail = () => {
       />
 
       <main className="container py-6 space-y-6 max-w-4xl">
+        {isOwner && (
+          <Card className="p-3 flex items-center justify-between gap-2 flex-wrap bg-primary/5 border-primary/20">
+            <div className="text-xs sm:text-sm text-muted-foreground">
+              <span className="font-medium text-foreground">This is your class.</span> Boost it to reach more learners.
+            </div>
+            <div className="flex items-center gap-2">
+              <Button asChild variant="outline" size="sm" className="gap-1.5">
+                <Link to={`/provider/listing/${listing.id}/edit`}><Pencil className="h-3.5 w-3.5" /> Edit</Link>
+              </Button>
+              <BoostButton listing={listing} />
+            </div>
+          </Card>
+        )}
         <Card className="overflow-hidden">
           <div className="p-6 space-y-5">
             <div className="flex flex-wrap gap-2">
