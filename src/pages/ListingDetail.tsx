@@ -21,7 +21,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { ArrowLeft, Building2, MapPin, Wifi, Users, Sparkles, Clock, Award, UsersRound, Globe2, Languages, Pencil, Calendar } from "lucide-react";
 import { SlotKey } from "@/lib/types";
 import { ageFromDob, blocksToSlots } from "@/lib/timeUtils";
-import { formatDuration, formatPrice } from "@/lib/listingUtils";
+import { formatDuration, formatPrice, formatCourseLength } from "@/lib/listingUtils";
 import { useFxRates } from "@/lib/useFxRates";
 import { useAuth } from "@/lib/useAuth";
 import { toast } from "sonner";
