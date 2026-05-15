@@ -450,14 +450,16 @@ const ListingDetail = () => {
           reviewerName={learner.name || "Anonymous"}
         />
 
-        <div className="flex justify-center">
-          <ReportButton
-            targetType="listing"
-            targetId={listing.id}
-            reporterName={learner.name || "Anonymous"}
-            label="Report this listing"
-          />
-        </div>
+        {user?.id !== listing.providerUserId && (
+          <div className="flex justify-center">
+            <ReportButton
+              targetType="listing"
+              targetId={listing.id}
+              reporterName={learner.name || "Anonymous"}
+              label="Report this listing"
+            />
+          </div>
+        )}
       </main>
       <VerifyProfileDialog
         open={verifyOpen}
