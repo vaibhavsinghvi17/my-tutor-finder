@@ -1,27 +1,62 @@
+import { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import {
+  Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter,
+} from "@/components/ui/dialog";
+import { Checkbox } from "@/components/ui/checkbox";
 import { store, useStore } from "@/lib/store";
 import { allKnownCities } from "@/lib/locations";
 import { Combobox } from "@/components/Combobox";
 import {
   GraduationCap, Briefcase, MapPin, Sparkles, X, ArrowLeft,
-  LayoutDashboard, UserCircle2, BookOpen,
+  LayoutDashboard, UserCircle2, BookOpen, Loader2, Sparkle,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { toast } from "sonner";
 
 export function TopBar() {
   const mode = useStore((s) => s.mode);
   const city = useStore((s) => s.city);
   const learner = useStore((s) => s.learner);
+  const provider = useStore((s) => s.provider);
   const location = useLocation();
   const navigate = useNavigate();
 
   const isProvider = mode === "provider";
+  const target: "learner" | "provider" = isProvider ? "learner" : "provider";
+  const targetEmpty = target === "provider"
+    ? !provider.businessName?.trim()
+    : !learner.name?.trim();
+  const otherHasInfo = target === "provider"
+    ? !!(learner.name || learner.city || learner.phone || learner.email)
+    : !!(provider.businessName || provider.city || provider.phone || provider.email);
 
-  function switchMode() {
-    const next = isProvider ? "learner" : "provider";
-    store.setMode(next);
-    navigate(next === "provider" ? "/provider" : "/dashboard");
+  const [switchOpen, setSwitchOpen] = useState(false);
+  const [prefill, setPrefill] = useState(true);
+  const [busy, setBusy] = useState(false);
+
+  function openSwitch() {
+    setPrefill(otherHasInfo);
+    setSwitchOpen(true);
+  }
+
+  async function confirmSwitch() {
+    setBusy(true);
+    if (targetEmpty) await new Promise((r) => setTimeout(r, 1200));
+    store.switchProfile(target, prefill && otherHasInfo);
+    setBusy(false);
+    setSwitchOpen(false);
+    if (targetEmpty) {
+      toast.success(
+        target === "provider"
+          ? "Tutor profile ready! Add a few details to publish."
+          : "Learner profile ready!",
+      );
+    } else if (prefill && otherHasInfo) {
+      toast.success("Personal info synced from your other profile");
+    }
+    navigate(target === "provider" ? "/provider" : "/dashboard");
   }
 
   return (
