@@ -78,7 +78,14 @@ const ProviderProfilePage = () => {
   const { isGrowth } = useSubscription();
   const { names: categoryNames, addCategory } = useCategories();
   const navigate = useNavigate();
+  const { user } = useAuth();
   const fileRef = useRef<HTMLInputElement>(null);
+
+  async function handleSignOut() {
+    await supabase.auth.signOut();
+    toast.success("Signed out");
+    navigate("/auth");
+  }
 
   const [open, setOpen] = useState<Section>(null);
   const [catsOpen, setCatsOpen] = useState(false);
@@ -129,8 +136,18 @@ const ProviderProfilePage = () => {
     <div className="min-h-screen">
       <TopBar />
       <main className="container py-4 space-y-4 max-w-3xl">
-        <div className="flex justify-end">
+        <div className="flex justify-end items-center gap-2">
           <LanguageSwitcher compact />
+          {user && (
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleSignOut}
+              className="gap-1.5 h-8 text-destructive hover:text-destructive"
+            >
+              <LogOut className="h-3.5 w-3.5" /> Sign out
+            </Button>
+          )}
         </div>
         {/* Header */}
         <div className="flex items-center gap-3">
