@@ -80,7 +80,7 @@ const ProviderDashboard = () => {
         <div className="flex items-start justify-between gap-3 flex-wrap">
           <div>
             <h1 className="text-2xl sm:text-3xl font-bold">
-              {provider.businessName || "Your studio"}
+              {provider.businessName || "Your class name"}
             </h1>
             <p className="text-sm text-muted-foreground">
               Manage your classes and respond to join requests.
