@@ -16,7 +16,7 @@ import { ClassChat } from "@/components/ClassChat";
 import { DatePicker } from "@/components/DatePicker";
 import { JoinRequest, SlotKey } from "@/lib/types";
 import { findProfileByUsername } from "@/lib/usernames";
-import { ArrowLeft, Check, X, Inbox, CheckCircle2, Sparkles, UserPlus, AtSign, Repeat } from "lucide-react";
+import { ArrowLeft, Check, X, Inbox, CheckCircle2, Sparkles, UserPlus, AtSign, Repeat, Filter, Search, RotateCcw } from "lucide-react";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 
