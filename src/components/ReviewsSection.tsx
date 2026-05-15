@@ -124,10 +124,7 @@ export function ReviewsSection({ listingId, providerUserId, reviewerName, isOwne
         </div>
       ) : !user ? (
         <p className="text-xs text-muted-foreground italic">Sign in to leave a review.</p>
-      ) : isOwnListing ? (
-        <p className="text-xs text-muted-foreground italic">You can't review your own class.</p>
-      ) : (
-        <p className="text-xs text-muted-foreground italic">Reviews aren't available for this class.</p>
+      ) : isOwnListing ? null : null}
       )}
     </Card>
   );
