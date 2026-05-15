@@ -208,7 +208,7 @@ export const store = {
           ...listing,
           id: crypto.randomUUID(),
           providerId: "self",
-          providerName: s.provider.businessName || "My Studio",
+          providerName: s.provider.businessName || "My Class",
           providerUserId: providerUserId ?? listing.providerUserId,
           createdAt: Date.now(),
         },

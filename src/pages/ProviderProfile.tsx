@@ -138,7 +138,7 @@ const ProviderProfilePage = () => {
             {provider.avatarDataUrl ? (
               <img
                 src={provider.avatarDataUrl}
-                alt="Studio"
+                alt="Class"
                 className="h-16 w-16 rounded-full object-cover ring-2 ring-white/40 shadow-md"
               />
             ) : (
@@ -157,7 +157,7 @@ const ProviderProfilePage = () => {
           </div>
           <div className="min-w-0 flex-1">
             <h1 className="text-lg font-bold leading-tight truncate">
-              {provider.businessName || "Your studio"}
+              {provider.businessName || "Your class name"}
             </h1>
             <p className="text-xs text-muted-foreground truncate">
               {provider.yearsExperience ? `${provider.yearsExperience}+ yrs experience` : "Add your details"}
@@ -260,7 +260,7 @@ const ProviderProfilePage = () => {
           </DropdownMenuTrigger>
           <DropdownMenuContent align="start" className="bg-popover">
             <DropdownMenuItem onClick={() => setOpen("about")}>
-              <Briefcase className="h-4 w-4 mr-2" /> About studio
+              <Briefcase className="h-4 w-4 mr-2" /> About class
             </DropdownMenuItem>
             <DropdownMenuItem onClick={() => setOpen("address")}>
               <MapPin className="h-4 w-4 mr-2" /> Address
@@ -278,7 +278,7 @@ const ProviderProfilePage = () => {
         <div className="rounded-xl border border-border/60 bg-card/40 backdrop-blur-sm divide-y divide-border/50 overflow-hidden text-sm">
           <SummaryRow icon={Award} label="Experience"
             value={provider.yearsExperience ? `${provider.yearsExperience}+ years` : "—"} />
-          <SummaryRow icon={MapPin} label="Studio location" value={locationLine} />
+          <SummaryRow icon={MapPin} label="Class location" value={locationLine} />
           <SummaryRow icon={LanguagesIcon} label="Teaching languages"
             value={(provider.languages && provider.languages.length) ? provider.languages.join(", ") : "—"} />
           <div className="p-3 flex items-start gap-2">
@@ -374,9 +374,9 @@ const ProviderProfilePage = () => {
       {/* About */}
       <Dialog open={open === "about"} onOpenChange={(v) => !v && setOpen(null)}>
         <DialogContent className="max-w-lg">
-          <DialogHeader><DialogTitle>About your studio</DialogTitle></DialogHeader>
+          <DialogHeader><DialogTitle>About your class</DialogTitle></DialogHeader>
           <div className="space-y-3 max-h-[65vh] overflow-y-auto pr-1">
-            <Field label="Business / studio name">
+            <Field label="Business / class name">
               <Input
                 value={provider.businessName}
                 onChange={(e) => store.updateProvider({ businessName: e.target.value.slice(0, 80) })}
@@ -418,7 +418,7 @@ const ProviderProfilePage = () => {
       {/* Address */}
       <Dialog open={open === "address"} onOpenChange={(v) => !v && setOpen(null)}>
         <DialogContent className="max-w-lg">
-          <DialogHeader><DialogTitle>Studio address</DialogTitle></DialogHeader>
+          <DialogHeader><DialogTitle>Class address</DialogTitle></DialogHeader>
           <div className="space-y-3 max-h-[65vh] overflow-y-auto pr-1">
             <p className="text-[11px] text-muted-foreground">
               <span className="text-destructive">*</span> City and Pin code are required so learners nearby can find your classes.
@@ -441,7 +441,7 @@ const ProviderProfilePage = () => {
             <LocationFields
               value={{ country: provider.country, state: provider.state, city: provider.city, area: provider.area }}
               onChange={(v) => store.updateProvider(v)}
-              hint="Where is your studio? For online-only, just pick country & state."
+              hint="Where is your class? For online-only, just pick country & state."
             />
             <Field label="Pin / Postal code *">
               <PinCodeInput
@@ -490,7 +490,7 @@ const ProviderProfilePage = () => {
                 </a>
               )}
               <p className="text-[11px] text-muted-foreground">
-                Adds a precise pin so learners can navigate directly to your studio.
+                Adds a precise pin so learners can navigate directly to your class.
               </p>
             </div>
           </div>
@@ -557,7 +557,7 @@ const ProviderProfilePage = () => {
               <Input
                 value={contactInfo.mapsUrl ?? ""}
                 onChange={(e) => setContact({ mapsUrl: e.target.value.slice(0, 500) })}
-                placeholder="Paste a Google Maps link, or leave blank to use studio address"
+                placeholder="Paste a Google Maps link, or leave blank to use class address"
                 className="h-9"
               />
             </Field>
