@@ -13,9 +13,10 @@ interface Props {
   listingId: string;
   providerUserId?: string;
   reviewerName: string;
+  isOwner?: boolean;
 }
 
-export function ReviewsSection({ listingId, providerUserId, reviewerName }: Props) {
+export function ReviewsSection({ listingId, providerUserId, reviewerName, isOwner }: Props) {
   const { user } = useAuth();
   const { reviews, avg, count, loading, refresh } = useListingReviews(listingId);
   const myReview = user ? reviews.find((r) => r.reviewer_user_id === user.id) : undefined;
@@ -23,7 +24,7 @@ export function ReviewsSection({ listingId, providerUserId, reviewerName }: Prop
   const [text, setText] = useState(myReview?.comment ?? "");
   const [busy, setBusy] = useState(false);
 
-  const isOwnListing = user && providerUserId && user.id === providerUserId;
+  const isOwnListing = isOwner || (!!user && !!providerUserId && user.id === providerUserId);
   const canReview = !!user && !!providerUserId && !isOwnListing;
 
   async function submit() {
