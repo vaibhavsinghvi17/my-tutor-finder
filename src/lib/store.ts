@@ -129,6 +129,47 @@ export const store = {
   setMode(mode: AppMode) {
     set((s) => ({ ...s, mode }));
   },
+  switchProfile(target: AppMode, prefillFromOther: boolean) {
+    set((s) => {
+      let learner = s.learner;
+      let provider = s.provider;
+      if (prefillFromOther) {
+        if (target === "provider") {
+          provider = {
+            ...provider,
+            businessName: provider.businessName || learner.name || "",
+            country: provider.country || learner.country,
+            state: provider.state || learner.state,
+            city: provider.city || learner.city,
+            area: provider.area || learner.area,
+            pinCode: provider.pinCode || learner.pinCode,
+            address: provider.address || learner.address,
+            phone: provider.phone || learner.phone,
+            verifiedPhone: provider.verifiedPhone || learner.verifiedPhone,
+            email: provider.email || learner.email,
+            verifiedEmail: provider.verifiedEmail || (learner as any).verifiedEmail,
+            avatarDataUrl: provider.avatarDataUrl || learner.avatarDataUrl,
+          };
+        } else {
+          learner = {
+            ...learner,
+            name: learner.name || provider.businessName || "",
+            country: learner.country || provider.country,
+            state: learner.state || provider.state,
+            city: learner.city || provider.city,
+            area: learner.area || provider.area,
+            pinCode: learner.pinCode || provider.pinCode,
+            address: learner.address || provider.address,
+            phone: learner.phone || provider.phone,
+            verifiedPhone: learner.verifiedPhone || provider.verifiedPhone,
+            email: learner.email || provider.email,
+            avatarDataUrl: learner.avatarDataUrl || provider.avatarDataUrl,
+          };
+        }
+      }
+      return { ...s, mode: target, learner, provider };
+    });
+  },
   setOnboarded(mode: AppMode) {
     set((s) => ({ ...s, onboarded: true, mode }));
   },
