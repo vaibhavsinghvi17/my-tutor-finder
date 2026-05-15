@@ -96,13 +96,15 @@ export function BoostButton({ listing }: Props) {
 
           <div className="space-y-3">
             <div className="space-y-1.5">
-              <Label htmlFor="boost-city" className="text-xs">Target city</Label>
-              <Input
-                id="boost-city"
-                value={city}
-                onChange={(e) => setCity(e.target.value)}
-                placeholder="Any city"
+              <Label className="text-xs">Target locations</Label>
+              <LocationTargeter
+                value={targets}
+                onChange={setTargets}
+                placeholder="Search countries, cities, areas…"
               />
+              <p className="text-[10px] text-muted-foreground">
+                Add one or more — country, state, city, or area. Leave empty to target everyone.
+              </p>
             </div>
             <div className="space-y-2">
               <div className="flex items-center justify-between">
