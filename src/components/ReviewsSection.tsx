@@ -13,9 +13,10 @@ interface Props {
   listingId: string;
   providerUserId?: string;
   reviewerName: string;
+  isOwner?: boolean;
 }
 
-export function ReviewsSection({ listingId, providerUserId, reviewerName }: Props) {
+export function ReviewsSection({ listingId, providerUserId, reviewerName, isOwner }: Props) {
   const { user } = useAuth();
   const { reviews, avg, count, loading, refresh } = useListingReviews(listingId);
   const myReview = user ? reviews.find((r) => r.reviewer_user_id === user.id) : undefined;
@@ -23,7 +24,7 @@ export function ReviewsSection({ listingId, providerUserId, reviewerName }: Prop
   const [text, setText] = useState(myReview?.comment ?? "");
   const [busy, setBusy] = useState(false);
 
-  const isOwnListing = user && providerUserId && user.id === providerUserId;
+  const isOwnListing = isOwner || (!!user && !!providerUserId && user.id === providerUserId);
   const canReview = !!user && !!providerUserId && !isOwnListing;
 
   async function submit() {
@@ -66,7 +67,7 @@ export function ReviewsSection({ listingId, providerUserId, reviewerName }: Prop
         <div>
           <h2 className="font-semibold text-lg">Ratings & reviews</h2>
           <p className="text-sm text-muted-foreground">
-            {count === 0 ? "No reviews yet — be the first!" : `${count} review${count > 1 ? "s" : ""}`}
+            {count === 0 ? (isOwnListing ? "No reviews yet." : "No reviews yet — be the first!") : `${count} review${count > 1 ? "s" : ""}`}
           </p>
         </div>
         {count > 0 && (
@@ -123,11 +124,7 @@ export function ReviewsSection({ listingId, providerUserId, reviewerName }: Prop
         </div>
       ) : !user ? (
         <p className="text-xs text-muted-foreground italic">Sign in to leave a review.</p>
-      ) : isOwnListing ? (
-        <p className="text-xs text-muted-foreground italic">You can't review your own class.</p>
-      ) : (
-        <p className="text-xs text-muted-foreground italic">Reviews aren't available for this class.</p>
-      )}
+      ) : null}
     </Card>
   );
 }

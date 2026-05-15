@@ -48,6 +48,11 @@ const ListingDetail = () => {
     : 0;
   const interactions = requestCount + dbCount + seedInteractions;
 
+  const isOwner = !!listing && (
+    listing.providerId === "self" ||
+    (!!user && !!listing.providerUserId && user.id === listing.providerUserId)
+  );
+
   const [slot, setSlot] = useState<SlotKey | "">("");
   const [note, setNote] = useState("");
   const [isTrial, setIsTrial] = useState(false);
@@ -448,9 +453,10 @@ const ListingDetail = () => {
           listingId={listing.id}
           providerUserId={listing.providerUserId}
           reviewerName={learner.name || "Anonymous"}
+          isOwner={isOwner}
         />
 
-        {user?.id !== listing.providerUserId && (
+        {!isOwner && (
           <div className="flex justify-center">
             <ReportButton
               targetType="listing"
