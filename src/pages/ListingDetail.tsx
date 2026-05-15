@@ -307,7 +307,7 @@ const ListingDetail = () => {
               ) : (
                 <SlotList slots={listing.slots} freeSlots={freeSlots} seats={listing.seatsBySlot} />
               )}
-              {matching.length > 0 && (
+              {listing.providerId !== "self" && matching.length > 0 && (
                 <div className="mt-3 rounded-md border border-success/40 bg-success/10 p-2.5">
                   <p className="text-xs font-semibold text-success mb-1.5">
                     ✓ {matching.length} slot{matching.length > 1 ? "s" : ""} match your free time
@@ -332,7 +332,7 @@ const ListingDetail = () => {
                 <Pencil className="h-5 w-5" />
               </div>
               <div className="flex-1 min-w-0">
-                <h2 className="font-semibold text-lg leading-tight">This is your class</h2>
+                <h2 className="font-semibold text-lg leading-tight">Edit Your Class</h2>
                 <p className="text-sm text-muted-foreground mt-0.5">
                   You're viewing your own listing. Edit any detail — schedule, price, address, fliers, seats — from the editor.
                 </p>
