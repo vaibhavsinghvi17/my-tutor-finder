@@ -114,6 +114,8 @@ export function TopBar() {
             )}
           </div>
 
+          <NotificationBell />
+
           <div className="flex flex-col items-end gap-0.5 shrink-0">
             <span className="text-[10px] leading-none text-muted-foreground flex items-center gap-1">
               {isProvider ? <Briefcase className="h-3 w-3" /> : <GraduationCap className="h-3 w-3" />}
