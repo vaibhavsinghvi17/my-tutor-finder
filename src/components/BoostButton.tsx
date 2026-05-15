@@ -56,7 +56,7 @@ export function BoostButton({ listing }: Props) {
         listingId: listing.id,
         providerUserId: user.id,
         durationDays,
-        city: city.trim() || null,
+        city: targetsToString(targets) || null,
         category: listing.category,
         ageGroup: `${Math.min(minAge, maxAge)}-${Math.max(minAge, maxAge)}`,
         gender: gender === ANY ? null : gender,
