@@ -44,7 +44,7 @@ import { ProfileWizard } from "@/components/ProfileWizard";
 import { ProfileCompletion } from "@/components/ProfileCompletion";
 import { Sparkles, Eye, MousePointerClick, TrendingUp, Rocket, Lightbulb } from "lucide-react";
 import { useProviderListingInsights, suggestForListing } from "@/lib/useListingInsights";
-import { useActiveBoosts, isBoosted as boostIsActive } from "@/lib/useBoosts";
+import { useActiveBoosts, isBoosted as boostIsActive, createBoost } from "@/lib/useBoosts";
 
 function SignOutFooter() {
   const { user } = useAuth();
