@@ -307,7 +307,7 @@ const ListingDetail = () => {
               ) : (
                 <SlotList slots={listing.slots} freeSlots={freeSlots} seats={listing.seatsBySlot} />
               )}
-              {matching.length > 0 && (
+              {listing.providerId !== "self" && matching.length > 0 && (
                 <div className="mt-3 rounded-md border border-success/40 bg-success/10 p-2.5">
                   <p className="text-xs font-semibold text-success mb-1.5">
                     ✓ {matching.length} slot{matching.length > 1 ? "s" : ""} match your free time
