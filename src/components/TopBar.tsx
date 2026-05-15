@@ -1,27 +1,62 @@
+import { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import {
+  Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter,
+} from "@/components/ui/dialog";
+import { Checkbox } from "@/components/ui/checkbox";
 import { store, useStore } from "@/lib/store";
 import { allKnownCities } from "@/lib/locations";
 import { Combobox } from "@/components/Combobox";
 import {
   GraduationCap, Briefcase, MapPin, Sparkles, X, ArrowLeft,
-  LayoutDashboard, UserCircle2, BookOpen,
+  LayoutDashboard, UserCircle2, BookOpen, Loader2, Sparkle,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { toast } from "sonner";
 
 export function TopBar() {
   const mode = useStore((s) => s.mode);
   const city = useStore((s) => s.city);
   const learner = useStore((s) => s.learner);
+  const provider = useStore((s) => s.provider);
   const location = useLocation();
   const navigate = useNavigate();
 
   const isProvider = mode === "provider";
+  const target: "learner" | "provider" = isProvider ? "learner" : "provider";
+  const targetEmpty = target === "provider"
+    ? !provider.businessName?.trim()
+    : !learner.name?.trim();
+  const otherHasInfo = target === "provider"
+    ? !!(learner.name || learner.city || learner.phone || learner.email)
+    : !!(provider.businessName || provider.city || provider.phone || provider.email);
 
-  function switchMode() {
-    const next = isProvider ? "learner" : "provider";
-    store.setMode(next);
-    navigate(next === "provider" ? "/provider" : "/dashboard");
+  const [switchOpen, setSwitchOpen] = useState(false);
+  const [prefill, setPrefill] = useState(true);
+  const [busy, setBusy] = useState(false);
+
+  function openSwitch() {
+    setPrefill(otherHasInfo);
+    setSwitchOpen(true);
+  }
+
+  async function confirmSwitch() {
+    setBusy(true);
+    if (targetEmpty) await new Promise((r) => setTimeout(r, 1200));
+    store.switchProfile(target, prefill && otherHasInfo);
+    setBusy(false);
+    setSwitchOpen(false);
+    if (targetEmpty) {
+      toast.success(
+        target === "provider"
+          ? "Tutor profile ready! Add a few details to publish."
+          : "Learner profile ready!",
+      );
+    } else if (prefill && otherHasInfo) {
+      toast.success("Personal info synced from your other profile");
+    }
+    navigate(target === "provider" ? "/provider" : "/dashboard");
   }
 
   return (
@@ -58,7 +93,7 @@ export function TopBar() {
               Logged in as <span className="font-semibold text-foreground">{isProvider ? "Tutor" : "Learner"}</span>
             </span>
             <button
-              onClick={switchMode}
+              onClick={openSwitch}
               className="text-[10px] leading-none font-medium text-primary hover:underline transition-colors"
             >
               Switch to {isProvider ? "Learner" : "Tutor"} →
@@ -67,6 +102,48 @@ export function TopBar() {
         </div>
       </div>
       <IconTray isProvider={isProvider} pathname={location.pathname} />
+
+      <Dialog open={switchOpen} onOpenChange={(v) => !busy && setSwitchOpen(v)}>
+        <DialogContent className="max-w-sm">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              {target === "provider" ? <Briefcase className="h-4 w-4 text-primary" /> : <GraduationCap className="h-4 w-4 text-primary" />}
+              {targetEmpty
+                ? `Create your ${target === "provider" ? "tutor" : "learner"} profile`
+                : `Switch to ${target === "provider" ? "Tutor" : "Learner"}`}
+            </DialogTitle>
+            <DialogDescription>
+              {targetEmpty
+                ? `You don't have a ${target === "provider" ? "tutor" : "learner"} profile yet — let's make one. It'll be ready in a few seconds.`
+                : `Switch to your ${target === "provider" ? "tutor" : "learner"} profile.`}
+            </DialogDescription>
+          </DialogHeader>
+
+          {otherHasInfo && (
+            <label className="flex items-start gap-2 rounded-lg border bg-muted/30 p-3 cursor-pointer">
+              <Checkbox checked={prefill} onCheckedChange={(v) => setPrefill(!!v)} className="mt-0.5" />
+              <div className="text-xs">
+                <div className="font-medium flex items-center gap-1">
+                  <Sparkle className="h-3 w-3 text-primary" />
+                  Prefill from your {target === "provider" ? "learner" : "tutor"} profile
+                </div>
+                <div className="text-muted-foreground mt-0.5">
+                  We'll copy your name, location, phone & email so you don't re-enter them.
+                </div>
+              </div>
+            </label>
+          )}
+
+          <DialogFooter className="gap-2">
+            <Button variant="ghost" size="sm" onClick={() => setSwitchOpen(false)} disabled={busy}>
+              Cancel
+            </Button>
+            <Button size="sm" onClick={confirmSwitch} disabled={busy} className="gap-1.5">
+              {busy ? <><Loader2 className="h-3.5 w-3.5 animate-spin" /> Setting up…</> : (targetEmpty ? "Create profile" : "Switch")}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </header>
   );
 }
