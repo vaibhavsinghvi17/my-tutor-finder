@@ -1,4 +1,5 @@
 import { useState } from "react";
+import * as SliderPrimitive from "@radix-ui/react-slider";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
@@ -100,35 +101,76 @@ export function BoostButton({ listing }: Props) {
                 placeholder="Any city"
               />
             </div>
-            <div className="space-y-1.5">
-              <Label className="text-xs">Age range</Label>
-              <div className="grid grid-cols-3 gap-1.5">
+            <div className="space-y-2">
+              <div className="flex items-center justify-between">
+                <Label className="text-xs">Age range</Label>
+                <span className="text-[11px] font-medium text-primary">
+                  {minAge === maxAge ? `${minAge} yrs` : `${minAge}–${maxAge} yrs`}
+                </span>
+              </div>
+              <SliderPrimitive.Root
+                min={3}
+                max={90}
+                step={1}
+                minStepsBetweenThumbs={0}
+                value={[minAge, maxAge]}
+                onValueChange={(v) => {
+                  const [a, b] = v;
+                  setMinAge(Math.min(a, b));
+                  setMaxAge(Math.max(a, b));
+                }}
+                className="relative flex w-full touch-none select-none items-center py-1"
+              >
+                <SliderPrimitive.Track className="relative h-1.5 w-full grow overflow-hidden rounded-full bg-secondary">
+                  <SliderPrimitive.Range className="absolute h-full bg-primary" />
+                </SliderPrimitive.Track>
+                <SliderPrimitive.Thumb className="block h-4 w-4 rounded-full border-2 border-primary bg-background shadow focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring" />
+                <SliderPrimitive.Thumb className="block h-4 w-4 rounded-full border-2 border-primary bg-background shadow focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring" />
+              </SliderPrimitive.Root>
+              <div className="flex items-center gap-2">
+                <Input
+                  type="number"
+                  min={3}
+                  max={90}
+                  value={minAge}
+                  onChange={(e) => {
+                    const v = Math.max(3, Math.min(90, Number(e.target.value) || 3));
+                    setMinAge(v);
+                    if (v > maxAge) setMaxAge(v);
+                  }}
+                  className="h-8 text-xs"
+                />
+                <span className="text-xs text-muted-foreground">to</span>
+                <Input
+                  type="number"
+                  min={3}
+                  max={90}
+                  value={maxAge}
+                  onChange={(e) => {
+                    const v = Math.max(3, Math.min(90, Number(e.target.value) || 90));
+                    setMaxAge(v);
+                    if (v < minAge) setMinAge(v);
+                  }}
+                  className="h-8 text-xs"
+                />
+              </div>
+              <div className="flex flex-wrap gap-1">
                 {[
                   { label: "Kids", min: 3, max: 12 },
                   { label: "Teens", min: 13, max: 17 },
-                  { label: "Young adults", min: 18, max: 29 },
-                  { label: "Adults", min: 30, max: 49 },
+                  { label: "Adults", min: 18, max: 49 },
                   { label: "Seniors", min: 50, max: 90 },
-                  { label: "All (3–90)", min: 3, max: 90 },
-                ].map((r) => {
-                  const active = minAge === r.min && maxAge === r.max;
-                  return (
-                    <button
-                      key={r.label}
-                      type="button"
-                      onClick={() => { setMinAge(r.min); setMaxAge(r.max); }}
-                      className={
-                        "rounded-md border px-2 py-1.5 text-[11px] font-medium leading-tight transition-colors " +
-                        (active
-                          ? "border-primary bg-primary/10 text-primary"
-                          : "border-input hover:bg-muted")
-                      }
-                    >
-                      <div>{r.label}</div>
-                      <div className="text-[10px] opacity-70">{r.min}–{r.max} yrs</div>
-                    </button>
-                  );
-                })}
+                  { label: "All", min: 3, max: 90 },
+                ].map((r) => (
+                  <button
+                    key={r.label}
+                    type="button"
+                    onClick={() => { setMinAge(r.min); setMaxAge(r.max); }}
+                    className="rounded-full border px-2 py-0.5 text-[10px] font-medium hover:bg-muted"
+                  >
+                    {r.label}
+                  </button>
+                ))}
               </div>
             </div>
             <div className="space-y-1.5">
