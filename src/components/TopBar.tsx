@@ -93,7 +93,7 @@ export function TopBar() {
               Logged in as <span className="font-semibold text-foreground">{isProvider ? "Tutor" : "Learner"}</span>
             </span>
             <button
-              onClick={switchMode}
+              onClick={openSwitch}
               className="text-[10px] leading-none font-medium text-primary hover:underline transition-colors"
             >
               Switch to {isProvider ? "Learner" : "Tutor"} →
