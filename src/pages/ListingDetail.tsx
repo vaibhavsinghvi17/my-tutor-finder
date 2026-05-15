@@ -326,34 +326,29 @@ const ListingDetail = () => {
         </Card>
 
         {listing.providerId === "self" ? (
-          <Card className="p-6 space-y-4 border-primary/30 bg-primary/5">
-            <div className="flex items-start gap-3">
-              <div className="h-10 w-10 rounded-xl bg-primary/15 text-primary grid place-items-center shrink-0">
-                <Pencil className="h-5 w-5" />
+          <Card className="p-3 border-primary/30 bg-primary/5">
+            <div className="flex items-center gap-2 flex-wrap">
+              <div className="h-7 w-7 rounded-md bg-primary/15 text-primary grid place-items-center shrink-0">
+                <Pencil className="h-3.5 w-3.5" />
               </div>
-              <div className="flex-1 min-w-0">
-                <h2 className="font-semibold text-lg leading-tight">Edit Your Class</h2>
-                <p className="text-sm text-muted-foreground mt-0.5">
-                  You're viewing your own listing. Edit any detail — schedule, price, address, fliers, seats — from the editor.
-                </p>
+              <h2 className="font-semibold text-sm">Edit Your Class</h2>
+              <div className="flex flex-wrap gap-1.5 ml-auto">
+                <Button asChild size="sm" className="h-7 px-2 gap-1 text-xs">
+                  <Link to={`/provider/listing/${listing.id}`}>
+                    <Pencil className="h-3 w-3" /> Edit
+                  </Link>
+                </Button>
+                <Button asChild size="sm" variant="outline" className="h-7 px-2 gap-1 text-xs">
+                  <Link to={`/provider/listing/${listing.id}#schedule`}>
+                    <Calendar className="h-3 w-3" /> Schedule
+                  </Link>
+                </Button>
+                <Button asChild size="sm" variant="outline" className="h-7 px-2 gap-1 text-xs">
+                  <Link to="/provider/requests">
+                    <Users className="h-3 w-3" /> Requests
+                  </Link>
+                </Button>
               </div>
-            </div>
-            <div className="flex flex-wrap gap-2">
-              <Button asChild className="gap-1.5">
-                <Link to={`/provider/listing/${listing.id}`}>
-                  <Pencil className="h-4 w-4" /> Edit class
-                </Link>
-              </Button>
-              <Button asChild variant="outline" className="gap-1.5">
-                <Link to={`/provider/listing/${listing.id}#schedule`}>
-                  <Calendar className="h-4 w-4" /> Edit schedule
-                </Link>
-              </Button>
-              <Button asChild variant="outline" className="gap-1.5">
-                <Link to="/provider/requests">
-                  <Users className="h-4 w-4" /> View requests
-                </Link>
-              </Button>
             </div>
           </Card>
         ) : (
