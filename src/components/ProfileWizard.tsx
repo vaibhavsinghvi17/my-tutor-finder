@@ -185,6 +185,30 @@ export function ProfileWizard({ mode, open, onClose }: Props) {
                       placeholder="you@example.com"
                     />
                   </div>
+                  <div className="space-y-1.5">
+                    <Label>Preferred class mode<Req /></Label>
+                    <div className="grid grid-cols-4 gap-1.5">
+                      {(["Online", "Offline", "Both", "Any"] as const).map((m) => {
+                        const active = (learner.preferredMode ?? "Any") === m;
+                        return (
+                          <button
+                            key={m}
+                            type="button"
+                            onClick={() => update({ preferredMode: m })}
+                            className={cn(
+                              "h-9 rounded-md border text-xs font-medium transition-colors",
+                              active
+                                ? "border-primary bg-primary/10 text-primary"
+                                : "border-input hover:bg-muted",
+                            )}
+                          >
+                            {m}
+                          </button>
+                        );
+                      })}
+                    </div>
+                    <p className="text-[11px] text-muted-foreground">How would you like to attend classes?</p>
+                  </div>
                 </>
               ) : (
                 <>
