@@ -124,8 +124,7 @@ export function ReviewsSection({ listingId, providerUserId, reviewerName, isOwne
         </div>
       ) : !user ? (
         <p className="text-xs text-muted-foreground italic">Sign in to leave a review.</p>
-      ) : isOwnListing ? null : null}
-      )}
+      ) : null}
     </Card>
   );
 }
