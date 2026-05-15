@@ -28,6 +28,7 @@ import { toast } from "sonner";
 import { recordEvent } from "@/lib/useEvents";
 import { ReviewsSection } from "@/components/ReviewsSection";
 import { ReportButton } from "@/components/ReportButton";
+import { BoostButton } from "@/components/BoostButton";
 import { useListingReviews } from "@/lib/useReviews";
 
 const ListingDetail = () => {
