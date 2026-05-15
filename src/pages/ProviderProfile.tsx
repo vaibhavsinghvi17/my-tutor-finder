@@ -44,7 +44,7 @@ import { ProfileWizard } from "@/components/ProfileWizard";
 import { ProfileCompletion } from "@/components/ProfileCompletion";
 import { Sparkles, Eye, MousePointerClick, TrendingUp, Rocket, Lightbulb } from "lucide-react";
 import { useProviderListingInsights, suggestForListing } from "@/lib/useListingInsights";
-import { useActiveBoosts, isBoosted as boostIsActive } from "@/lib/useBoosts";
+import { useActiveBoosts, isBoosted as boostIsActive, createBoost } from "@/lib/useBoosts";
 
 function SignOutFooter() {
   const { user } = useAuth();
@@ -85,7 +85,30 @@ const ProviderProfilePage = () => {
   const { user } = useAuth();
   const fileRef = useRef<HTMLInputElement>(null);
   const { byListing: insightsByListing } = useProviderListingInsights();
-  const { boosts } = useActiveBoosts();
+  const { boosts, refresh: refreshBoosts } = useActiveBoosts();
+  const [boostingId, setBoostingId] = useState<string | null>(null);
+
+  async function handleQuickBoost(l: typeof listings[number]) {
+    if (!user) { toast.error("Sign in to boost"); return; }
+    setBoostingId(l.id);
+    try {
+      await createBoost({
+        listingId: l.id,
+        providerUserId: user.id,
+        durationDays: isGrowth ? 7 : 3,
+        city: l.city ?? null,
+        category: l.category ?? null,
+        ageGroup: l.ageGroup ?? null,
+        gender: null,
+      });
+      toast.success(`Boosted "${l.title}" for ${isGrowth ? 7 : 3} days`);
+      await refreshBoosts();
+    } catch (e: any) {
+      toast.error(e?.message ?? "Could not boost");
+    } finally {
+      setBoostingId(null);
+    }
+  }
 
   async function handleSignOut() {
     await supabase.auth.signOut();
@@ -439,7 +462,19 @@ const ProviderProfilePage = () => {
                       toneStyles[sugg.tone] ?? toneStyles.neutral,
                     )}>
                       <Lightbulb className="h-3 w-3 mt-0.5 shrink-0" />
-                      <span>{sugg.text}</span>
+                      <span className="flex-1">{sugg.text}</span>
+                      {!boostedNow && (sugg.tone === "hot" || sugg.tone === "boost" || sugg.tone === "warm" || sugg.tone === "cold") && (
+                        <Button
+                          size="sm"
+                          variant="default"
+                          className="h-6 px-2 text-[10px] gap-1 shrink-0"
+                          disabled={boostingId === l.id}
+                          onClick={() => handleQuickBoost(l)}
+                        >
+                          <Rocket className="h-3 w-3" />
+                          {boostingId === l.id ? "Boosting…" : "Boost now"}
+                        </Button>
+                      )}
                     </div>
                   </div>
                 );
