@@ -120,9 +120,13 @@ export function TopBar() {
             </span>
             <button
               onClick={openSwitch}
-              className="text-[10px] leading-none font-medium text-primary hover:underline transition-colors"
+              className="text-[10px] leading-none font-medium text-primary hover:underline transition-colors text-right"
             >
-              Switch to {isProvider ? "Learner" : "Tutor"} →
+              {targetEmpty
+                ? (isProvider
+                    ? "Interested in learning? Create a learner profile →"
+                    : "Interested in teaching? Create a tutor profile →")
+                : `Switch to ${isProvider ? "Learner" : "Tutor"} →`}
             </button>
           </div>
         </div>
