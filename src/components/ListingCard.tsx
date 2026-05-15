@@ -156,6 +156,11 @@ export function ListingCard({ listing, reasons = [] }: Props) {
                 <Clock className="h-3 w-3" /> {durationText}
               </Badge>
             )}
+            {courseLengthText && (
+              <Badge variant="outline" className="gap-1">
+                <Clock className="h-3 w-3" /> {courseLengthText}
+              </Badge>
+            )}
             {priceText && <Badge variant="outline">{priceText}</Badge>}
             {listing.trial && (
               <Badge className="bg-success text-success-foreground border-0 gap-1">
