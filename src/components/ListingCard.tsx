@@ -40,6 +40,7 @@ export function ListingCard({ listing, reasons = [] }: Props) {
   const fxRates = useFxRates();
   const priceText = formatPrice(listing, viewerCountry, fxRates);
   const durationText = formatDuration(listing.durationMins);
+  const courseLengthText = formatCourseLength(listing.courseDays);
   const isSaved = (savedListings || []).includes(listing.id);
   const shareUrl = `${window.location.origin}/listing/${listing.id}`;
   const shareText = `Check out "${listing.title}" by ${listing.providerName} on Scholarr`;
