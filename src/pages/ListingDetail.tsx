@@ -453,9 +453,10 @@ const ListingDetail = () => {
           listingId={listing.id}
           providerUserId={listing.providerUserId}
           reviewerName={learner.name || "Anonymous"}
+          isOwner={isOwner}
         />
 
-        {user?.id !== listing.providerUserId && (
+        {!isOwner && (
           <div className="flex justify-center">
             <ReportButton
               targetType="listing"
