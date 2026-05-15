@@ -165,3 +165,9 @@ export function BoostButton({ listing }: Props) {
               <Rocket className="h-4 w-4" /> {busy ? "Boosting..." : `Pay ₹${price.toLocaleString("en-IN")} & Boost`}
             </Button>
           </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </>
+  );
+}
+
