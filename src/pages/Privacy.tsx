@@ -14,7 +14,7 @@ export default function Privacy() {
 
           <section className="space-y-2">
             <h2 className="text-lg font-semibold">1. Who We Are</h2>
-            <p>LearnLocal ("we", "us") operates a marketplace that connects learners with local tutors and activity providers. This policy explains what personal information we collect and how we use it.</p>
+            <p>Scholarr ("we", "us") operates a marketplace that connects learners with local tutors and activity providers. This policy explains what personal information we collect and how we use it.</p>
           </section>
 
           <section className="space-y-2">

@@ -14,12 +14,12 @@ export default function Terms() {
 
           <section className="space-y-2">
             <h2 className="text-lg font-semibold">1. Acceptance of Terms</h2>
-            <p>By accessing or using LearnLocal ("the Service"), you agree to be bound by these Terms. If you do not agree, please do not use the Service.</p>
+            <p>By accessing or using Scholarr ("the Service"), you agree to be bound by these Terms. If you do not agree, please do not use the Service.</p>
           </section>
 
           <section className="space-y-2">
             <h2 className="text-lg font-semibold">2. The Service</h2>
-            <p>LearnLocal is a marketplace that connects learners with independent tutors, classes, and activity providers. We are <strong>not a party</strong> to any agreement, class, payment, or relationship between learners and tutors. We do not employ tutors and do not guarantee the quality, safety, or legality of any class listed.</p>
+            <p>Scholarr is a marketplace that connects learners with independent tutors, classes, and activity providers. We are <strong>not a party</strong> to any agreement, class, payment, or relationship between learners and tutors. We do not employ tutors and do not guarantee the quality, safety, or legality of any class listed.</p>
           </section>
 
           <section className="space-y-2">
@@ -44,12 +44,12 @@ export default function Terms() {
 
           <section className="space-y-2">
             <h2 className="text-lg font-semibold">6. Payments</h2>
-            <p>Class fees are arranged directly between the learner and the tutor. Optional paid features within LearnLocal (such as listing boosts or premium subscriptions) are billed as displayed and are non-refundable except where required by law.</p>
+            <p>Class fees are arranged directly between the learner and the tutor. Optional paid features within Scholarr (such as listing boosts or premium subscriptions) are billed as displayed and are non-refundable except where required by law.</p>
           </section>
 
           <section className="space-y-2">
             <h2 className="text-lg font-semibold">7. Intellectual Property</h2>
-            <p>All trademarks, logos, and software on the Service are owned by LearnLocal or its licensors. You retain ownership of content you post but grant us a worldwide, royalty-free license to display and distribute it as part of operating the Service.</p>
+            <p>All trademarks, logos, and software on the Service are owned by Scholarr or its licensors. You retain ownership of content you post but grant us a worldwide, royalty-free license to display and distribute it as part of operating the Service.</p>
           </section>
 
           <section className="space-y-2">
@@ -59,7 +59,7 @@ export default function Terms() {
 
           <section className="space-y-2">
             <h2 className="text-lg font-semibold">9. Limitation of Liability</h2>
-            <p>To the maximum extent permitted by law, LearnLocal will not be liable for any indirect, incidental, consequential, or punitive damages arising from your use of the Service or any class booked through it.</p>
+            <p>To the maximum extent permitted by law, Scholarr will not be liable for any indirect, incidental, consequential, or punitive damages arising from your use of the Service or any class booked through it.</p>
           </section>
 
           <section className="space-y-2">

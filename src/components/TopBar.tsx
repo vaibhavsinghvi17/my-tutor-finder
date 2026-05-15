@@ -31,7 +31,7 @@ export function TopBar() {
           <span className="h-7 w-7 shrink-0 rounded-lg bg-gradient-primary grid place-items-center text-primary-foreground">
             <Sparkles className="h-3.5 w-3.5" />
           </span>
-          <span className="hidden xs:inline truncate">LearnLocal</span>
+          <span className="hidden xs:inline truncate">Scholarr</span>
         </Link>
 
         <div className="ml-auto flex items-center gap-2">

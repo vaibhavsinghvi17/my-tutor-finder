@@ -181,7 +181,7 @@ const AuthPage = () => {
           <span className="h-9 w-9 rounded-lg bg-gradient-primary grid place-items-center text-primary-foreground">
             <Sparkles className="h-5 w-5" />
           </span>
-          <h1 className="text-xl font-bold">LearnLocal</h1>
+          <h1 className="text-xl font-bold">Scholarr</h1>
         </div>
 
         <div className="grid grid-cols-2 rounded-lg bg-muted p-1 text-sm">
