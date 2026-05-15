@@ -24,7 +24,8 @@ export function BoostButton({ listing }: Props) {
   const [open, setOpen] = useState(false);
   const [busy, setBusy] = useState(false);
   const [city, setCity] = useState(listing.city ?? "");
-  const [ageGroup, setAgeGroup] = useState<string>(listing.ageGroup ?? ANY);
+  const [minAge, setMinAge] = useState<number>(3);
+  const [maxAge, setMaxAge] = useState<number>(90);
   const [gender, setGender] = useState<string>(ANY);
   const boosted = isBoosted(listing.id, boosts);
 
@@ -53,7 +54,7 @@ export function BoostButton({ listing }: Props) {
         durationDays,
         city: city.trim() || null,
         category: listing.category,
-        ageGroup: ageGroup === ANY ? null : ageGroup,
+        ageGroup: `${Math.min(minAge, maxAge)}-${Math.max(minAge, maxAge)}`,
         gender: gender === ANY ? null : gender,
       });
       await refresh();
@@ -99,29 +100,57 @@ export function BoostButton({ listing }: Props) {
                 placeholder="Any city"
               />
             </div>
-            <div className="grid grid-cols-2 gap-3">
-              <div className="space-y-1.5">
-                <Label className="text-xs">Age group</Label>
-                <Select value={ageGroup} onValueChange={setAgeGroup}>
-                  <SelectTrigger><SelectValue /></SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value={ANY}>Any</SelectItem>
-                    {AGE_GROUPS.map((a) => <SelectItem key={a} value={a}>{a}</SelectItem>)}
-                  </SelectContent>
-                </Select>
+            <div className="space-y-1.5">
+              <div className="flex items-center justify-between">
+                <Label className="text-xs">Age range</Label>
+                <span className="text-[11px] text-muted-foreground">
+                  {Math.min(minAge, maxAge)}–{Math.max(minAge, maxAge)} yrs
+                </span>
               </div>
-              <div className="space-y-1.5">
-                <Label className="text-xs">Gender</Label>
-                <Select value={gender} onValueChange={setGender}>
-                  <SelectTrigger><SelectValue /></SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value={ANY}>Any</SelectItem>
-                    <SelectItem value="female">Female</SelectItem>
-                    <SelectItem value="male">Male</SelectItem>
-                    <SelectItem value="other">Other</SelectItem>
-                  </SelectContent>
-                </Select>
+              <div className="grid grid-cols-2 gap-2">
+                <div className="space-y-1">
+                  <Label htmlFor="boost-min-age" className="text-[10px] text-muted-foreground">Min</Label>
+                  <Input
+                    id="boost-min-age"
+                    type="number"
+                    min={3}
+                    max={90}
+                    value={minAge}
+                    onChange={(e) => {
+                      const v = Math.max(3, Math.min(90, Number(e.target.value) || 3));
+                      setMinAge(v);
+                      if (v > maxAge) setMaxAge(v);
+                    }}
+                  />
+                </div>
+                <div className="space-y-1">
+                  <Label htmlFor="boost-max-age" className="text-[10px] text-muted-foreground">Max</Label>
+                  <Input
+                    id="boost-max-age"
+                    type="number"
+                    min={3}
+                    max={90}
+                    value={maxAge}
+                    onChange={(e) => {
+                      const v = Math.max(3, Math.min(90, Number(e.target.value) || 90));
+                      setMaxAge(v);
+                      if (v < minAge) setMinAge(v);
+                    }}
+                  />
+                </div>
               </div>
+            </div>
+            <div className="space-y-1.5">
+              <Label className="text-xs">Gender</Label>
+              <Select value={gender} onValueChange={setGender}>
+                <SelectTrigger><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value={ANY}>Any</SelectItem>
+                  <SelectItem value="female">Female</SelectItem>
+                  <SelectItem value="male">Male</SelectItem>
+                  <SelectItem value="other">Other</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
 
             <div className="space-y-1.5">
