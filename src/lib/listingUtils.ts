@@ -13,6 +13,7 @@ function unitLabel(unit: PriceUnit, sessionsPerMonth?: number) {
       ? `/ month · ${sessionsPerMonth} session${sessionsPerMonth === 1 ? "" : "s"}`
       : "/ month";
   }
+  if (unit === "course") return "/ entire course";
   return "/ session";
 }
 
