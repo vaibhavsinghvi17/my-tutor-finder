@@ -102,6 +102,48 @@ export function TopBar() {
         </div>
       </div>
       <IconTray isProvider={isProvider} pathname={location.pathname} />
+
+      <Dialog open={switchOpen} onOpenChange={(v) => !busy && setSwitchOpen(v)}>
+        <DialogContent className="max-w-sm">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              {target === "provider" ? <Briefcase className="h-4 w-4 text-primary" /> : <GraduationCap className="h-4 w-4 text-primary" />}
+              {targetEmpty
+                ? `Create your ${target === "provider" ? "tutor" : "learner"} profile`
+                : `Switch to ${target === "provider" ? "Tutor" : "Learner"}`}
+            </DialogTitle>
+            <DialogDescription>
+              {targetEmpty
+                ? `You don't have a ${target === "provider" ? "tutor" : "learner"} profile yet — let's make one. It'll be ready in a few seconds.`
+                : `Switch to your ${target === "provider" ? "tutor" : "learner"} profile.`}
+            </DialogDescription>
+          </DialogHeader>
+
+          {otherHasInfo && (
+            <label className="flex items-start gap-2 rounded-lg border bg-muted/30 p-3 cursor-pointer">
+              <Checkbox checked={prefill} onCheckedChange={(v) => setPrefill(!!v)} className="mt-0.5" />
+              <div className="text-xs">
+                <div className="font-medium flex items-center gap-1">
+                  <Sparkle className="h-3 w-3 text-primary" />
+                  Prefill from your {target === "provider" ? "learner" : "tutor"} profile
+                </div>
+                <div className="text-muted-foreground mt-0.5">
+                  We'll copy your name, location, phone & email so you don't re-enter them.
+                </div>
+              </div>
+            </label>
+          )}
+
+          <DialogFooter className="gap-2">
+            <Button variant="ghost" size="sm" onClick={() => setSwitchOpen(false)} disabled={busy}>
+              Cancel
+            </Button>
+            <Button size="sm" onClick={confirmSwitch} disabled={busy} className="gap-1.5">
+              {busy ? <><Loader2 className="h-3.5 w-3.5 animate-spin" /> Setting up…</> : (targetEmpty ? "Create profile" : "Switch")}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </header>
   );
 }
