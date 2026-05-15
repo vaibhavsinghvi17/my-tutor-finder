@@ -5,6 +5,7 @@ import {
   Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter,
 } from "@/components/ui/dialog";
 import { Checkbox } from "@/components/ui/checkbox";
+import { ProfileWizard } from "@/components/ProfileWizard";
 import { store, useStore } from "@/lib/store";
 import { allKnownCities } from "@/lib/locations";
 import { Combobox } from "@/components/Combobox";
@@ -14,6 +15,23 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
+
+const PROMPT_KEY = "scholarr-switch-prompted";
+function wasPrompted(role: "learner" | "provider") {
+  try {
+    const raw = localStorage.getItem(PROMPT_KEY);
+    if (!raw) return false;
+    return (JSON.parse(raw) as Record<string, boolean>)[role] === true;
+  } catch { return false; }
+}
+function markPrompted(role: "learner" | "provider") {
+  try {
+    const raw = localStorage.getItem(PROMPT_KEY);
+    const obj = raw ? JSON.parse(raw) : {};
+    obj[role] = true;
+    localStorage.setItem(PROMPT_KEY, JSON.stringify(obj));
+  } catch {}
+}
 
 export function TopBar() {
   const mode = useStore((s) => s.mode);
@@ -35,29 +53,37 @@ export function TopBar() {
   const [switchOpen, setSwitchOpen] = useState(false);
   const [prefill, setPrefill] = useState(true);
   const [busy, setBusy] = useState(false);
+  const [wizardRole, setWizardRole] = useState<"learner" | "provider" | null>(null);
 
   function openSwitch() {
-    setPrefill(otherHasInfo);
-    setSwitchOpen(true);
+    // Only show the create-profile dialog the first time for this role.
+    if (targetEmpty && !wasPrompted(target)) {
+      setPrefill(otherHasInfo);
+      setSwitchOpen(true);
+      return;
+    }
+    // Otherwise switch directly.
+    store.switchProfile(target, false);
+    navigate(target === "provider" ? "/provider" : "/dashboard");
   }
 
   async function confirmSwitch() {
     setBusy(true);
-    if (targetEmpty) await new Promise((r) => setTimeout(r, 1200));
+    await new Promise((r) => setTimeout(r, 1200));
     store.switchProfile(target, prefill && otherHasInfo);
+    markPrompted(target);
     setBusy(false);
     setSwitchOpen(false);
-    if (targetEmpty) {
-      toast.success(
-        target === "provider"
-          ? "Tutor profile ready! Add a few details to publish."
-          : "Learner profile ready!",
-      );
-    } else if (prefill && otherHasInfo) {
-      toast.success("Personal info synced from your other profile");
-    }
+    toast.success(
+      target === "provider"
+        ? "Tutor profile ready! Just a few more details."
+        : "Learner profile ready! Just a few more details.",
+    );
     navigate(target === "provider" ? "/provider" : "/dashboard");
+    // Force the rest of the setup before continuing.
+    setWizardRole(target);
   }
+
 
   return (
     <header className="sticky top-0 z-40 backdrop-blur-md bg-background/80 border-b">
@@ -144,6 +170,14 @@ export function TopBar() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      {wizardRole && (
+        <ProfileWizard
+          mode={wizardRole}
+          open={!!wizardRole}
+          onClose={() => setWizardRole(null)}
+        />
+      )}
     </header>
   );
 }
