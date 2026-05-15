@@ -462,7 +462,19 @@ const ProviderProfilePage = () => {
                       toneStyles[sugg.tone] ?? toneStyles.neutral,
                     )}>
                       <Lightbulb className="h-3 w-3 mt-0.5 shrink-0" />
-                      <span>{sugg.text}</span>
+                      <span className="flex-1">{sugg.text}</span>
+                      {!boostedNow && (sugg.tone === "hot" || sugg.tone === "boost" || sugg.tone === "warm" || sugg.tone === "cold") && (
+                        <Button
+                          size="sm"
+                          variant="default"
+                          className="h-6 px-2 text-[10px] gap-1 shrink-0"
+                          disabled={boostingId === l.id}
+                          onClick={() => handleQuickBoost(l)}
+                        >
+                          <Rocket className="h-3 w-3" />
+                          {boostingId === l.id ? "Boosting…" : "Boost now"}
+                        </Button>
+                      )}
                     </div>
                   </div>
                 );
