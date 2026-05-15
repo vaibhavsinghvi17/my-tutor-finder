@@ -20,6 +20,8 @@ export function ProfileCompletion({ title = "Profile completion", items, onSetup
   const pct = Math.round((doneCount / items.length) * 100);
   const allDone = doneCount === items.length;
 
+  if (allDone) return null;
+
   return (
     <Card
       className={cn(
