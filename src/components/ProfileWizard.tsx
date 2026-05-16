@@ -10,10 +10,11 @@ import { PinCodeInput } from "@/components/PinCodeInput";
 import { InterestPicker } from "@/components/InterestPicker";
 import { DatePicker } from "@/components/DatePicker";
 import { VerifyContact } from "@/components/VerifyContact";
+import { FreeTimeEditor } from "@/components/FreeTimeEditor";
 import { store, useStore } from "@/lib/store";
 import { useCategories } from "@/lib/useCategories";
 import { useAuth } from "@/lib/useAuth";
-import { Check, ChevronLeft, ChevronRight, Sparkles, MapPin, BookOpen, ShieldCheck, GraduationCap, Briefcase } from "lucide-react";
+import { Check, ChevronLeft, ChevronRight, Sparkles, MapPin, BookOpen, ShieldCheck, GraduationCap, Briefcase, Clock } from "lucide-react";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 
