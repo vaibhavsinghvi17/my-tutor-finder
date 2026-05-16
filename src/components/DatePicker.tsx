@@ -99,6 +99,23 @@ export function DatePicker({
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-auto p-2 bg-popover z-50" align="start">
+        <div className="px-1 pb-2">
+          <input
+            type="text"
+            inputMode="numeric"
+            value={typed}
+            onChange={(e) => handleTypedChange(e.target.value)}
+            placeholder="DD-MM-YYYY"
+            maxLength={10}
+            className={cn(
+              "h-8 w-full rounded-md border bg-background px-2 text-xs tracking-wider",
+              typedError ? "border-destructive" : "border-input",
+            )}
+          />
+          {typedError && (
+            <div className="text-[10px] text-destructive mt-1">Invalid or out-of-range date</div>
+          )}
+        </div>
         <div className="flex items-center gap-1.5 px-1 pb-2">
           <select
             value={viewMonth.getMonth()}
