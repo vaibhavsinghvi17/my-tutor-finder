@@ -90,10 +90,8 @@ export function TopBar() {
     <header className="sticky top-0 z-40 backdrop-blur-md bg-background/80 border-b">
       <div className="container flex items-center gap-2 sm:gap-3 h-14">
         <Link to={isProvider ? "/provider" : "/dashboard"} className="flex items-center gap-2 font-bold text-base shrink-0 min-w-0">
-          <span className="h-7 w-7 shrink-0 rounded-lg bg-gradient-primary grid place-items-center text-primary-foreground">
-            <Sparkles className="h-3.5 w-3.5" />
-          </span>
-          <span className="hidden xs:inline truncate">Scholarr</span>
+          <img src="/logo.png" alt="Scholarr" className="h-8 w-auto shrink-0" />
+          <span className="sr-only">Scholarr</span>
         </Link>
 
         <div className="ml-auto flex items-center gap-2">
