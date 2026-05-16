@@ -41,12 +41,37 @@ export function DatePicker({
 
   const today = new Date();
   const fromYear = minDate ? minDate.getFullYear() : 1920;
-  const toYear = maxDate ? maxDate.getFullYear() : today.getFullYear() + 10;
+  // Always allow scrolling at least 10 years ahead of today, even if max is set.
+  const toYear = Math.max(maxDate?.getFullYear() ?? 0, today.getFullYear() + 10);
 
   const [viewMonth, setViewMonth] = React.useState<Date>(date ?? maxDate ?? today);
+  const [typed, setTyped] = React.useState<string>(date ? format(date, "dd-MM-yyyy") : "");
+  const [typedError, setTypedError] = React.useState(false);
   React.useEffect(() => {
-    if (open) setViewMonth(date ?? maxDate ?? today);
+    if (open) {
+      setViewMonth(date ?? maxDate ?? today);
+      setTyped(date ? format(date, "dd-MM-yyyy") : "");
+      setTypedError(false);
+    }
   }, [open]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  function handleTypedChange(raw: string) {
+    // Keep only digits, auto-insert dashes as DD-MM-YYYY
+    const digits = raw.replace(/\D/g, "").slice(0, 8);
+    let formatted = digits;
+    if (digits.length > 4) formatted = `${digits.slice(0, 2)}-${digits.slice(2, 4)}-${digits.slice(4)}`;
+    else if (digits.length > 2) formatted = `${digits.slice(0, 2)}-${digits.slice(2)}`;
+    setTyped(formatted);
+    setTypedError(false);
+    if (digits.length === 8) {
+      const d = parse(formatted, "dd-MM-yyyy", new Date());
+      if (!isValid(d)) { setTypedError(true); return; }
+      if (minDate && d < minDate) { setTypedError(true); return; }
+      if (maxDate && d > maxDate) { setTypedError(true); return; }
+      onChange(toIso(d));
+      setViewMonth(d);
+    }
+  }
 
   const years: number[] = [];
   for (let y = toYear; y >= fromYear; y--) years.push(y);
@@ -74,6 +99,23 @@ export function DatePicker({
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-auto p-2 bg-popover z-50" align="start">
+        <div className="px-1 pb-2">
+          <input
+            type="text"
+            inputMode="numeric"
+            value={typed}
+            onChange={(e) => handleTypedChange(e.target.value)}
+            placeholder="DD-MM-YYYY"
+            maxLength={10}
+            className={cn(
+              "h-8 w-full rounded-md border bg-background px-2 text-xs tracking-wider",
+              typedError ? "border-destructive" : "border-input",
+            )}
+          />
+          {typedError && (
+            <div className="text-[10px] text-destructive mt-1">Invalid or out-of-range date</div>
+          )}
+        </div>
         <div className="flex items-center gap-1.5 px-1 pb-2">
           <select
             value={viewMonth.getMonth()}
@@ -104,9 +146,12 @@ export function DatePicker({
           onSelect={(d) => {
             if (d) {
               onChange(toIso(d));
+              setTyped(format(d, "dd-MM-yyyy"));
+              setTypedError(false);
               setOpen(false);
             } else {
               onChange("");
+              setTyped("");
             }
           }}
           disabled={(d) => {
