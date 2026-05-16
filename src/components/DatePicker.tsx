@@ -146,9 +146,12 @@ export function DatePicker({
           onSelect={(d) => {
             if (d) {
               onChange(toIso(d));
+              setTyped(format(d, "dd-MM-yyyy"));
+              setTypedError(false);
               setOpen(false);
             } else {
               onChange("");
+              setTyped("");
             }
           }}
           disabled={(d) => {
