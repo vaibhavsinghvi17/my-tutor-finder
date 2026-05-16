@@ -24,7 +24,7 @@ export function AddressFields({ value, onChange, hint }: Props) {
 
   const fields: { label: string; placeholder: string; required?: boolean }[] = [
     { label: "House / Flat No.", placeholder: "e.g. Flat 302, Tower B", required: true },
-    { label: "Street Address", placeholder: "e.g. 12, MG Road" },
+    { label: "Street Name", placeholder: "e.g. MG Road, 4th Cross", required: true },
     { label: "Landmark", placeholder: "e.g. Near Central Park" },
     { label: "Area", placeholder: "e.g. Indiranagar, 560038" },
   ];
