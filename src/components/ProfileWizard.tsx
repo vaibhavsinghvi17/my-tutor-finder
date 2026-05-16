@@ -10,10 +10,11 @@ import { PinCodeInput } from "@/components/PinCodeInput";
 import { InterestPicker } from "@/components/InterestPicker";
 import { DatePicker } from "@/components/DatePicker";
 import { VerifyContact } from "@/components/VerifyContact";
+import { FreeTimeEditor } from "@/components/FreeTimeEditor";
 import { store, useStore } from "@/lib/store";
 import { useCategories } from "@/lib/useCategories";
 import { useAuth } from "@/lib/useAuth";
-import { Check, ChevronLeft, ChevronRight, Sparkles, MapPin, BookOpen, ShieldCheck, GraduationCap, Briefcase } from "lucide-react";
+import { Check, ChevronLeft, ChevronRight, Sparkles, MapPin, BookOpen, ShieldCheck, GraduationCap, Briefcase, Clock } from "lucide-react";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 
@@ -56,7 +57,7 @@ export function ProfileWizard({ mode, open, onClose }: Props) {
 
   const isLearner = mode === "learner";
   const steps = isLearner
-    ? ["Basics", "Location", "Interests", "Verify"]
+    ? ["Basics", "Location", "Interests", "Timings", "Verify"]
     : ["Basics", "Location", "Categories", "Verify"];
 
   // Stage state — committed to store on each Next so refresh is safe
@@ -86,7 +87,12 @@ export function ProfileWizard({ mode, open, onClose }: Props) {
       if (isLearner) return (learner.interests?.length ?? 0) > 0;
       return (provider.categories?.length ?? 0) > 0;
     }
-    if (step === 3) {
+    if (isLearner && step === 3) {
+      // Timings are optional — always allow continuing
+      return true;
+    }
+    const verifyStep = isLearner ? 4 : 3;
+    if (step === verifyStep) {
       return phoneVerified;
     }
     return true;
@@ -319,7 +325,24 @@ export function ProfileWizard({ mode, open, onClose }: Props) {
             </div>
           )}
 
-          {step === 3 && (
+          {isLearner && step === 3 && (
+            <div className="space-y-4">
+              <StepHeader
+                icon={Clock}
+                title="When are you free?"
+                subtitle="Add the days & hours you can attend. We'll match classes that fit. (Optional)"
+              />
+              <FreeTimeEditor
+                value={learner.freeBlocks ?? []}
+                onChange={(v) => update({ freeBlocks: v })}
+              />
+              <p className="text-[11px] text-muted-foreground">
+                Skip if you're flexible — you can add timings later from your profile.
+              </p>
+            </div>
+          )}
+
+          {step === (isLearner ? 4 : 3) && (
             <div className="space-y-4">
               <StepHeader
                 icon={ShieldCheck}

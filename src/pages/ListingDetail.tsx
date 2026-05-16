@@ -18,7 +18,10 @@ import { SocialLinksRow } from "@/components/SocialLinksRow";
 import { ContactActions } from "@/components/ContactActions";
 import { ClassChat } from "@/components/ClassChat";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { ArrowLeft, Building2, MapPin, Wifi, Users, Sparkles, Clock, Award, UsersRound, Globe2, Languages, Pencil, Calendar } from "lucide-react";
+import { ArrowLeft, Building2, MapPin, Wifi, Users, Sparkles, Clock, Award, UsersRound, Globe2, Languages, Pencil, Calendar, Share2, MessageCircle, Link as LinkIcon } from "lucide-react";
+import {
+  DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { SlotKey } from "@/lib/types";
 import { ageFromDob, blocksToSlots } from "@/lib/timeUtils";
 import { formatDuration, formatPrice, formatCourseLength } from "@/lib/listingUtils";
@@ -154,6 +157,50 @@ const ListingDetail = () => {
               <p className="text-[10px] sm:text-xs opacity-90 truncate">{listing.category} • {listing.providerName}</p>
               <h1 className="text-sm sm:text-lg font-bold leading-tight line-clamp-2">{listing.title}</h1>
             </div>
+            {(() => {
+              const shareUrl = `${window.location.origin}/listing/${listing.id}`;
+              const shareText = `Check out "${listing.title}" by ${listing.providerName} on Scholarr`;
+              return (
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <button
+                      className="h-7 w-7 shrink-0 rounded-md bg-background/25 hover:bg-background/35 grid place-items-center backdrop-blur-sm transition-colors"
+                      aria-label="Share"
+                      title="Share with friends"
+                    >
+                      <Share2 className="h-3.5 w-3.5" />
+                    </button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="bg-popover">
+                    <DropdownMenuItem
+                      onClick={() => window.open(`https://wa.me/?text=${encodeURIComponent(`${shareText} ${shareUrl}`)}`, "_blank")}
+                    >
+                      <MessageCircle className="h-4 w-4 mr-2 text-[#25D366]" /> Share via WhatsApp
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                      onClick={async () => {
+                        if (navigator.share) {
+                          try { await navigator.share({ title: listing.title, text: shareText, url: shareUrl }); } catch {}
+                        } else {
+                          await navigator.clipboard.writeText(shareUrl);
+                          toast.success("Link copied — share with anyone");
+                        }
+                      }}
+                    >
+                      <Share2 className="h-4 w-4 mr-2" /> More options
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                      onClick={async () => {
+                        await navigator.clipboard.writeText(shareUrl);
+                        toast.success("Link copied");
+                      }}
+                    >
+                      <LinkIcon className="h-4 w-4 mr-2" /> Copy link
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              );
+            })()}
           </div>
           {hasContact && (
             <div
