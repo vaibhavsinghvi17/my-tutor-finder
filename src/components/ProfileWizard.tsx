@@ -57,7 +57,7 @@ export function ProfileWizard({ mode, open, onClose }: Props) {
 
   const isLearner = mode === "learner";
   const steps = isLearner
-    ? ["Basics", "Location", "Interests", "Verify"]
+    ? ["Basics", "Location", "Interests", "Timings", "Verify"]
     : ["Basics", "Location", "Categories", "Verify"];
 
   // Stage state — committed to store on each Next so refresh is safe
