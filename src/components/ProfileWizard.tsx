@@ -325,7 +325,24 @@ export function ProfileWizard({ mode, open, onClose }: Props) {
             </div>
           )}
 
-          {step === 3 && (
+          {isLearner && step === 3 && (
+            <div className="space-y-4">
+              <StepHeader
+                icon={Clock}
+                title="When are you free?"
+                subtitle="Add the days & hours you can attend. We'll match classes that fit. (Optional)"
+              />
+              <FreeTimeEditor
+                value={learner.freeBlocks ?? []}
+                onChange={(v) => update({ freeBlocks: v })}
+              />
+              <p className="text-[11px] text-muted-foreground">
+                Skip if you're flexible — you can add timings later from your profile.
+              </p>
+            </div>
+          )}
+
+          {step === (isLearner ? 4 : 3) && (
             <div className="space-y-4">
               <StepHeader
                 icon={ShieldCheck}
