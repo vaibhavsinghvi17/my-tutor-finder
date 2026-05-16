@@ -87,7 +87,12 @@ export function ProfileWizard({ mode, open, onClose }: Props) {
       if (isLearner) return (learner.interests?.length ?? 0) > 0;
       return (provider.categories?.length ?? 0) > 0;
     }
-    if (step === 3) {
+    if (isLearner && step === 3) {
+      // Timings are optional — always allow continuing
+      return true;
+    }
+    const verifyStep = isLearner ? 4 : 3;
+    if (step === verifyStep) {
       return phoneVerified;
     }
     return true;
