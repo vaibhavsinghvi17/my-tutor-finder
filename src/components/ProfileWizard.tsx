@@ -219,11 +219,35 @@ export function ProfileWizard({ mode, open, onClose }: Props) {
               ) : (
                 <>
                   <div className="space-y-1.5">
-                    <Label>Business name<Req /></Label>
+                    <Label>I'm registering as<Req /></Label>
+                    <div className="grid grid-cols-2 gap-1.5">
+                      {([
+                        { k: "business", label: "Business / Institute" },
+                        { k: "personal", label: "Individual tutor" },
+                      ] as const).map(({ k, label }) => {
+                        const active = (provider.providerKind ?? "business") === k;
+                        return (
+                          <button
+                            key={k}
+                            type="button"
+                            onClick={() => update({ providerKind: k })}
+                            className={cn(
+                              "h-9 rounded-md border text-xs font-medium transition-colors",
+                              active ? "border-primary bg-primary/10 text-primary" : "border-input hover:bg-muted",
+                            )}
+                          >
+                            {label}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+                  <div className="space-y-1.5">
+                    <Label>{(provider.providerKind ?? "business") === "personal" ? "Your name" : "Business name"}<Req /></Label>
                     <Input
                       value={provider.businessName ?? ""}
                       onChange={(e) => update({ businessName: e.target.value.slice(0, 80) })}
-                      placeholder="e.g. Bright Beats Music"
+                      placeholder={(provider.providerKind ?? "business") === "personal" ? "e.g. Aanya Sharma" : "e.g. Bright Beats Music"}
                       autoFocus
                     />
                   </div>

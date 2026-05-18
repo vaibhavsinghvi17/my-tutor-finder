@@ -123,7 +123,7 @@ const ProviderProfilePage = () => {
 
   const phoneVerified = !!provider.phone && provider.verifiedPhone === provider.phone;
   const completionItems = [
-    { label: "Business name", done: !!provider.businessName?.trim() },
+    { label: (provider.providerKind ?? "business") === "personal" ? "Your name" : "Business name", done: !!provider.businessName?.trim() },
     { label: "City", done: !!provider.city?.trim() },
     { label: "Pin code", done: !!provider.pinCode?.trim() },
     { label: "Address", done: !!provider.address?.trim() },
@@ -502,12 +502,35 @@ const ProviderProfilePage = () => {
         <DialogContent className="max-w-lg">
           <DialogHeader><DialogTitle>About your class</DialogTitle></DialogHeader>
           <div className="space-y-3 max-h-[65vh] overflow-y-auto pr-1">
-            <Field label="Business name">
+            <Field label="I'm registering as">
+              <div className="grid grid-cols-2 gap-1.5">
+                {([
+                  { k: "business", label: "Business / Institute" },
+                  { k: "personal", label: "Individual tutor" },
+                ] as const).map(({ k, label }) => {
+                  const active = (provider.providerKind ?? "business") === k;
+                  return (
+                    <button
+                      key={k}
+                      type="button"
+                      onClick={() => store.updateProvider({ providerKind: k })}
+                      className={cn(
+                        "h-9 rounded-md border text-xs font-medium transition-colors",
+                        active ? "border-primary bg-primary/10 text-primary" : "border-input hover:bg-muted",
+                      )}
+                    >
+                      {label}
+                    </button>
+                  );
+                })}
+              </div>
+            </Field>
+            <Field label={(provider.providerKind ?? "business") === "personal" ? "Your name" : "Business name"}>
               <Input
                 value={provider.businessName}
                 onChange={(e) => store.updateProvider({ businessName: e.target.value.slice(0, 80) })}
                 className="h-9"
-                placeholder="e.g. Rhythm Studio"
+                placeholder={(provider.providerKind ?? "business") === "personal" ? "e.g. Aanya Sharma" : "e.g. Rhythm Studio"}
               />
             </Field>
             <Field label="Years of experience">
