@@ -9,7 +9,6 @@ import ListingDetail from "./pages/ListingDetail";
 import Requests from "./pages/Requests";
 import LearnerProfile from "./pages/LearnerProfile";
 import ProviderProfile from "./pages/ProviderProfile";
-import ProfilePicker from "./pages/ProfilePicker";
 import AdultProfileEditor from "./pages/AdultProfileEditor";
 import KidProfileEditor from "./pages/KidProfileEditor";
 import ProviderDashboard from "./pages/ProviderDashboard";
@@ -44,7 +43,7 @@ const App = () => (
           <Route path="/dashboard/:tab" element={<LearnerList />} />
           <Route path="/listing/:id" element={<ListingDetail />} />
           <Route path="/requests" element={<Requests />} />
-          <Route path="/profile" element={<ProfilePicker />} />
+          <Route path="/profile" element={<LearnerProfile />} />
           <Route path="/profile/learner" element={<LearnerProfile />} />
           <Route path="/profile/adult/:id" element={<AdultProfileEditor />} />
           <Route path="/profile/kid/:id" element={<KidProfileEditor />} />
