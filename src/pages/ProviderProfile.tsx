@@ -123,7 +123,7 @@ const ProviderProfilePage = () => {
 
   const phoneVerified = !!provider.phone && provider.verifiedPhone === provider.phone;
   const completionItems = [
-    { label: "Business name", done: !!provider.businessName?.trim() },
+    { label: (provider.providerKind ?? "business") === "personal" ? "Your name" : "Business name", done: !!provider.businessName?.trim() },
     { label: "City", done: !!provider.city?.trim() },
     { label: "Pin code", done: !!provider.pinCode?.trim() },
     { label: "Address", done: !!provider.address?.trim() },
