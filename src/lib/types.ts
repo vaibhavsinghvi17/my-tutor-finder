@@ -96,6 +96,8 @@ export interface ContactInfo {
 
 export interface ProviderProfile {
   username?: string;
+  /** "business" = registered business / institute, "personal" = individual tutor. Defaults to "business". */
+  providerKind?: "business" | "personal";
   businessName: string;
   bio: string;
   country: string;
