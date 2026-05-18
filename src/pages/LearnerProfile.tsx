@@ -132,7 +132,7 @@ const LearnerProfilePage = () => {
       <TopBar />
       <main className="container py-4 space-y-4 max-w-3xl">
         <div className="flex items-center justify-between gap-2">
-          <DropdownMenu>
+          <DropdownMenu modal={false}>
             <DropdownMenuTrigger asChild>
               <Button variant="outline" size="sm" className="h-8 gap-1.5 max-w-[60%]">
                 <UserCircle2 className="h-3.5 w-3.5 text-primary shrink-0" />
