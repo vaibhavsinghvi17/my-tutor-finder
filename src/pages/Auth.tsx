@@ -28,8 +28,6 @@ import { Sparkles, Mail, Phone } from "lucide-react";
 import { toast } from "sonner";
 import { store } from "@/lib/store";
 
-const DEMO_OTP = "170114";
-
 const signUpSchema = z.object({
   displayName: z.string().trim().min(1, "Name required").max(80),
   email: z.string().trim().email("Enter a valid email").max(255),
@@ -116,23 +114,11 @@ const AuthPage = () => {
         },
       });
       if (error) {
-        const code = (error as any)?.code || "";
-        if (
-          code === "phone_provider_disabled" ||
-          code === "otp_disabled" ||
-          /phone provider|otp|signups not allowed/i.test(error.message)
-        ) {
-          setOtpSent(true);
-          toast.message("Demo mode", {
-            description: `SMS provider not configured. Use code ${DEMO_OTP} to continue.`,
-          });
-          return;
-        }
         toast.error(error.message);
         return;
       }
       setOtpSent(true);
-      toast.success(`OTP sent to ${parsed.data}. (Demo code ${DEMO_OTP} also works.)`);
+      toast.success(`OTP sent to ${parsed.data}`);
     } finally {
       setBusy(false);
     }
@@ -143,22 +129,17 @@ const AuthPage = () => {
     if (entered.length < 4) { toast.error("Enter the OTP you received"); return; }
     setBusy(true);
     try {
-      if (entered === DEMO_OTP) {
-        store.updateLearner({
-          phone,
-          verifiedPhone: phone,
-          ...(displayName.trim() ? { name: displayName.trim() } : {}),
-        });
-        toast.success("Phone verified (demo) — profile marked verified.");
-        navigate("/dashboard");
-        return;
-      }
       const { error } = await supabase.auth.verifyOtp({
         phone,
         token: entered,
         type: "sms",
       });
       if (error) { toast.error(error.message); return; }
+      if (displayName.trim()) {
+        store.updateLearner({ phone, verifiedPhone: phone, name: displayName.trim() });
+      } else {
+        store.updateLearner({ phone, verifiedPhone: phone });
+      }
       toast.success("Phone verified — signed in!");
       navigate("/dashboard");
     } finally {
@@ -279,7 +260,7 @@ const AuthPage = () => {
                   autoComplete="one-time-code"
                 />
                 <p className="text-[11px] text-muted-foreground">
-                  Demo: use <span className="font-mono font-semibold">{DEMO_OTP}</span> to verify instantly.
+                  We just sent a code to <span className="font-medium">{phone}</span>. It may take a few seconds.
                 </p>
               </div>
             )}
