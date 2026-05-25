@@ -340,6 +340,12 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      get_active_growth_providers: {
+        Args: { _ids: string[] }
+        Returns: {
+          user_id: string
+        }[]
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
