@@ -28,13 +28,17 @@ const GROWTH = [
 
 export default function Pricing() {
   const navigate = useNavigate();
-  const { user } = useAuth();
+  const { user, loading: authLoading } = useAuth();
   const { tier, isGrowth, activateGrowth, downgrade, loading } = useSubscription();
 
   async function onActivate() {
+    if (authLoading) {
+      toast.info("Just a moment…");
+      return;
+    }
     if (!user) {
       toast.info("Please sign in to activate Growth");
-      navigate("/auth");
+      navigate("/auth", { state: { returnTo: "/pricing" } });
       return;
     }
     try {
