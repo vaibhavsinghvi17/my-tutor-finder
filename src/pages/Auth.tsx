@@ -114,23 +114,11 @@ const AuthPage = () => {
         },
       });
       if (error) {
-        const code = (error as any)?.code || "";
-        if (
-          code === "phone_provider_disabled" ||
-          code === "otp_disabled" ||
-          /phone provider|otp|signups not allowed/i.test(error.message)
-        ) {
-          setOtpSent(true);
-          toast.message("Demo mode", {
-            description: `SMS provider not configured. Use code ${DEMO_OTP} to continue.`,
-          });
-          return;
-        }
         toast.error(error.message);
         return;
       }
       setOtpSent(true);
-      toast.success(`OTP sent to ${parsed.data}. (Demo code ${DEMO_OTP} also works.)`);
+      toast.success(`OTP sent to ${parsed.data}`);
     } finally {
       setBusy(false);
     }
@@ -141,22 +129,17 @@ const AuthPage = () => {
     if (entered.length < 4) { toast.error("Enter the OTP you received"); return; }
     setBusy(true);
     try {
-      if (entered === DEMO_OTP) {
-        store.updateLearner({
-          phone,
-          verifiedPhone: phone,
-          ...(displayName.trim() ? { name: displayName.trim() } : {}),
-        });
-        toast.success("Phone verified (demo) — profile marked verified.");
-        navigate("/dashboard");
-        return;
-      }
       const { error } = await supabase.auth.verifyOtp({
         phone,
         token: entered,
         type: "sms",
       });
       if (error) { toast.error(error.message); return; }
+      if (displayName.trim()) {
+        store.updateLearner({ phone, verifiedPhone: phone, name: displayName.trim() });
+      } else {
+        store.updateLearner({ phone, verifiedPhone: phone });
+      }
       toast.success("Phone verified — signed in!");
       navigate("/dashboard");
     } finally {
