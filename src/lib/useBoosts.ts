@@ -30,16 +30,10 @@ export function useActiveBoosts() {
     // Look up each provider's current subscription tier so Growth boosts can outrank Starter ones.
     const ids = Array.from(new Set(list.map((b) => b.provider_user_id)));
     if (ids.length) {
-      const { data: profs } = await supabase
-        .from("profiles")
-        .select("user_id, subscription_tier, subscription_expires_at")
-        .in("user_id", ids);
-      const tierMap = new Map<string, "starter" | "growth">();
-      (profs ?? []).forEach((p: any) => {
-        const active = !p.subscription_expires_at || new Date(p.subscription_expires_at) > new Date();
-        tierMap.set(p.user_id, active && p.subscription_tier === "growth" ? "growth" : "starter");
-      });
-      list.forEach((b) => { b.provider_tier = tierMap.get(b.provider_user_id) ?? "starter"; });
+      const { data: growth } = await supabase
+        .rpc("get_active_growth_providers", { _ids: ids });
+      const growthSet = new Set<string>((growth ?? []).map((g: any) => g.user_id));
+      list.forEach((b) => { b.provider_tier = growthSet.has(b.provider_user_id) ? "growth" : "starter"; });
     }
     setBoosts(list);
     setLoading(false);
