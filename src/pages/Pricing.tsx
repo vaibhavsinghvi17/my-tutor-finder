@@ -28,13 +28,17 @@ const GROWTH = [
 
 export default function Pricing() {
   const navigate = useNavigate();
-  const { user } = useAuth();
+  const { user, loading: authLoading } = useAuth();
   const { tier, isGrowth, activateGrowth, downgrade, loading } = useSubscription();
 
   async function onActivate() {
+    if (authLoading) {
+      toast.info("Just a moment…");
+      return;
+    }
     if (!user) {
       toast.info("Please sign in to activate Growth");
-      navigate("/auth");
+      navigate("/auth", { state: { returnTo: "/pricing" } });
       return;
     }
     try {
@@ -67,7 +71,7 @@ export default function Pricing() {
             tagline="Get started in minutes"
             features={STARTER}
             cta={tier === "starter" ? "Current plan" : "Switch to Starter"}
-            ctaDisabled={tier === "starter" || loading}
+            ctaDisabled={tier === "starter" || loading || authLoading}
             onCta={async () => { await downgrade(); toast.success("Switched to Starter"); }}
             highlight={false}
           />
@@ -77,8 +81,8 @@ export default function Pricing() {
             priceSuffix="/month"
             tagline="For tutors growing their classes"
             features={GROWTH}
-            cta={isGrowth ? "Active ✓" : "Activate Growth"}
-            ctaDisabled={isGrowth || loading}
+            cta={isGrowth ? "Active ✓" : authLoading ? "Loading…" : "Activate Growth"}
+            ctaDisabled={isGrowth || loading || authLoading}
             onCta={onActivate}
             highlight
           />
