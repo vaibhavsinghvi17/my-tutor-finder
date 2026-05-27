@@ -244,42 +244,45 @@ const Discover = () => {
           </Card>
         )}
 
-        <div className="grid grid-cols-2 gap-3">
-          <button
-            type="button"
-            onClick={() => setScope("local")}
-            className={cn(
-              "rounded-xl border-2 p-3 text-left transition-all",
-              scope === "local"
-                ? "border-primary bg-primary/10 shadow-elegant"
-                : "border-primary/30 bg-card hover:border-primary/60",
-            )}
-          >
-            <span className="flex items-center gap-1.5 text-xs sm:text-sm font-semibold text-primary">
-              <Home className="h-3.5 w-3.5 shrink-0" /> Learn from the locals
-            </span>
-            <span className="block text-[10px] text-muted-foreground leading-snug mt-1">
-              Tutors in your area
-            </span>
-          </button>
-          <button
-            type="button"
-            onClick={() => setScope("world")}
-            className={cn(
-              "rounded-xl border-2 p-3 text-left transition-all",
-              scope === "world"
-                ? "border-accent bg-accent/15 shadow-elegant"
-                : "border-accent/40 bg-card hover:border-accent/70",
-            )}
-          >
-            <span className="flex items-center gap-1.5 text-xs sm:text-sm font-semibold" style={{ color: "hsl(140 60% 22%)" }}>
-              <Globe2 className="h-3.5 w-3.5 shrink-0" /> From around the world
-            </span>
-            <span className="block text-[10px] text-muted-foreground leading-snug mt-1">
-              Learn French from a tutor in France, and more
-            </span>
-          </button>
-        </div>
+        {/* HIDE for launch — international scope toggle */}
+        {false && (
+          <div className="grid grid-cols-2 gap-3">
+            <button
+              type="button"
+              onClick={() => setScope("local")}
+              className={cn(
+                "rounded-xl border-2 p-3 text-left transition-all",
+                scope === "local"
+                  ? "border-primary bg-primary/10 shadow-elegant"
+                  : "border-primary/30 bg-card hover:border-primary/60",
+              )}
+            >
+              <span className="flex items-center gap-1.5 text-xs sm:text-sm font-semibold text-primary">
+                <Home className="h-3.5 w-3.5 shrink-0" /> Learn from the locals
+              </span>
+              <span className="block text-[10px] text-muted-foreground leading-snug mt-1">
+                Tutors in your area
+              </span>
+            </button>
+            <button
+              type="button"
+              onClick={() => setScope("world")}
+              className={cn(
+                "rounded-xl border-2 p-3 text-left transition-all",
+                scope === "world"
+                  ? "border-accent bg-accent/15 shadow-elegant"
+                  : "border-accent/40 bg-card hover:border-accent/70",
+              )}
+            >
+              <span className="flex items-center gap-1.5 text-xs sm:text-sm font-semibold" style={{ color: "hsl(140 60% 22%)" }}>
+                <Globe2 className="h-3.5 w-3.5 shrink-0" /> From around the world
+              </span>
+              <span className="block text-[10px] text-muted-foreground leading-snug mt-1">
+                Learn French from a tutor in France, and more
+              </span>
+            </button>
+          </div>
+        )}
 
         <Card className="p-3 sm:p-4 bg-gradient-hero border-primary/20 space-y-2">
           <div className="flex items-center gap-1.5 text-sm font-semibold">
