@@ -45,7 +45,9 @@ Deno.serve(async (req) => {
       return new Response(JSON.stringify({ error: "Too many OTP requests. Try again in a few minutes." }), { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 
-    const code = String(Math.floor(100000 + Math.random() * 900000));
+    const _rand = new Uint32Array(1);
+    crypto.getRandomValues(_rand);
+    const code = String((_rand[0] % 900000) + 100000);
     const code_hash = await sha256(code);
     const expires_at = new Date(Date.now() + 5 * 60 * 1000).toISOString();
 
