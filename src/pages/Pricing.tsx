@@ -49,8 +49,9 @@ export default function Pricing() {
       return;
     }
     openCheckout({
-      priceId: billing === "yearly" ? "growth_yearly" : "growth_monthly",
-      purpose: "subscription",
+      priceId: billing === "yearly" ? "growth_yearly_oneoff" : "growth_monthly_oneoff",
+      purpose: "growth",
+      durationDays: billing === "yearly" ? 365 : 30,
       returnUrl: `${window.location.origin}/checkout/return?next=/provider&session_id={CHECKOUT_SESSION_ID}`,
     });
   }
@@ -69,7 +70,7 @@ export default function Pricing() {
 
         <div className="space-y-2 text-center">
           <h1 className="text-3xl sm:text-4xl font-bold">Tutor plans</h1>
-          <p className="text-muted-foreground">Learners are always free. Pick a plan that suits your tutoring.</p>
+          <p className="text-muted-foreground">Learners are always free. One-time payment — no auto-debit. Pay with UPI or card.</p>
         </div>
 
         <div className="flex justify-center">

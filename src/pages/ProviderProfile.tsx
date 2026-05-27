@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { TopBar } from "@/components/TopBar";
+import { GrowthExpiryBanner } from "@/components/GrowthExpiryBanner";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -201,6 +202,7 @@ const ProviderProfilePage = () => {
   return (
     <div className="min-h-screen">
       <TopBar />
+      <GrowthExpiryBanner />
       <main className="container py-4 space-y-4 max-w-3xl">
         {/* Header */}
         <div className="flex items-center gap-3">

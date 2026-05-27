@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { TopBar } from "@/components/TopBar";
+import { GrowthExpiryBanner } from "@/components/GrowthExpiryBanner";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -53,6 +54,7 @@ const ProviderDashboard = () => {
   return (
     <div className="min-h-screen">
       <TopBar />
+      <GrowthExpiryBanner />
       <main className="container py-4 sm:py-6 space-y-5">
         <div className="flex items-center gap-2 py-1 w-full">
           <Button asChild size="sm" className="gap-1.5 rounded-full w-full">
