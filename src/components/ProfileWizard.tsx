@@ -116,7 +116,7 @@ export function ProfileWizard({ mode, open, onClose }: Props) {
 
   return (
     <Dialog open={open} onOpenChange={(v) => { if (!v) onClose(); }}>
-      <DialogContent className="max-w-lg p-0 overflow-hidden gap-0">
+      <DialogContent className="max-w-lg p-0 overflow-hidden gap-0 flex flex-col max-h-[calc(100dvh-2rem)]">
         {/* Hero header */}
         <div className="bg-gradient-to-br from-primary/15 via-primary/5 to-transparent p-5 border-b">
           <DialogHeader className="text-left">
