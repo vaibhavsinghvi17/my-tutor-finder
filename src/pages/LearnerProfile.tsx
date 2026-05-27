@@ -131,7 +131,7 @@ const LearnerProfilePage = () => {
     <div className="min-h-screen">
       <TopBar />
       <main className="container py-4 space-y-4 max-w-3xl">
-        <div className="flex items-center justify-between gap-2">
+        <div className="flex items-center gap-2">
           <DropdownMenu modal={false}>
             <DropdownMenuTrigger asChild>
               <Button variant="outline" size="sm" className="h-8 gap-1.5 max-w-[60%]">
@@ -177,7 +177,6 @@ const LearnerProfilePage = () => {
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
-          <LanguageSwitcher compact />
         </div>
 
         {/* Header */}
@@ -236,6 +235,7 @@ const LearnerProfilePage = () => {
               </button>
             )}
           </div>
+          <LanguageSwitcher minimal />
         </div>
 
         {(!learner.city || !learner.pinCode) && (

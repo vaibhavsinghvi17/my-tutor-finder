@@ -202,9 +202,6 @@ const ProviderProfilePage = () => {
     <div className="min-h-screen">
       <TopBar />
       <main className="container py-4 space-y-4 max-w-3xl">
-        <div className="flex justify-end">
-          <LanguageSwitcher compact />
-        </div>
         {/* Header */}
         <div className="flex items-center gap-3">
           <div className="relative">
@@ -258,6 +255,7 @@ const ProviderProfilePage = () => {
               </button>
             )}
           </div>
+          <LanguageSwitcher minimal />
         </div>
 
         {(profileEmpty || profileIncomplete) && (
