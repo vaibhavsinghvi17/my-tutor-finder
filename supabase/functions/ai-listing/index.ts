@@ -43,6 +43,14 @@ Deno.serve(async (req) => {
       if (!title || typeof title !== "string") {
         return json({ error: "title is required" }, 400);
       }
+      if (title.length > 200) return json({ error: "title too long" }, 400);
+      if (category && (typeof category !== "string" || category.length > 100)) return json({ error: "category invalid" }, 400);
+      if (ageGroup && (typeof ageGroup !== "string" || ageGroup.length > 100)) return json({ error: "ageGroup invalid" }, 400);
+      if (mode && (typeof mode !== "string" || mode.length > 50)) return json({ error: "mode invalid" }, 400);
+      if (extra && (typeof extra !== "string" || extra.length > 1000)) return json({ error: "extra too long" }, 400);
+      if (Array.isArray(languages) && (languages.length > 20 || languages.some((l: any) => typeof l !== "string" || l.length > 50))) {
+        return json({ error: "languages invalid" }, 400);
+      }
       const sys =
         "You write short, warm, parent-friendly class descriptions for a tutor marketplace. " +
         "2-4 sentences, plain prose, no emojis, no headings, no bullet points, no markdown. " +
@@ -70,6 +78,14 @@ Deno.serve(async (req) => {
       const { query, categories } = body ?? {};
       if (!query || typeof query !== "string") {
         return json({ error: "query is required" }, 400);
+      }
+      if (query.length > 500) return json({ error: "query too long" }, 400);
+      if (categories !== undefined) {
+        if (!Array.isArray(categories)) return json({ error: "categories invalid" }, 400);
+        if (categories.length > 100) return json({ error: "too many categories" }, 400);
+        if (categories.some((c: any) => typeof c !== "string" || c.length > 100)) {
+          return json({ error: "categories invalid" }, 400);
+        }
       }
       const sys =
         "You convert a learner's natural-language request into structured search filters " +
