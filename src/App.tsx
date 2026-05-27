@@ -19,6 +19,7 @@ import ListingForm from "./pages/ListingForm";
 import Auth from "./pages/Auth";
 import Pricing from "./pages/Pricing";
 import Insights from "./pages/Insights";
+import InterestedLearners from "./pages/InterestedLearners";
 import Admin from "./pages/Admin";
 import Terms from "./pages/Terms";
 import Privacy from "./pages/Privacy";
@@ -54,6 +55,7 @@ const App = () => (
           <Route path="/provider/listing/:id" element={<ListingForm />} />
           <Route path="/pricing" element={<Pricing />} />
           <Route path="/provider/insights" element={<Insights />} />
+          <Route path="/provider/interested" element={<InterestedLearners />} />
           <Route path="/admin" element={<Admin />} />
           <Route path="/terms" element={<Terms />} />
           <Route path="/privacy" element={<Privacy />} />

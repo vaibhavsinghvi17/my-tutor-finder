@@ -58,7 +58,26 @@ export function ListingCard({ listing, reasons = [] }: Props) {
           </div>
           <div className="flex gap-1.5 items-center">
             <button
-              onClick={(e) => { stop(e); store.toggleSaved(listing.id); toast.success(isSaved ? "Removed from saved" : "Saved to your profile"); }}
+              onClick={async (e) => {
+                stop(e);
+                const willSave = !isSaved;
+                store.toggleSaved(listing.id);
+                toast.success(willSave ? "Saved to your profile" : "Removed from saved");
+                if (willSave) {
+                  try {
+                    const { recordEvent } = await import("@/lib/useEvents");
+                    const learner = store.get().learner;
+                    const { supabase } = await import("@/integrations/supabase/client");
+                    const { data } = await supabase.auth.getUser();
+                    await recordEvent(listing, "save", {
+                      userId: data.user?.id,
+                      city: learner.city,
+                      dob: learner.dob,
+                      gender: (learner as any).gender,
+                    });
+                  } catch {}
+                }
+              }}
               className={cn(
                 "h-7 w-7 rounded-full grid place-items-center bg-background/90 hover:bg-background transition-colors shadow-sm",
                 isSaved && "text-primary",

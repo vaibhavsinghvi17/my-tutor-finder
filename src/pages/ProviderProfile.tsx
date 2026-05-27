@@ -42,7 +42,7 @@ import { SubscriptionPanel } from "@/components/SubscriptionPanel";
 import { useSubscription } from "@/lib/useSubscription";
 import { ProfileWizard } from "@/components/ProfileWizard";
 import { ProfileCompletion } from "@/components/ProfileCompletion";
-import { Sparkles, Eye, MousePointerClick, TrendingUp, Rocket, Lightbulb } from "lucide-react";
+import { Sparkles, Eye, MousePointerClick, TrendingUp, Rocket, Lightbulb, Users } from "lucide-react";
 import { useProviderListingInsights, suggestForListing } from "@/lib/useListingInsights";
 import { useActiveBoosts, isBoosted as boostIsActive, createBoost } from "@/lib/useBoosts";
 import ListingForm from "@/pages/ListingForm";
@@ -294,6 +294,12 @@ const ProviderProfilePage = () => {
               <Badge variant="outline" className="ml-0.5 h-5 px-1.5 text-[10px] bg-background/60">
                 {listings.length}
               </Badge>
+            </Link>
+          </Button>
+          <Button asChild variant="secondary" size="sm" className="gap-1.5 rounded-full flex-1 min-w-0">
+            <Link to="/provider/interested">
+              <Users className="h-4 w-4" />
+              <span className="text-xs font-medium truncate">Interested</span>
             </Link>
           </Button>
           <Button asChild size="sm" className="gap-1.5 rounded-full flex-1 min-w-0">
