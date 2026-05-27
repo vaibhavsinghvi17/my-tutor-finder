@@ -28,7 +28,13 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { useSubscription } from "@/lib/useSubscription";
 
-const ListingForm = () => {
+interface ListingFormProps {
+  embedded?: boolean;
+  onDone?: () => void;
+}
+
+const ListingForm = ({ embedded = false, onDone }: ListingFormProps = {}) => {
+  const finish = () => { if (onDone) onDone(); else navigate("/provider"); };
   const { id } = useParams();
   const navigate = useNavigate();
   const provider = useStore((s) => s.provider);
