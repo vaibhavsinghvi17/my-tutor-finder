@@ -526,12 +526,7 @@ const ProviderProfilePage = () => {
           )}
         </ProviderSection>
 
-        {/* Social preview */}
-        {provider.socials && Object.values(provider.socials).some(Boolean) && (
-          <ProviderSection title="Social links" icon={Share2} count={Object.values(provider.socials).filter(Boolean).length}>
-            <SocialLinksRow socials={provider.socials} size="sm" />
-          </ProviderSection>
-        )}
+
 
         <SubscriptionPanel />
 
