@@ -105,7 +105,7 @@ const AuthPage = () => {
       if (signInErr) { toast.error(signInErr.message); return; }
       store.updateLearner({ phone, verifiedPhone: phone });
       toast.success("Phone verified — signed in!");
-      navigate(getDashboardPath());
+      navigate(getPostLoginPath());
     } finally {
       setBusy(false);
     }
