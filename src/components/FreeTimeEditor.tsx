@@ -54,6 +54,21 @@ export function FreeTimeEditor({ value, onChange }: Props) {
                 <div>
                   <div className="text-xs font-medium mb-1.5">Days</div>
                   <div className="flex flex-wrap gap-1.5">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const allSelected = DAYS.every((d) => b.days.includes(d));
+                        update(b.id, { days: allSelected ? [] : [...DAYS] });
+                      }}
+                      className={cn(
+                        "px-2.5 py-1 rounded-md text-xs font-medium border transition-colors",
+                        DAYS.every((d) => b.days.includes(d))
+                          ? "bg-primary text-primary-foreground border-primary"
+                          : "bg-background hover:bg-muted",
+                      )}
+                    >
+                      Everyday
+                    </button>
                     {DAYS.map((d) => {
                       const active = b.days.includes(d);
                       return (
