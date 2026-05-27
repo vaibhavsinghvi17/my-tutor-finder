@@ -43,6 +43,42 @@ async function createBoostFromMetadata(meta: Record<string, string>) {
   });
 }
 
+async function extendGrowthFromMetadata(meta: Record<string, string>) {
+  if (meta.purpose !== "growth" || !meta.userId || !meta.durationDays) return;
+  const days = parseInt(meta.durationDays, 10);
+  if (!Number.isFinite(days) || days <= 0) return;
+
+  // If the user still has time left, add to it; otherwise start from now.
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("subscription_expires_at")
+    .eq("user_id", meta.userId)
+    .maybeSingle();
+  const currentExpiry = profile?.subscription_expires_at
+    ? new Date(profile.subscription_expires_at as string)
+    : null;
+  const base = currentExpiry && currentExpiry > new Date() ? currentExpiry : new Date();
+  const newExpiry = new Date(base.getTime() + days * 24 * 3600 * 1000);
+
+  await supabase
+    .from("profiles")
+    .update({
+      subscription_tier: "growth",
+      subscription_expires_at: newExpiry.toISOString(),
+    })
+    .eq("user_id", meta.userId);
+
+  // Confirmation notification
+  await supabase.from("notifications").insert({
+    user_id: meta.userId,
+    title: "Growth plan activated",
+    body: `Your Growth plan is active until ${newExpiry.toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })}. No auto-debit — we'll remind you 3 days before it ends.`,
+    kind: "billing",
+    link: "/pricing",
+    metadata: { expires_at: newExpiry.toISOString(), purpose: "growth_activated" },
+  });
+}
+
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
 
@@ -79,9 +115,10 @@ Deno.serve(async (req) => {
             .update({ stripe_customer_id: session.customer })
             .eq("user_id", meta.userId);
         }
-        // One-off purchases (boosts)
+        // One-off purchases (boosts + growth top-up)
         if (session.mode === "payment" && session.payment_status === "paid") {
           await createBoostFromMetadata(meta);
+          await extendGrowthFromMetadata(meta);
         }
         break;
       }
