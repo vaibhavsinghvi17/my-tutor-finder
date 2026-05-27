@@ -243,6 +243,15 @@ const LearnerProfilePage = () => {
               {age !== null ? `Age ${age}` : "Add your details"}
               {learner.occupation && ` • ${learner.occupation}`}
             </p>
+            {profileIncomplete && (
+              <button
+                onClick={() => openWizardAt(firstIncomplete?.step)}
+                className="mt-1 inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-medium bg-primary/10 text-primary border border-primary/30 hover:bg-primary/20 transition"
+                title={`Complete: ${firstIncomplete?.label}`}
+              >
+                <Sparkles className="h-3 w-3" /> Profile incomplete · Quick complete
+              </button>
+            )}
           </div>
         </div>
 
