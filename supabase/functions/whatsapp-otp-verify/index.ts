@@ -100,12 +100,12 @@ Deno.serve(async (req) => {
       return new Response(JSON.stringify({ error: "Could not establish session" }), { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 
-    // Immediately rotate the password to a fresh random value so the one we just used is invalidated.
-    try {
-      await admin.auth.admin.updateUserById(user.id, { password: randomPassword() } as any);
-    } catch (e) {
-      console.error("password rotation failed (non-fatal)", e);
-    }
+    // NOTE: do NOT rotate the password here — updating the user's password
+    // invalidates the session we just minted, causing "Session not found" on the client.
+    // The ephemeral password is already random/high-entropy and unknown to the client,
+    // and the OTP row is marked consumed so it cannot be reused.
+
+
 
     const { access_token, refresh_token } = signIn.session;
     return new Response(JSON.stringify({ ok: true, phone: normalized, access_token, refresh_token }), {
