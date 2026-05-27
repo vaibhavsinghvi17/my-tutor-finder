@@ -74,6 +74,17 @@ const SOCIAL_FIELDS: { key: keyof SocialLinks; icon: React.ComponentType<{ class
   { key: "website", icon: Globe, label: "Website", placeholder: "yoursite.com" },
 ];
 
+function socialDisplay(key: keyof SocialLinks, raw: string): string {
+  const v = (raw || "").trim();
+  if (!v) return "";
+  if (key === "whatsapp") return v;
+  let s = v.replace(/^https?:\/\//i, "").replace(/^www\./i, "").replace(/\/$/, "");
+  // strip known domains
+  s = s.replace(/^(instagram\.com|facebook\.com|youtube\.com|youtu\.be|twitter\.com|x\.com|linkedin\.com\/(in|company))\//i, "");
+  const seg = s.split("/").filter(Boolean).pop() || s;
+  return key === "website" ? s : (seg.startsWith("@") ? seg : "@" + seg.replace(/^@/, ""));
+}
+
 const ProviderProfilePage = () => {
   const provider = useStore((s) => s.provider);
   const listings = useStore((s) => s.listings);
