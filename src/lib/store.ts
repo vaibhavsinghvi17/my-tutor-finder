@@ -327,8 +327,16 @@ export const store = {
     const current = (state as any).authUid ?? null;
     if (uid && current && uid !== current) {
       state = { ...initialState, authUid: uid } as AppState;
+      try {
+        sessionStorage.removeItem("learnerWizardSeen");
+        sessionStorage.removeItem("providerWizardSeen");
+      } catch {}
     } else if (!uid && current) {
       state = { ...initialState, authUid: null } as AppState;
+      try {
+        sessionStorage.removeItem("learnerWizardSeen");
+        sessionStorage.removeItem("providerWizardSeen");
+      } catch {}
     } else {
       state = { ...state, authUid: uid ?? null } as AppState;
     }

@@ -43,14 +43,20 @@ const AuthPage = () => {
   const [busy, setBusy] = useState(false);
   const [checking, setChecking] = useState(true);
 
-  // If already signed in, bounce to the correct dashboard.
-  const getDashboardPath = () => (store.get().mode === "provider" ? "/provider" : "/dashboard");
+  // Route based on profile completeness — new users go through onboarding.
+  const getPostLoginPath = () => {
+    const s = store.get();
+    const hasLearner = !!s.learner.name?.trim();
+    const hasProvider = !!s.provider.businessName?.trim();
+    if (!s.onboarded || (!hasLearner && !hasProvider)) return "/";
+    return s.mode === "provider" ? "/provider" : "/dashboard";
+  };
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => {
       if (data.session) {
         store.setAuthUser(data.session.user.id);
-        navigate(getDashboardPath(), { replace: true });
+        navigate(getPostLoginPath(), { replace: true });
       } else {
         store.setAuthUser(null);
         setChecking(false);
@@ -58,7 +64,7 @@ const AuthPage = () => {
     });
     const { data: sub } = supabase.auth.onAuthStateChange((_event, session) => {
       store.setAuthUser(session?.user?.id ?? null);
-      if (session) navigate(getDashboardPath(), { replace: true });
+      if (session) navigate(getPostLoginPath(), { replace: true });
     });
     return () => sub.subscription.unsubscribe();
   }, [navigate]);
@@ -99,7 +105,7 @@ const AuthPage = () => {
       if (signInErr) { toast.error(signInErr.message); return; }
       store.updateLearner({ phone, verifiedPhone: phone });
       toast.success("Phone verified — signed in!");
-      navigate(getDashboardPath());
+      navigate(getPostLoginPath());
     } finally {
       setBusy(false);
     }
