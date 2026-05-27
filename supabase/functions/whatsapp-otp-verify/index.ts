@@ -7,6 +7,7 @@ const corsHeaders = {
 
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
 const SERVICE_ROLE = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
+const ANON_KEY = Deno.env.get("SUPABASE_ANON_KEY") || Deno.env.get("SUPABASE_PUBLISHABLE_KEY")!;
 const admin = createClient(SUPABASE_URL, SERVICE_ROLE);
 
 async function sha256(s: string) {
@@ -28,6 +29,13 @@ async function findUserByPhone(phoneDigits: string) {
     page++;
   }
   return null;
+}
+
+function randomPassword() {
+  const bytes = new Uint8Array(32);
+  crypto.getRandomValues(bytes);
+  const b64 = btoa(String.fromCharCode(...bytes)).replace(/[^A-Za-z0-9]/g, "");
+  return b64 + "Aa1!";
 }
 
 Deno.serve(async (req) => {
@@ -60,12 +68,14 @@ Deno.serve(async (req) => {
 
     await admin.from("whatsapp_otps").update({ consumed_at: new Date().toISOString() }).eq("id", row.id);
 
-    const tempPwd = crypto.randomUUID() + "Aa1!";
+    // Use an ephemeral random password only to mint a session server-side.
+    // The password is rotated immediately after sign-in so it cannot be reused.
+    const ephemeralPwd = randomPassword();
     let user = await findUserByPhone(normalized);
     if (!user) {
       const { data: created, error: cErr } = await admin.auth.admin.createUser({
         phone: normalized,
-        password: tempPwd,
+        password: ephemeralPwd,
         phone_confirm: true,
         user_metadata: display_name ? { display_name } : {},
       });
@@ -73,13 +83,32 @@ Deno.serve(async (req) => {
       user = created.user!;
     } else {
       const { error: uErr } = await admin.auth.admin.updateUserById(user.id, {
-        password: tempPwd,
+        password: ephemeralPwd,
         phone_confirm: true,
       } as any);
       if (uErr) throw uErr;
     }
 
-    return new Response(JSON.stringify({ ok: true, phone: normalized, temp_password: tempPwd }), {
+    // Mint a session server-side using a short-lived anon client.
+    const anon = createClient(SUPABASE_URL, ANON_KEY, { auth: { persistSession: false, autoRefreshToken: false } });
+    const { data: signIn, error: signErr } = await anon.auth.signInWithPassword({
+      phone: normalized,
+      password: ephemeralPwd,
+    });
+    if (signErr || !signIn?.session) {
+      console.error("session mint failed", signErr);
+      return new Response(JSON.stringify({ error: "Could not establish session" }), { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+    }
+
+    // Immediately rotate the password to a fresh random value so the one we just used is invalidated.
+    try {
+      await admin.auth.admin.updateUserById(user.id, { password: randomPassword() } as any);
+    } catch (e) {
+      console.error("password rotation failed (non-fatal)", e);
+    }
+
+    const { access_token, refresh_token } = signIn.session;
+    return new Response(JSON.stringify({ ok: true, phone: normalized, access_token, refresh_token }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
   } catch (e) {
