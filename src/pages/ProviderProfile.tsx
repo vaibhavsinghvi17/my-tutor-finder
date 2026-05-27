@@ -129,6 +129,7 @@ const ProviderProfilePage = () => {
   const [catsOpen, setCatsOpen] = useState(false);
   const [newCat, setNewCat] = useState("");
   const [wizardOpen, setWizardOpen] = useState(false);
+  const [newClassOpen, setNewClassOpen] = useState(false);
 
   const phoneVerified = !!provider.phone && provider.verifiedPhone === provider.phone;
   const completionItems = [
