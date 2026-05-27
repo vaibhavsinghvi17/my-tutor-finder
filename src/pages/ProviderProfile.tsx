@@ -241,7 +241,9 @@ const ProviderProfilePage = () => {
           </div>
         </div>
 
-        <ProfileCompletion items={completionItems} onSetup={() => setWizardOpen(true)} />
+        {profileEmpty && (
+          <ProfileCompletion items={completionItems} onSetup={() => setWizardOpen(true)} />
+        )}
 
         <ProfileWizard mode="provider" open={wizardOpen} onClose={() => setWizardOpen(false)} />
 
