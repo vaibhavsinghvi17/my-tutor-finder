@@ -23,9 +23,9 @@ const ANY = "__any__";
 export function BoostButton({ listing }: Props) {
   const { user } = useAuth();
   const { isGrowth } = useSubscription();
-  const { boosts, refresh } = useActiveBoosts();
+  const { boosts } = useActiveBoosts();
+  const { openCheckout, checkoutElement } = useStripeCheckout();
   const [open, setOpen] = useState(false);
-  const [busy, setBusy] = useState(false);
   const [targets, setTargets] = useState<TargetEntry[]>(
     listing.city ? [{ kind: "city", value: listing.city }] : []
   );
@@ -34,42 +34,29 @@ export function BoostButton({ listing }: Props) {
   const [gender, setGender] = useState<string>(ANY);
   const boosted = isBoosted(listing.id, boosts);
 
-  const DURATION_OPTIONS: { days: number; label: string; price: number }[] = [
-    { days: 3, label: "3 days", price: 500 },
-    { days: 5, label: "5 days", price: 900 },
-    { days: 7, label: "7 days", price: 1500 },
-    { days: 15, label: "15 days", price: 2900 },
-    { days: 30, label: "1 month", price: 5500 },
-  ];
-  const [durationDays, setDurationDays] = useState<number>(isGrowth ? 7 : 3);
-  const selected = DURATION_OPTIONS.find((d) => d.days === durationDays) ?? DURATION_OPTIONS[0];
-  const price = selected.price;
+  // Boost tier follows the tutor's plan: Starter → 3 days, Growth → 7 days.
+  const durationDays = isGrowth ? 7 : 3;
+  const priceId = isGrowth ? "boost_growth_7d" : "boost_starter_3d";
+  const price = 500;
+  const durationLabel = isGrowth ? "7 days" : "3 days";
 
-  async function handleBoost() {
+  function handleBoost() {
     if (!user) {
       toast.info("Please sign in to boost a class");
       return;
     }
-    setBusy(true);
-    try {
-      // Razorpay test bypass — pretend payment was made and create the boost.
-      await createBoost({
-        listingId: listing.id,
-        providerUserId: user.id,
-        durationDays,
-        city: targetsToString(targets) || null,
-        category: listing.category,
-        ageGroup: `${Math.min(minAge, maxAge)}-${Math.max(minAge, maxAge)}`,
-        gender: gender === ANY ? null : gender,
-      });
-      await refresh();
-      toast.success(`Class boosted for ${selected.label} 🚀`);
-      setOpen(false);
-    } catch (e: any) {
-      toast.error(e.message ?? "Could not boost");
-    } finally {
-      setBusy(false);
-    }
+    setOpen(false);
+    openCheckout({
+      priceId,
+      purpose: "boost",
+      listingId: listing.id,
+      durationDays,
+      city: targetsToString(targets) || undefined,
+      category: listing.category || undefined,
+      ageGroup: `${Math.min(minAge, maxAge)}-${Math.max(minAge, maxAge)}`,
+      gender: gender === ANY ? undefined : gender,
+      returnUrl: `${window.location.origin}/checkout/return?next=/provider&session_id={CHECKOUT_SESSION_ID}`,
+    });
   }
 
   if (boosted) {
