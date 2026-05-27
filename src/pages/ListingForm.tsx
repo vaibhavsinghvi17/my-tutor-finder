@@ -452,7 +452,8 @@ const ListingForm = () => {
             </div>
           )}
 
-          {mode !== "Offline" && (
+          {/* HIDE for launch — international tutor option */}
+          {false && mode !== "Offline" && (
             <div className="space-y-3">
               <div className="flex items-center justify-between rounded-lg border p-3">
                 <div className="flex items-start gap-2">

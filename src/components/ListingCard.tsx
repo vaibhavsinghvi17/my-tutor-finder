@@ -167,7 +167,8 @@ export function ListingCard({ listing, reasons = [] }: Props) {
                 <Sparkles className="h-3 w-3" /> Free trial
               </Badge>
             )}
-            {listing.teachesInternationally && (
+            {/* HIDE for launch — international badge */}
+            {false && listing.teachesInternationally && (
               <Badge variant="outline" className="gap-1 border-primary/40 text-primary">
                 <Globe2 className="h-3 w-3" /> International
               </Badge>
