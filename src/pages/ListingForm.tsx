@@ -732,7 +732,7 @@ const ListingForm = ({ embedded = false, onDone }: ListingFormProps = {}) => {
         open={verifyOpen}
         onOpenChange={(v) => {
           setVerifyOpen(v);
-          if (!v && !verified) navigate("/provider");
+          if (!v && !verified) finish();
         }}
         role="provider"
       />
