@@ -42,6 +42,7 @@ const AuthPage = () => {
   const [otpSent, setOtpSent] = useState(false);
   const [busy, setBusy] = useState(false);
   const [checking, setChecking] = useState(true);
+  const [resendTimer, setResendTimer] = useState(0);
 
   // Route based on profile completeness — new users go through onboarding.
   const getPostLoginPath = () => {
