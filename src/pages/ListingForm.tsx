@@ -34,9 +34,9 @@ interface ListingFormProps {
 }
 
 const ListingForm = ({ embedded = false, onDone }: ListingFormProps = {}) => {
-  const finish = () => { if (onDone) onDone(); else navigate("/provider"); };
   const { id } = useParams();
   const navigate = useNavigate();
+  const finish = () => { if (onDone) onDone(); else navigate("/provider"); };
   const provider = useStore((s) => s.provider);
   const { user } = useAuth();
   const existing = useStore((s) => id ? s.listings.find((l) => l.id === id) : undefined);
