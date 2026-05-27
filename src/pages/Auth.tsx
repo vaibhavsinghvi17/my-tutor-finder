@@ -42,6 +42,7 @@ const AuthPage = () => {
   const [otpSent, setOtpSent] = useState(false);
   const [busy, setBusy] = useState(false);
   const [checking, setChecking] = useState(true);
+  const [resendTimer, setResendTimer] = useState(0);
 
   // Route based on profile completeness — new users go through onboarding.
   const getPostLoginPath = () => {
@@ -69,6 +70,15 @@ const AuthPage = () => {
     return () => sub.subscription.unsubscribe();
   }, [navigate]);
 
+  // Countdown timer for OTP resend
+  useEffect(() => {
+    if (resendTimer <= 0) return;
+    const id = setInterval(() => {
+      setResendTimer((t) => t - 1);
+    }, 1000);
+    return () => clearInterval(id);
+  }, [resendTimer]);
+
   async function sendOtp() {
     const parsed = phoneSchema.safeParse(phone);
     if (!parsed.success) { toast.error(parsed.error.issues[0].message); return; }
@@ -82,6 +92,7 @@ const AuthPage = () => {
         return;
       }
       setOtpSent(true);
+      setResendTimer(30);
       toast.success(`OTP sent on WhatsApp to ${parsed.data}`);
     } finally {
       setBusy(false);
@@ -180,13 +191,28 @@ const AuthPage = () => {
               Send OTP on WhatsApp
             </Button>
           ) : (
-            <div className="flex gap-2">
-              <Button type="button" variant="outline" disabled={busy} onClick={() => { setOtpSent(false); setOtp(""); }}>
-                Edit number
-              </Button>
-              <Button type="button" disabled={busy} className="flex-1" onClick={verifyOtp}>
+            <div className="space-y-2">
+              <Button type="button" disabled={busy} className="w-full" onClick={verifyOtp}>
                 Verify &amp; continue
               </Button>
+              <div className="flex items-center justify-between">
+                <button
+                  type="button"
+                  disabled={resendTimer > 0 || busy}
+                  onClick={sendOtp}
+                  className="text-xs text-primary disabled:text-muted-foreground hover:underline disabled:no-underline disabled:cursor-not-allowed transition-colors"
+                >
+                  {resendTimer > 0 ? `Resend OTP in ${resendTimer}s` : "Resend OTP"}
+                </button>
+                <button
+                  type="button"
+                  disabled={busy}
+                  onClick={() => { setOtpSent(false); setOtp(""); setResendTimer(0); }}
+                  className="text-xs text-muted-foreground hover:text-foreground hover:underline transition-colors"
+                >
+                  Edit number
+                </button>
+              </div>
             </div>
           )}
         </div>
