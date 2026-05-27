@@ -337,9 +337,6 @@ const ProviderProfilePage = () => {
             <DropdownMenuItem onClick={() => setOpen("contact")}>
               <Phone className="h-4 w-4 mr-2" /> Contact
             </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => setOpen("socials")}>
-              <Share2 className="h-4 w-4 mr-2" /> Social links
-            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
 
