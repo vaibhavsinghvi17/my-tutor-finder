@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Check, Sparkles, ArrowLeft } from "lucide-react";
 import { useSubscription } from "@/lib/useSubscription";
 import { useAuth } from "@/lib/useAuth";
+import { useStripeCheckout } from "@/hooks/useStripeCheckout";
 import { toast } from "sonner";
 
 const STARTER = [
