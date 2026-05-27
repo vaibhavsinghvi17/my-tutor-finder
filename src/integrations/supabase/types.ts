@@ -376,6 +376,18 @@ export type Database = {
           user_id: string
         }[]
       }
+      get_interested_learners: {
+        Args: { _listing?: string }
+        Returns: {
+          city: string
+          display_name: string
+          gender: string
+          is_unlocked: boolean
+          learner_user_id: string
+          listing_id: string
+          saved_at: string
+        }[]
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
