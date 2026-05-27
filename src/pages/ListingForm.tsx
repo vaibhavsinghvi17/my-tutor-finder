@@ -249,9 +249,10 @@ const ListingForm = ({ embedded = false, onDone }: ListingFormProps = {}) => {
   useEffect(() => { setVerifyOpen(!verified); }, [verified]);
 
   return (
-    <div className="min-h-screen">
-      <TopBar />
-      <main className="container py-6 space-y-6 max-w-3xl">
+    <div className={embedded ? "" : "min-h-screen"}>
+      {!embedded && <TopBar />}
+      <main className={embedded ? "space-y-6" : "container py-6 space-y-6 max-w-3xl"}>
+        {!embedded && (
         <div>
           <h1 className="text-lg font-semibold">{id ? "Edit class" : "New class"}</h1>
           <p className="text-sm text-muted-foreground">
