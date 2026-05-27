@@ -202,6 +202,7 @@ const ProviderProfilePage = () => {
   return (
     <div className="min-h-screen">
       <TopBar />
+      <GrowthExpiryBanner />
       <main className="container py-4 space-y-4 max-w-3xl">
         {/* Header */}
         <div className="flex items-center gap-3">
