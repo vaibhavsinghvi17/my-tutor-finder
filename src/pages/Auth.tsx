@@ -191,13 +191,28 @@ const AuthPage = () => {
               Send OTP on WhatsApp
             </Button>
           ) : (
-            <div className="flex gap-2">
-              <Button type="button" variant="outline" disabled={busy} onClick={() => { setOtpSent(false); setOtp(""); }}>
-                Edit number
-              </Button>
-              <Button type="button" disabled={busy} className="flex-1" onClick={verifyOtp}>
+            <div className="space-y-2">
+              <Button type="button" disabled={busy} className="w-full" onClick={verifyOtp}>
                 Verify &amp; continue
               </Button>
+              <div className="flex items-center justify-between">
+                <button
+                  type="button"
+                  disabled={resendTimer > 0 || busy}
+                  onClick={sendOtp}
+                  className="text-xs text-primary disabled:text-muted-foreground hover:underline disabled:no-underline disabled:cursor-not-allowed transition-colors"
+                >
+                  {resendTimer > 0 ? `Resend OTP in ${resendTimer}s` : "Resend OTP"}
+                </button>
+                <button
+                  type="button"
+                  disabled={busy}
+                  onClick={() => { setOtpSent(false); setOtp(""); setResendTimer(0); }}
+                  className="text-xs text-muted-foreground hover:text-foreground hover:underline transition-colors"
+                >
+                  Edit number
+                </button>
+              </div>
             </div>
           )}
         </div>
