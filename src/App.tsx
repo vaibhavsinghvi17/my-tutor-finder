@@ -62,6 +62,7 @@ const App = () => (
           <Route path="/admin" element={<Admin />} />
           <Route path="/terms" element={<Terms />} />
           <Route path="/privacy" element={<Privacy />} />
+          <Route path="/checkout/return" element={<CheckoutReturn />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
         <SiteFooter />
