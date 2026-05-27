@@ -104,21 +104,15 @@ const AuthPage = () => {
     if (!parsed.success) { toast.error(parsed.error.issues[0].message); return; }
     setBusy(true);
     try {
-      const { error } = await supabase.auth.signInWithOtp({
-        phone: parsed.data,
-        options: {
-          shouldCreateUser: tab === "signup",
-          data: tab === "signup" && displayName.trim()
-            ? { display_name: displayName.trim() }
-            : undefined,
-        },
+      const { data, error } = await supabase.functions.invoke("whatsapp-otp-send", {
+        body: { phone: parsed.data },
       });
-      if (error) {
-        toast.error(error.message);
+      if (error || (data as any)?.error) {
+        toast.error((data as any)?.error || error?.message || "Failed to send OTP");
         return;
       }
       setOtpSent(true);
-      toast.success(`OTP sent to ${parsed.data}`);
+      toast.success(`OTP sent on WhatsApp to ${parsed.data}`);
     } finally {
       setBusy(false);
     }
@@ -129,12 +123,19 @@ const AuthPage = () => {
     if (entered.length < 4) { toast.error("Enter the OTP you received"); return; }
     setBusy(true);
     try {
-      const { error } = await supabase.auth.verifyOtp({
-        phone,
-        token: entered,
-        type: "sms",
+      const { data, error } = await supabase.functions.invoke("whatsapp-otp-verify", {
+        body: { phone, code: entered, display_name: displayName.trim() || undefined },
       });
-      if (error) { toast.error(error.message); return; }
+      if (error || (data as any)?.error) {
+        toast.error((data as any)?.error || error?.message || "Verification failed");
+        return;
+      }
+      const { phone: digits, temp_password } = data as { phone: string; temp_password: string };
+      const { error: signInErr } = await supabase.auth.signInWithPassword({
+        phone: digits,
+        password: temp_password,
+      });
+      if (signInErr) { toast.error(signInErr.message); return; }
       if (displayName.trim()) {
         store.updateLearner({ phone, verifiedPhone: phone, name: displayName.trim() });
       } else {
@@ -189,7 +190,7 @@ const AuthPage = () => {
             type="button"
             onClick={() => setMethod("phone")}
             className={`rounded-md py-1.5 inline-flex items-center justify-center gap-1.5 ${method === "phone" ? "bg-muted font-medium" : "text-muted-foreground"}`}
-          ><Phone className="h-3.5 w-3.5" /> Phone OTP</button>
+          ><Phone className="h-3.5 w-3.5" /> WhatsApp OTP</button>
         </div>
 
         {method === "email" ? (
@@ -260,7 +261,7 @@ const AuthPage = () => {
                   autoComplete="one-time-code"
                 />
                 <p className="text-[11px] text-muted-foreground">
-                  We just sent a code to <span className="font-medium">{phone}</span>. It may take a few seconds.
+                  We just sent a code on WhatsApp to <span className="font-medium">{phone}</span>. It may take a few seconds.
                 </p>
               </div>
             )}
