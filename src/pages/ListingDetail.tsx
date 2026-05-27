@@ -239,8 +239,8 @@ const ListingDetail = () => {
           <div className="p-6 space-y-5">
             <div className="flex flex-wrap gap-2">
               <Badge variant="outline" className="gap-1">
-                {listing.mode === "Online" ? <Wifi className="h-3 w-3" /> : <Building2 className="h-3 w-3" />}
-                {listing.mode}
+                {listing.mode === "Online" ? <Wifi className="h-3 w-3" /> : listing.mode === "Offline" ? <Building2 className="h-3 w-3" /> : <><Wifi className="h-3 w-3" /><Building2 className="h-3 w-3" /></>}
+                {listing.mode === "Both" ? "Online & Offline" : listing.mode}
               </Badge>
               <Badge variant="outline" className="gap-1"><Users className="h-3 w-3" /> {listing.ageGroup}</Badge>
               {formatDuration(listing.durationMins) && (
