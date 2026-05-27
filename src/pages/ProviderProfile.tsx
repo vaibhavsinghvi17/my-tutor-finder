@@ -318,8 +318,28 @@ const ProviderProfilePage = () => {
         {/* Categories chip block — mirrors learner Interests */}
         <div className="rounded-xl border border-border/60 bg-card/40 backdrop-blur-sm p-3">
           <div className="flex items-center justify-between mb-2">
-            <div className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">
-              What you teach
+            <div className="flex items-center gap-1.5">
+              <div className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">
+                What you teach
+              </div>
+              <Popover>
+                <PopoverTrigger asChild>
+                  <button
+                    className="h-5 w-5 rounded-full grid place-items-center text-muted-foreground hover:text-primary hover:bg-primary/10"
+                    title="How learners see this"
+                  >
+                    <Info className="h-3.5 w-3.5" />
+                  </button>
+                </PopoverTrigger>
+                <PopoverContent side="bottom" align="start" className="w-72 text-xs bg-popover">
+                  <p className="font-semibold mb-1">Visible to learners</p>
+                  <p className="text-muted-foreground">
+                    Free learners only see your <strong>top topic</strong>. The rest appear faded with an
+                    upgrade prompt. Learners on an upgraded plan see <strong>all</strong> the topics you teach —
+                    helping the right students discover the full range of your expertise.
+                  </p>
+                </PopoverContent>
+              </Popover>
             </div>
             <button
               onClick={() => setCatsOpen(true)}
@@ -335,12 +355,26 @@ const ProviderProfilePage = () => {
             </button>
           ) : (
             <div className="flex flex-wrap gap-1.5">
-              {provider.categories.map((c) => (
-                <span key={c} className="px-2.5 py-0.5 rounded-full text-xs bg-primary/10 text-primary border border-primary/20">
+              {provider.categories.map((c, i) => (
+                <span
+                  key={c}
+                  className={cn(
+                    "px-2.5 py-0.5 rounded-full text-xs border",
+                    i === 0
+                      ? "bg-primary/10 text-primary border-primary/20"
+                      : "bg-muted/40 text-muted-foreground border-border/60"
+                  )}
+                  title={i === 0 ? "Visible to all learners" : "Visible only to upgraded learners"}
+                >
                   {c}
                 </span>
               ))}
             </div>
+          )}
+          {provider.categories.length > 1 && (
+            <p className="text-[10px] text-muted-foreground mt-2 leading-snug">
+              Top topic is shown to everyone. The {provider.categories.length - 1} other{provider.categories.length - 1 === 1 ? "" : "s"} unlock for learners on an upgraded plan.
+            </p>
           )}
         </div>
 
