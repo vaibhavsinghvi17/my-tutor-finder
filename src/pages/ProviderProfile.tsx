@@ -245,18 +245,19 @@ const ProviderProfilePage = () => {
               <Sparkles className="h-3 w-3" />
               {isGrowth ? "Growth plan" : "Starter plan"}
             </Link>
-            {profileIncomplete && (
-              <button
-                onClick={() => openWizardAt(firstIncomplete?.step)}
-                className="mt-1.5 ml-1.5 inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-medium bg-primary/10 text-primary border border-primary/30 hover:bg-primary/20 transition"
-                title={`Complete: ${firstIncomplete?.label}`}
-              >
-                <Sparkles className="h-3 w-3" /> Profile incomplete · Quick complete
-              </button>
-            )}
           </div>
           <LanguageSwitcher minimal />
         </div>
+
+        {profileIncomplete && (
+          <button
+            onClick={() => openWizardAt(firstIncomplete?.step)}
+            className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-medium bg-primary/10 text-primary border border-primary/30 hover:bg-primary/20 transition"
+            title={`Complete: ${firstIncomplete?.label}`}
+          >
+            <Sparkles className="h-3 w-3" /> Profile incomplete · Quick complete
+          </button>
+        )}
 
         {(profileEmpty || profileIncomplete) && (
           <ProfileCompletion items={completionItems} onSetup={() => openWizardAt(firstIncomplete?.step ?? 0)} />
