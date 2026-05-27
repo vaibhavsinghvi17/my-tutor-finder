@@ -33,17 +33,11 @@ export function useSubscription() {
 
   useEffect(() => { refresh(); }, [refresh]);
 
-  // BYPASS: Razorpay test mode — pretend payment succeeded and activate Growth for 30 days.
+  // Payment integration not live yet — self-activation is blocked server-side by a
+  // DB trigger so the tier can only be changed through a verified payment flow / admin.
   const activateGrowth = useCallback(async () => {
-    if (!user) throw new Error("Please sign in first");
-    const expires = new Date(Date.now() + 30 * 24 * 3600 * 1000).toISOString();
-    const { error } = await supabase
-      .from("profiles")
-      .update({ subscription_tier: "growth", subscription_expires_at: expires })
-      .eq("user_id", user.id);
-    if (error) throw error;
-    await refresh();
-  }, [user, refresh]);
+    throw new Error("Payments aren't live yet. Growth activation will open once checkout is connected.");
+  }, []);
 
   const downgrade = useCallback(async () => {
     if (!user) return;
