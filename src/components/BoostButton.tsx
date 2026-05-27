@@ -179,20 +179,6 @@ export function BoostButton({ listing }: Props) {
               </Select>
             </div>
 
-            <div className="space-y-1.5">
-              <Label className="text-xs">Boost duration</Label>
-              <Select value={String(durationDays)} onValueChange={(v) => setDurationDays(Number(v))}>
-                <SelectTrigger><SelectValue /></SelectTrigger>
-                <SelectContent>
-                  {DURATION_OPTIONS.map((d) => (
-                    <SelectItem key={d.days} value={String(d.days)}>
-                      {d.label} — ₹{d.price.toLocaleString("en-IN")}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-
             <div className="rounded-lg border p-3 bg-muted/30 space-y-1 text-sm">
               <div className="flex justify-between">
                 <span>Plan</span>
@@ -200,26 +186,29 @@ export function BoostButton({ listing }: Props) {
               </div>
               <div className="flex justify-between">
                 <span>Duration</span>
-                <span className="font-medium">{selected.label}</span>
+                <span className="font-medium">{durationLabel}</span>
               </div>
               <div className="flex justify-between"><span>Price</span><span className="font-bold">₹{price.toLocaleString("en-IN")}</span></div>
-              {isGrowth && (
+              {!isGrowth && (
                 <p className="text-[11px] text-muted-foreground pt-1 leading-snug">
-                  Growth boosts rank above Starter-plan boosts in Discover for the same duration.
+                  Upgrade to Growth for a 7-day boost at the same price.
                 </p>
               )}
-              <p className="text-[11px] text-muted-foreground italic pt-0.5">
-                Razorpay test mode — payment is bypassed for now.
-              </p>
             </div>
           </div>
 
           <DialogFooter>
-            <Button variant="outline" onClick={() => setOpen(false)} disabled={busy}>Cancel</Button>
-            <Button onClick={handleBoost} disabled={busy} className="gap-1.5">
-              <Rocket className="h-4 w-4" /> {busy ? "Boosting..." : `Pay ₹${price.toLocaleString("en-IN")} & Boost`}
+            <Button variant="outline" onClick={() => setOpen(false)}>Cancel</Button>
+            <Button onClick={handleBoost} className="gap-1.5">
+              <Rocket className="h-4 w-4" /> Pay ₹{price.toLocaleString("en-IN")} & Boost
             </Button>
           </DialogFooter>
+        </DialogContent>
+      </Dialog>
+      {checkoutElement}
+    </>
+  );
+}
         </DialogContent>
       </Dialog>
     </>
