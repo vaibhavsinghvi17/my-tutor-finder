@@ -36,17 +36,15 @@ import { ProfileWizard } from "@/components/ProfileWizard";
 import { ProfileCompletion } from "@/components/ProfileCompletion";
 
 function SignOutFooter() {
-  const { user } = useAuth();
   const navigate = useNavigate();
-  if (!user) return null;
   async function handleSignOut() {
-    await supabase.auth.signOut();
+    try { await supabase.auth.signOut(); } catch {}
     toast.success("Signed out");
     navigate("/auth");
   }
   return (
-    <div className="pt-6 pb-4 flex justify-center">
-      <Button variant="outline" size="sm" onClick={handleSignOut} className="gap-2 text-destructive hover:text-destructive">
+    <div className="mt-8 mb-16 pb-8 flex justify-center">
+      <Button variant="outline" size="lg" onClick={handleSignOut} className="gap-2 text-destructive hover:text-destructive border-destructive/30">
         <LogOut className="h-4 w-4" /> Sign out
       </Button>
     </div>
