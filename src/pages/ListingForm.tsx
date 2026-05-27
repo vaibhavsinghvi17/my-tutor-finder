@@ -28,9 +28,15 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { useSubscription } from "@/lib/useSubscription";
 
-const ListingForm = () => {
+interface ListingFormProps {
+  embedded?: boolean;
+  onDone?: () => void;
+}
+
+const ListingForm = ({ embedded = false, onDone }: ListingFormProps = {}) => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const finish = () => { if (onDone) onDone(); else navigate("/provider"); };
   const provider = useStore((s) => s.provider);
   const { user } = useAuth();
   const existing = useStore((s) => id ? s.listings.find((l) => l.id === id) : undefined);
@@ -234,7 +240,7 @@ const ListingForm = () => {
       store.addListing(data, user?.id);
       toast.success(asDraft ? "Saved to drafts" : "Class published");
     }
-    navigate("/provider");
+    finish();
   }
 
   // Guard: provider must verify name + mobile number before creating/editing a listing.
@@ -243,15 +249,17 @@ const ListingForm = () => {
   useEffect(() => { setVerifyOpen(!verified); }, [verified]);
 
   return (
-    <div className="min-h-screen">
-      <TopBar />
-      <main className="container py-6 space-y-6 max-w-3xl">
-        <div>
-          <h1 className="text-lg font-semibold">{id ? "Edit class" : "New class"}</h1>
-          <p className="text-sm text-muted-foreground">
-            Fill in the details — learners will see this on the discover page.
-          </p>
-        </div>
+    <div className={embedded ? "" : "min-h-screen"}>
+      {!embedded && <TopBar />}
+      <main className={embedded ? "space-y-6" : "container py-6 space-y-6 max-w-3xl"}>
+        {!embedded && (
+          <div>
+            <h1 className="text-lg font-semibold">{id ? "Edit class" : "New class"}</h1>
+            <p className="text-sm text-muted-foreground">
+              Fill in the details — learners will see this on the discover page.
+            </p>
+          </div>
+        )}
 
         <Card className="p-5 space-y-4">
           <div className="space-y-1.5">
@@ -711,7 +719,7 @@ const ListingForm = () => {
           </Accordion>
         </Card>
         <div className="flex flex-wrap justify-end gap-2">
-          <Button variant="outline" onClick={() => navigate("/provider")}>Cancel</Button>
+          <Button variant="outline" onClick={() => finish()}>Cancel</Button>
           <Button variant="secondary" onClick={() => save(true)}>
             {existing?.draft || !id ? "Save as draft" : "Move to drafts"}
           </Button>
@@ -724,7 +732,7 @@ const ListingForm = () => {
         open={verifyOpen}
         onOpenChange={(v) => {
           setVerifyOpen(v);
-          if (!v && !verified) navigate("/provider");
+          if (!v && !verified) finish();
         }}
         role="provider"
       />
