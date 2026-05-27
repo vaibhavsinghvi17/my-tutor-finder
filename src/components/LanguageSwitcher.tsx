@@ -136,7 +136,7 @@ function loadGoogleTranslate() {
   document.body.appendChild(s);
 }
 
-export function LanguageSwitcher({ compact = false }: { compact?: boolean }) {
+export function LanguageSwitcher({ compact = false, minimal = false }: { compact?: boolean; minimal?: boolean }) {
   const [lang, setLang] = useState<string>("en");
   const [open, setOpen] = useState(false);
 
@@ -155,13 +155,13 @@ export function LanguageSwitcher({ compact = false }: { compact?: boolean }) {
   const current = LANGUAGES.find((l) => l.code === lang) ?? LANGUAGES[0];
 
   return (
-    <div className={compact ? "flex items-center gap-2" : "space-y-1.5"}>
-      {!compact && (
+    <div className={minimal ? "flex items-center" : compact ? "flex items-center gap-2" : "space-y-1.5"}>
+      {!compact && !minimal && (
         <Label className="flex items-center gap-1.5 text-xs">
           <Globe className="h-3.5 w-3.5" /> App language
         </Label>
       )}
-      {compact && <Globe className="h-4 w-4 text-muted-foreground shrink-0" />}
+      {compact && !minimal && <Globe className="h-4 w-4 text-muted-foreground shrink-0" />}
       <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
           <Button
@@ -170,11 +170,15 @@ export function LanguageSwitcher({ compact = false }: { compact?: boolean }) {
             aria-expanded={open}
             className={cn(
               "justify-between font-normal",
-              compact ? "h-8 text-xs w-[170px] px-2.5" : "h-9 text-sm w-full",
+              minimal
+                ? "h-7 text-[11px] w-[72px] px-2"
+                : compact
+                  ? "h-8 text-xs w-[170px] px-2.5"
+                  : "h-9 text-sm w-full",
             )}
           >
-            <span className="truncate">{current.label}</span>
-            <ChevronsUpDown className="ml-2 h-3.5 w-3.5 shrink-0 opacity-50" />
+            <span className="truncate">{minimal ? current.code.toUpperCase() : current.label}</span>
+            <ChevronsUpDown className="ml-1 h-3 w-3 shrink-0 opacity-50" />
           </Button>
         </PopoverTrigger>
         <PopoverContent className="w-[260px] p-0" align="end">
@@ -204,7 +208,7 @@ export function LanguageSwitcher({ compact = false }: { compact?: boolean }) {
           </Command>
         </PopoverContent>
       </Popover>
-      {!compact && (
+      {!compact && !minimal && (
         <p className="text-[10px] text-muted-foreground">
           Powered by Google Translate. Switching reloads the page.
         </p>
