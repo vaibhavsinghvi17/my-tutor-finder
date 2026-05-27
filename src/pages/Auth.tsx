@@ -190,7 +190,7 @@ const AuthPage = () => {
             type="button"
             onClick={() => setMethod("phone")}
             className={`rounded-md py-1.5 inline-flex items-center justify-center gap-1.5 ${method === "phone" ? "bg-muted font-medium" : "text-muted-foreground"}`}
-          ><Phone className="h-3.5 w-3.5" /> Phone OTP</button>
+          ><Phone className="h-3.5 w-3.5" /> WhatsApp OTP</button>
         </div>
 
         {method === "email" ? (
@@ -261,7 +261,7 @@ const AuthPage = () => {
                   autoComplete="one-time-code"
                 />
                 <p className="text-[11px] text-muted-foreground">
-                  We just sent a code to <span className="font-medium">{phone}</span>. It may take a few seconds.
+                  We just sent a code on WhatsApp to <span className="font-medium">{phone}</span>. It may take a few seconds.
                 </p>
               </div>
             )}
