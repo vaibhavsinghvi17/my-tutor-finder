@@ -253,12 +253,13 @@ const ListingForm = ({ embedded = false, onDone }: ListingFormProps = {}) => {
       {!embedded && <TopBar />}
       <main className={embedded ? "space-y-6" : "container py-6 space-y-6 max-w-3xl"}>
         {!embedded && (
-        <div>
-          <h1 className="text-lg font-semibold">{id ? "Edit class" : "New class"}</h1>
-          <p className="text-sm text-muted-foreground">
-            Fill in the details — learners will see this on the discover page.
-          </p>
-        </div>
+          <div>
+            <h1 className="text-lg font-semibold">{id ? "Edit class" : "New class"}</h1>
+            <p className="text-sm text-muted-foreground">
+              Fill in the details — learners will see this on the discover page.
+            </p>
+          </div>
+        )}
 
         <Card className="p-5 space-y-4">
           <div className="space-y-1.5">
