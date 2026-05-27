@@ -30,7 +30,8 @@ const GROWTH = [
 export default function Pricing() {
   const navigate = useNavigate();
   const { user, loading: authLoading } = useAuth();
-  const { tier, isGrowth, activateGrowth, downgrade, loading } = useSubscription();
+  const { tier, isGrowth, downgrade, loading } = useSubscription();
+  const { openCheckout, checkoutElement } = useStripeCheckout();
 
   async function onActivate() {
     if (authLoading) {
@@ -42,18 +43,17 @@ export default function Pricing() {
       navigate("/auth", { state: { returnTo: "/pricing" } });
       return;
     }
-    try {
-      await activateGrowth();
-      toast.success("Growth activated (test mode)");
-      navigate("/provider");
-    } catch (e: any) {
-      toast.error(e.message ?? "Could not activate");
-    }
+    openCheckout({
+      priceId: "growth_monthly",
+      purpose: "subscription",
+      returnUrl: `${window.location.origin}/checkout/return?next=/provider&session_id={CHECKOUT_SESSION_ID}`,
+    });
   }
 
   return (
     <div className="min-h-screen">
       <TopBar />
+      {checkoutElement}
       <main className="container py-6 space-y-6 max-w-4xl">
         <button onClick={() => navigate(-1)} className="text-xs text-muted-foreground flex items-center gap-1 hover:text-foreground">
           <ArrowLeft className="h-3.5 w-3.5" /> Back
@@ -62,8 +62,8 @@ export default function Pricing() {
         <div className="space-y-2 text-center">
           <h1 className="text-3xl sm:text-4xl font-bold">Tutor plans</h1>
           <p className="text-muted-foreground">Learners are always free. Pick a plan that suits your tutoring.</p>
-          <p className="text-[11px] text-muted-foreground italic">Razorpay test mode — payments are bypassed for now.</p>
         </div>
+
 
         <div className="grid gap-4 sm:grid-cols-2">
           <PlanCard
