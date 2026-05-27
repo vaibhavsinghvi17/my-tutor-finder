@@ -15,11 +15,28 @@ Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
   try {
+    // Require an authenticated caller — prevents anonymous abuse / AI credit drain.
+    const authHeader = req.headers.get("Authorization") ?? "";
+    if (!authHeader.startsWith("Bearer ")) {
+      return json({ error: "Unauthorized" }, 401);
+    }
+    const { createClient } = await import("https://esm.sh/@supabase/supabase-js@2.45.0");
+    const sb = createClient(
+      Deno.env.get("SUPABASE_URL")!,
+      Deno.env.get("SUPABASE_ANON_KEY")!,
+      { global: { headers: { Authorization: authHeader } } },
+    );
+    const { data: claims, error: claimsErr } = await sb.auth.getClaims(authHeader.replace("Bearer ", ""));
+    if (claimsErr || !claims?.claims?.sub) {
+      return json({ error: "Unauthorized" }, 401);
+    }
+
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY not configured");
 
     const body = await req.json();
     const action = String(body?.action ?? "");
+
 
     if (action === "generate-description") {
       const { title, category, ageGroup, mode, languages, durationMins, extra } = body ?? {};
