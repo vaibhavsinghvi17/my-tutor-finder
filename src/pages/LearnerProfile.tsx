@@ -68,6 +68,7 @@ const LearnerProfilePage = () => {
   const [timingsOpen, setTimingsOpen] = useState(false);
   const [customInterest, setCustomInterest] = useState("");
   const [wizardOpen, setWizardOpen] = useState(false);
+  const [wizardStep, setWizardStep] = useState<number | undefined>(undefined);
   const fileRef = useRef<HTMLInputElement>(null);
 
   const phoneVerified = !!learner.phone && learner.verifiedPhone === learner.phone;
