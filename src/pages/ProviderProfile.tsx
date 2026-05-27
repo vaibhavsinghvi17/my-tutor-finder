@@ -296,12 +296,6 @@ const ProviderProfilePage = () => {
               </Badge>
             </Link>
           </Button>
-          <Button asChild variant="secondary" size="sm" className="gap-1.5 rounded-full flex-1 min-w-0">
-            <Link to="/provider/interested">
-              <Users className="h-4 w-4" />
-              <span className="text-xs font-medium truncate">Interested</span>
-            </Link>
-          </Button>
           <Button asChild size="sm" className="gap-1.5 rounded-full flex-1 min-w-0">
             <Link to="/provider/listing/new">
               <Plus className="h-4 w-4" />
@@ -431,6 +425,14 @@ const ProviderProfilePage = () => {
             <p className="text-sm text-foreground/80 leading-relaxed whitespace-pre-line">{provider.bio}</p>
           </ProviderSection>
         )}
+
+        {/* Interested learners button */}
+        <Button asChild variant="outline" size="sm" className="w-full gap-1.5 rounded-full">
+          <Link to="/provider/interested">
+            <Users className="h-4 w-4" />
+            <span className="text-xs font-medium">Interested learners</span>
+          </Link>
+        </Button>
 
         {/* My classes section — mirrors learner Section style */}
         <ProviderSection
