@@ -45,6 +45,9 @@ const Onboarding = () => {
   function pick(m: "learner" | "provider") {
     setPendingRole(m);
     setUsername("");
+    // Username step is hidden for launch — proceed straight to profile setup.
+    store.setOnboarded(m);
+    navigate(m === "provider" ? "/profile/provider" : "/profile/learner");
   }
 
   function confirmUsername() {
@@ -54,7 +57,6 @@ const Onboarding = () => {
     if (pendingRole === "learner") store.updateLearner({ username: slug });
     else store.updateProvider({ username: slug });
     store.setOnboarded(pendingRole);
-    // Always send brand-new users to fill out their profile first.
     navigate(pendingRole === "provider" ? "/profile/provider" : "/profile/learner");
   }
 
