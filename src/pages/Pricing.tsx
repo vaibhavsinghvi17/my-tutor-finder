@@ -96,11 +96,11 @@ export default function Pricing() {
           </div>
           <div className="grid sm:grid-cols-2 gap-2 text-sm">
             <div className="rounded-lg border bg-background/60 p-3">
-              <div className="font-medium">Starter boost</div>
+              <div className="font-medium">Class Boost in Starter Plan</div>
               <div className="text-xs text-muted-foreground">₹500 · 3 days</div>
             </div>
             <div className="rounded-lg border-2 border-primary/40 bg-primary/5 p-3">
-              <div className="font-medium flex items-center gap-1">Growth boost <Badge className="text-[9px] h-4 px-1.5">priority</Badge></div>
+              <div className="font-medium flex items-center gap-1">Class Boost in Growth Plan <Badge className="text-[9px] h-4 px-1.5">priority</Badge></div>
               <div className="text-xs text-muted-foreground">₹500 · 7 days · ranks above Starter boosts</div>
             </div>
           </div>
