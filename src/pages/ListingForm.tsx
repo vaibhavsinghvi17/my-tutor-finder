@@ -719,7 +719,7 @@ const ListingForm = ({ embedded = false, onDone }: ListingFormProps = {}) => {
           </Accordion>
         </Card>
         <div className="flex flex-wrap justify-end gap-2">
-          <Button variant="outline" onClick={() => navigate("/provider")}>Cancel</Button>
+          <Button variant="outline" onClick={() => finish()}>Cancel</Button>
           <Button variant="secondary" onClick={() => save(true)}>
             {existing?.draft || !id ? "Save as draft" : "Move to drafts"}
           </Button>
