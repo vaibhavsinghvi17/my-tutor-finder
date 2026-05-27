@@ -22,6 +22,7 @@ interface Props {
   mode: "learner" | "provider";
   open: boolean;
   onClose: () => void;
+  initialStep?: number;
 }
 
 const Req = () => <span className="text-destructive ml-0.5">*</span>;
