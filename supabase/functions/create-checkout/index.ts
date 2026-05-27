@@ -128,7 +128,16 @@ Deno.serve(async (req) => {
       ui_mode: "embedded_page",
       return_url: returnUrl,
       ...(customerId && { customer: customerId }),
-      ...(!isRecurring && { payment_intent_data: { description: productDescription, metadata } }),
+      ...(!isRecurring && {
+        payment_intent_data: { description: productDescription, metadata },
+        // UPI works for one-time INR payments. Stripe will auto-include card.
+        ...(stripePrice.currency === "inr" && {
+          payment_method_types: ["card", "upi"],
+        }),
+      }),
+      // Let customers enter promo codes (created in the Stripe dashboard)
+      // directly in the embedded checkout form.
+      allow_promotion_codes: true,
       metadata,
       ...(isRecurring && { subscription_data: { metadata } }),
     });
