@@ -257,7 +257,9 @@ const LearnerProfilePage = () => {
           </div>
         )}
 
-        <ProfileCompletion items={completionItems} onSetup={() => setWizardOpen(true)} />
+        {profileEmpty && (
+          <ProfileCompletion items={completionItems} onSetup={() => setWizardOpen(true)} />
+        )}
 
         <ProfileWizard mode="learner" open={wizardOpen} onClose={() => setWizardOpen(false)} />
 
