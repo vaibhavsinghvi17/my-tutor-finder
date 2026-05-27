@@ -82,9 +82,9 @@ Deno.serve(async (req) => {
       body: JSON.stringify(payload),
     });
     const respText = await resp.text();
-    console.log("MSG91 response", resp.status, respText);
     if (!resp.ok) {
-      return new Response(JSON.stringify({ error: "Failed to send WhatsApp OTP", detail: respText }), { status: 502, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+      console.error("MSG91 error", resp.status, respText);
+      return new Response(JSON.stringify({ error: "Failed to send WhatsApp OTP" }), { status: 502, headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 
     return new Response(JSON.stringify({ ok: true }), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
