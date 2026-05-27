@@ -43,17 +43,19 @@ const AuthPage = () => {
   const [busy, setBusy] = useState(false);
   const [checking, setChecking] = useState(true);
 
-  // If already signed in, bounce away — only require login again after sign-out.
+  // If already signed in, bounce to the correct dashboard.
+  const getDashboardPath = () => (store.get().mode === "provider" ? "/provider" : "/dashboard");
+
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => {
       if (data.session) {
-        navigate("/dashboard", { replace: true });
+        navigate(getDashboardPath(), { replace: true });
       } else {
         setChecking(false);
       }
     });
     const { data: sub } = supabase.auth.onAuthStateChange((_event, session) => {
-      if (session) navigate("/dashboard", { replace: true });
+      if (session) navigate(getDashboardPath(), { replace: true });
     });
     return () => sub.subscription.unsubscribe();
   }, [navigate]);
@@ -97,7 +99,7 @@ const AuthPage = () => {
       if (signInErr) { toast.error(signInErr.message); return; }
       store.updateLearner({ phone, verifiedPhone: phone });
       toast.success("Phone verified — signed in!");
-      navigate("/dashboard");
+      navigate(getDashboardPath());
     } finally {
       setBusy(false);
     }
