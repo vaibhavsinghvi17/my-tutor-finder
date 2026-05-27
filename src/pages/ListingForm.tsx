@@ -240,7 +240,7 @@ const ListingForm = ({ embedded = false, onDone }: ListingFormProps = {}) => {
       store.addListing(data, user?.id);
       toast.success(asDraft ? "Saved to drafts" : "Class published");
     }
-    navigate("/provider");
+    finish();
   }
 
   // Guard: provider must verify name + mobile number before creating/editing a listing.
