@@ -73,14 +73,20 @@ const LearnerProfilePage = () => {
 
   const phoneVerified = !!learner.phone && learner.verifiedPhone === learner.phone;
   const completionItems = [
-    { label: "Name", done: !!learner.name?.trim() },
-    { label: "Date of birth", done: !!learner.dob?.trim() },
-    { label: "City", done: !!learner.city?.trim() },
-    { label: "Pin code", done: !!learner.pinCode?.trim() },
-    { label: "Interests", done: (learner.interests?.length ?? 0) > 0 },
-    { label: "Phone verified", done: phoneVerified },
+    { label: "Name", done: !!learner.name?.trim(), step: 0 },
+    { label: "Date of birth", done: !!learner.dob?.trim(), step: 0 },
+    { label: "City", done: !!learner.city?.trim(), step: 1 },
+    { label: "Pin code", done: !!learner.pinCode?.trim(), step: 1 },
+    { label: "Interests", done: (learner.interests?.length ?? 0) > 0, step: 2 },
+    { label: "Phone verified", done: phoneVerified, step: 4 },
   ];
   const profileEmpty = !learner.name?.trim();
+  const firstIncomplete = completionItems.find((i) => !i.done);
+  const profileIncomplete = !profileEmpty && !!firstIncomplete;
+  function openWizardAt(step?: number) {
+    setWizardStep(step);
+    setWizardOpen(true);
+  }
 
   useEffect(() => {
     if (profileEmpty && !sessionStorage.getItem("learnerWizardSeen")) {
