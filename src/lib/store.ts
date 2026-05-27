@@ -318,6 +318,23 @@ export const store = {
     persist();
     listeners.forEach((l) => l());
   },
+  /**
+   * Bind the local store to a Supabase auth user. If the uid differs from the
+   * one that owns the cached state, wipe local data so a new sign-in on the
+   * same device never sees the previous user's profile/listings.
+   */
+  setAuthUser(uid: string | null) {
+    const current = (state as any).authUid ?? null;
+    if (uid && current && uid !== current) {
+      state = { ...initialState, authUid: uid } as AppState;
+    } else if (!uid && current) {
+      state = { ...initialState, authUid: null } as AppState;
+    } else {
+      state = { ...state, authUid: uid ?? null } as AppState;
+    }
+    persist();
+    listeners.forEach((l) => l());
+  },
 };
 
 export function useStore<T>(selector: (s: AppState) => T): T {

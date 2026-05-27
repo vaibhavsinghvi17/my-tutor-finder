@@ -38,15 +38,16 @@ export function useAuth() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Listener FIRST, then getSession (per Supabase guidance)
     const { data: sub } = supabase.auth.onAuthStateChange((_event, s) => {
       setSession(s);
       setUser(s?.user ?? null);
+      store.setAuthUser(s?.user?.id ?? null);
       syncAuthToProfile(s?.user ?? null);
     });
     supabase.auth.getSession().then(({ data }) => {
       setSession(data.session);
       setUser(data.session?.user ?? null);
+      store.setAuthUser(data.session?.user?.id ?? null);
       syncAuthToProfile(data.session?.user ?? null);
       setLoading(false);
     });
