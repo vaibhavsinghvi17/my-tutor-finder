@@ -235,6 +235,7 @@ const LearnerProfilePage = () => {
               </button>
             )}
           </div>
+          <LanguageSwitcher minimal />
         </div>
 
         {(!learner.city || !learner.pinCode) && (
