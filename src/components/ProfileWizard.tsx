@@ -11,10 +11,11 @@ import { InterestPicker } from "@/components/InterestPicker";
 import { DatePicker } from "@/components/DatePicker";
 import { VerifyContact } from "@/components/VerifyContact";
 import { FreeTimeEditor } from "@/components/FreeTimeEditor";
+import { LanguagesEditor } from "@/components/LanguagesEditor";
 import { store, useStore } from "@/lib/store";
 import { useCategories } from "@/lib/useCategories";
 import { useAuth } from "@/lib/useAuth";
-import { Check, ChevronLeft, ChevronRight, Sparkles, MapPin, BookOpen, ShieldCheck, GraduationCap, Briefcase, Clock } from "lucide-react";
+import { Check, ChevronLeft, ChevronRight, Sparkles, MapPin, BookOpen, ShieldCheck, GraduationCap, Briefcase, Clock, MessageCircle } from "lucide-react";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 
@@ -274,6 +275,34 @@ export function ProfileWizard({ mode, open, onClose, initialStep }: Props) {
                       onChange={(e) => update({ yearsExperience: e.target.value ? Number(e.target.value) : undefined })}
                       placeholder="e.g. 5"
                     />
+                  </div>
+                  <div className="space-y-1.5">
+                    <LanguagesEditor
+                      value={provider.languages ?? []}
+                      onChange={(v) => update({ languages: v })}
+                      label="Teaching languages"
+                    />
+                  </div>
+                  <div className="space-y-1.5">
+                    <Label>Email <span className="text-muted-foreground text-xs">(optional)</span></Label>
+                    <Input
+                      type="email"
+                      value={provider.email ?? ""}
+                      onChange={(e) => update({ email: e.target.value.slice(0, 120) })}
+                      placeholder="you@example.com"
+                    />
+                  </div>
+                  <div className="space-y-1.5">
+                    <Label className="flex items-center gap-1.5">
+                      <MessageCircle className="h-3.5 w-3.5" /> WhatsApp number <span className="text-muted-foreground text-xs">(optional)</span>
+                    </Label>
+                    <Input
+                      value={provider.contactInfo?.whatsapp ?? ""}
+                      onChange={(e) => update({ contactInfo: { ...(provider.contactInfo ?? {}), whatsapp: e.target.value.slice(0, 20) } })}
+                      placeholder="+91 9XXXXXXXXX"
+                      inputMode="tel"
+                    />
+                    <p className="text-[11px] text-muted-foreground">Learners can reach you directly on WhatsApp.</p>
                   </div>
                 </>
               )}
