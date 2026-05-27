@@ -154,10 +154,11 @@ export default function Pricing() {
 }
 
 function PlanCard({
-  name, price, priceSuffix, tagline, features, cta, ctaDisabled, onCta, highlight,
+  name, price, priceSuffix, tagline, features, cta, ctaDisabled, onCta, highlight, note,
 }: {
   name: string; price: string; priceSuffix?: string; tagline: string;
   features: string[]; cta: string; ctaDisabled?: boolean; onCta: () => void; highlight: boolean;
+  note?: string;
 }) {
   return (
     <Card className={`p-6 space-y-4 ${highlight ? "border-primary border-2 shadow-elegant" : ""}`}>
@@ -172,6 +173,7 @@ function PlanCard({
         <span className="text-3xl font-bold">{price}</span>
         {priceSuffix && <span className="text-sm text-muted-foreground">{priceSuffix}</span>}
       </div>
+      {note && <p className="text-xs text-primary">{note}</p>}
       <ul className="space-y-2">
         {features.map((f) => (
           <li key={f} className="flex items-start gap-2 text-sm">
