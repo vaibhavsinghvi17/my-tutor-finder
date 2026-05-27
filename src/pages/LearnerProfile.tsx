@@ -272,7 +272,7 @@ const LearnerProfilePage = () => {
         )}
 
         {profileEmpty && (
-          <ProfileCompletion items={completionItems} onSetup={() => setWizardOpen(true)} />
+          <ProfileCompletion items={completionItems} onSetup={() => openWizardAt(0)} />
         )}
 
         <ProfileWizard mode="learner" open={wizardOpen} onClose={() => setWizardOpen(false)} initialStep={wizardStep} />
