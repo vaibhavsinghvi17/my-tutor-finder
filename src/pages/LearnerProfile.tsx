@@ -131,6 +131,54 @@ const LearnerProfilePage = () => {
     <div className="min-h-screen">
       <TopBar />
       <main className="container py-4 space-y-4 max-w-3xl">
+        <div className="flex items-center gap-2">
+          <DropdownMenu modal={false}>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" size="sm" className="h-8 gap-1.5 max-w-[60%]">
+                <UserCircle2 className="h-3.5 w-3.5 text-primary shrink-0" />
+                <span className="truncate text-xs font-medium">{learner.name || "You"}</span>
+                <ChevronDown className="h-3.5 w-3.5 opacity-60" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="start" className="w-56 bg-popover z-50">
+              <DropdownMenuLabel className="text-[11px] uppercase tracking-wider text-muted-foreground">
+                Switch profile
+              </DropdownMenuLabel>
+              <DropdownMenuItem onClick={() => navigate("/profile")}>
+                <UserCircle2 className="h-3.5 w-3.5 mr-2" />
+                <span className="truncate">{learner.name || "You"}</span>
+                <span className="ml-auto text-[10px] text-muted-foreground">Self</span>
+              </DropdownMenuItem>
+              {learner.adults.map((a) => (
+                <DropdownMenuItem key={a.id} onClick={() => navigate(`/profile/adult/${a.id}`)}>
+                  <UserCircle2 className="h-3.5 w-3.5 mr-2" />
+                  <span className="truncate">{a.name || "Adult"}</span>
+                  <span className="ml-auto text-[10px] text-muted-foreground">Adult</span>
+                </DropdownMenuItem>
+              ))}
+              {learner.kids.map((k) => (
+                <DropdownMenuItem key={k.id} onClick={() => navigate(`/profile/kid/${k.id}`)}>
+                  <UserCircle2 className="h-3.5 w-3.5 mr-2" />
+                  <span className="truncate">{k.name || "Kid"}</span>
+                  <span className="ml-auto text-[10px] text-muted-foreground">Kid</span>
+                </DropdownMenuItem>
+              ))}
+              <DropdownMenuSeparator />
+              <DropdownMenuLabel className="text-[11px] uppercase tracking-wider text-muted-foreground">
+                Add family
+              </DropdownMenuLabel>
+              <DropdownMenuItem onClick={() => navigate("/profile/adult/new")}>
+                <Plus className="h-3.5 w-3.5 mr-2 text-primary" />
+                Add spouse / parent
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => navigate("/profile/kid/new")}>
+                <Plus className="h-3.5 w-3.5 mr-2 text-primary" />
+                Add kid
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
+
         {/* Header */}
         <div className="flex items-center gap-3">
           <div className="relative">
