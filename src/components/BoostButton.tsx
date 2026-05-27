@@ -7,10 +7,11 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Rocket } from "lucide-react";
 import { toast } from "sonner";
-import { createBoost, useActiveBoosts, isBoosted } from "@/lib/useBoosts";
+import { useActiveBoosts, isBoosted } from "@/lib/useBoosts";
 import { useSubscription } from "@/lib/useSubscription";
 import { useAuth } from "@/lib/useAuth";
-import { Listing, AGE_GROUPS } from "@/lib/types";
+import { useStripeCheckout } from "@/hooks/useStripeCheckout";
+import { Listing } from "@/lib/types";
 import { LocationTargeter, TargetEntry, targetsToString } from "@/components/LocationTargeter";
 
 interface Props {
