@@ -31,7 +31,7 @@ import { VerifyContact } from "@/components/VerifyContact";
 import { PinCodeInput } from "@/components/PinCodeInput";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { supabase } from "@/integrations/supabase/client";
-import { useAuth } from "@/lib/useAuth";
+
 import { ProfileWizard } from "@/components/ProfileWizard";
 import { ProfileCompletion } from "@/components/ProfileCompletion";
 
@@ -58,12 +58,7 @@ const LearnerProfilePage = () => {
   const { names: categoryNames, addCategory } = useCategories();
   const age = ageFromDob(learner.dob);
   const navigate = useNavigate();
-  const { user } = useAuth();
-  async function handleSignOut() {
-    await supabase.auth.signOut();
-    toast.success("Signed out");
-    navigate("/auth");
-  }
+  
   const [interestsOpen, setInterestsOpen] = useState(false);
   const [timingsOpen, setTimingsOpen] = useState(false);
   const [customInterest, setCustomInterest] = useState("");
@@ -182,19 +177,7 @@ const LearnerProfilePage = () => {
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
-          <div className="flex items-center gap-2">
-            <LanguageSwitcher compact />
-            {user && (
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={handleSignOut}
-                className="gap-1.5 h-8 text-destructive hover:text-destructive"
-              >
-                <LogOut className="h-3.5 w-3.5" /> Sign out
-              </Button>
-            )}
-          </div>
+          <LanguageSwitcher compact />
         </div>
 
         {/* Header */}
