@@ -24,8 +24,10 @@ import Admin from "./pages/Admin";
 import Terms from "./pages/Terms";
 import Privacy from "./pages/Privacy";
 import NotFound from "./pages/NotFound.tsx";
+import CheckoutReturn from "./pages/CheckoutReturn";
 import ScrollToTop from "./components/ScrollToTop";
 import { SiteFooter } from "./components/SiteFooter";
+import { PaymentTestModeBanner } from "./components/PaymentTestModeBanner";
 
 const queryClient = new QueryClient();
 
