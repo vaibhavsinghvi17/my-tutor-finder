@@ -70,6 +70,15 @@ const AuthPage = () => {
     return () => sub.subscription.unsubscribe();
   }, [navigate]);
 
+  // Countdown timer for OTP resend
+  useEffect(() => {
+    if (resendTimer <= 0) return;
+    const id = setInterval(() => {
+      setResendTimer((t) => t - 1);
+    }, 1000);
+    return () => clearInterval(id);
+  }, [resendTimer]);
+
   async function sendOtp() {
     const parsed = phoneSchema.safeParse(phone);
     if (!parsed.success) { toast.error(parsed.error.issues[0].message); return; }
