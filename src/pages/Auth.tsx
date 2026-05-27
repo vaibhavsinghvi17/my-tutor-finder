@@ -92,6 +92,7 @@ const AuthPage = () => {
         return;
       }
       setOtpSent(true);
+      setResendTimer(30);
       toast.success(`OTP sent on WhatsApp to ${parsed.data}`);
     } finally {
       setBusy(false);
