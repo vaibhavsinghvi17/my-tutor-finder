@@ -78,7 +78,7 @@ export function ClassChat({
     })();
 
     const channel = supabase
-      .channel(`chat-${listingId}-${learnerId}-${providerId}`)
+      .channel(`chat:${listingId}:${learnerId}:${providerId}`)
       .on(
         "postgres_changes",
         {
