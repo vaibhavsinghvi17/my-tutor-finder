@@ -130,10 +130,10 @@ Deno.serve(async (req) => {
       ...(customerId && { customer: customerId }),
       ...(!isRecurring && {
         payment_intent_data: { description: productDescription, metadata },
-        // UPI works for one-time INR payments. Stripe will auto-include card.
-        ...(stripePrice.currency === "inr" && {
-          payment_method_types: ["card", "upi"],
-        }),
+        // Don't hard-code payment_method_types — Stripe automatically
+        // surfaces every method enabled in the dashboard (card, UPI,
+        // wallets, etc.) based on currency and customer country.
+        // Enable UPI at https://dashboard.stripe.com/settings/payment_methods
       }),
       // Let customers enter promo codes (created in the Stripe dashboard)
       // directly in the embedded checkout form.
