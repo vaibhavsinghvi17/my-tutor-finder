@@ -308,13 +308,7 @@ const LearnerProfilePage = () => {
             </AccordionTrigger>
             <AccordionContent className="px-3 pb-3">
               <div className="grid sm:grid-cols-2 gap-3">
-                <Field label="Username">
-                  <UsernameInput
-                    value={learner.username ?? ""}
-                    onChange={(v) => store.updateLearner({ username: v })}
-                    ownerKey={`learner:${learner.name}`}
-                  />
-                </Field>
+                {/* Username field hidden for launch — mechanism preserved for future release. */}
                 <Field label="Name">
                   <Input value={learner.name} onChange={(e) => store.updateLearner({ name: e.target.value.slice(0, 80) })} className="h-9" />
                 </Field>
