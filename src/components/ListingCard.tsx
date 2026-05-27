@@ -73,7 +73,7 @@ export function ListingCard({ listing, reasons = [] }: Props) {
                       userId: data.user?.id,
                       city: learner.city,
                       dob: learner.dob,
-                      gender: learner.gender,
+                      gender: (learner as any).gender,
                     });
                   } catch {}
                 }
