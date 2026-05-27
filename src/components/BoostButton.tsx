@@ -209,9 +209,4 @@ export function BoostButton({ listing }: Props) {
     </>
   );
 }
-        </DialogContent>
-      </Dialog>
-    </>
-  );
-}
 
