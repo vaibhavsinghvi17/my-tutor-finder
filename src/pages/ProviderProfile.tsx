@@ -31,9 +31,10 @@ import { useCategories } from "@/lib/useCategories";
 import { store, useStore } from "@/lib/store";
 import {
   ArrowLeft, Camera, ChevronDown, Pencil, Plus, X, MapPin, Phone, MessageCircle,
-  Briefcase, BookOpen, Award, Languages as LanguagesIcon, Trash2,
+  Briefcase, BookOpen, Award, Languages as LanguagesIcon, Trash2, Info,
   Instagram, Facebook, Youtube, Twitter, Linkedin, Globe, Share2, LogOut,
 } from "lucide-react";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { supabase } from "@/integrations/supabase/client";
