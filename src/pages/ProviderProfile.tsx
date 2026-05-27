@@ -426,6 +426,14 @@ const ProviderProfilePage = () => {
           </ProviderSection>
         )}
 
+        {/* Interested learners button */}
+        <Button asChild variant="outline" size="sm" className="w-full gap-1.5 rounded-full">
+          <Link to="/provider/interested">
+            <Users className="h-4 w-4" />
+            <span className="text-xs font-medium">Interested learners</span>
+          </Link>
+        </Button>
+
         {/* My classes section — mirrors learner Section style */}
         <ProviderSection
           title="My classes"
