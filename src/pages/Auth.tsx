@@ -91,11 +91,8 @@ const AuthPage = () => {
         toast.error((data as any)?.error || error?.message || "Verification failed");
         return;
       }
-      const { phone: digits, temp_password } = data as { phone: string; temp_password: string };
-      const { error: signInErr } = await supabase.auth.signInWithPassword({
-        phone: digits,
-        password: temp_password,
-      });
+      const { phone: digits, access_token, refresh_token } = data as { phone: string; access_token: string; refresh_token: string };
+      const { error: signInErr } = await supabase.auth.setSession({ access_token, refresh_token });
       if (signInErr) { toast.error(signInErr.message); return; }
       store.updateLearner({ phone, verifiedPhone: phone });
       toast.success("Phone verified — signed in!");
