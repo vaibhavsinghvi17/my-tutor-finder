@@ -271,8 +271,8 @@ const LearnerProfilePage = () => {
           </div>
         )}
 
-        {profileEmpty && (
-          <ProfileCompletion items={completionItems} onSetup={() => openWizardAt(0)} />
+        {(profileEmpty || profileIncomplete) && (
+          <ProfileCompletion items={completionItems} onSetup={() => openWizardAt(firstIncomplete?.step ?? 0)} />
         )}
 
         <ProfileWizard mode="learner" open={wizardOpen} onClose={() => setWizardOpen(false)} initialStep={wizardStep} />
