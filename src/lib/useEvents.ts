@@ -2,7 +2,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Listing, AgeGroup } from "@/lib/types";
 import { ageFromDob } from "@/lib/timeUtils";
 
-export type EventType = "view" | "contact_click" | "request_click" | "message_click";
+export type EventType = "view" | "contact_click" | "request_click" | "message_click" | "save";
 
 function ageToGroup(dob?: string): AgeGroup | undefined {
   if (!dob) return undefined;
