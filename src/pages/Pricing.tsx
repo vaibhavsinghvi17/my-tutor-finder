@@ -1,9 +1,10 @@
+import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { TopBar } from "@/components/TopBar";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Check, Sparkles, ArrowLeft } from "lucide-react";
+import { Check, Sparkles, ArrowLeft, Tag } from "lucide-react";
 import { useSubscription } from "@/lib/useSubscription";
 import { useAuth } from "@/lib/useAuth";
 import { useStripeCheckout } from "@/hooks/useStripeCheckout";
@@ -27,11 +28,15 @@ const GROWTH = [
   "Boost add-on: ₹500 for 7 days — ranks above Starter boosts",
 ];
 
+const MONTHLY_PRICE = 399;
+const YEARLY_PRICE = 4309; // ~10% off vs ₹399 × 12 = ₹4788
+
 export default function Pricing() {
   const navigate = useNavigate();
   const { user, loading: authLoading } = useAuth();
   const { tier, isGrowth, downgrade, loading } = useSubscription();
   const { openCheckout, checkoutElement } = useStripeCheckout();
+  const [billing, setBilling] = useState<"monthly" | "yearly">("yearly");
 
   async function onActivate() {
     if (authLoading) {
@@ -44,11 +49,14 @@ export default function Pricing() {
       return;
     }
     openCheckout({
-      priceId: "growth_monthly",
+      priceId: billing === "yearly" ? "growth_yearly" : "growth_monthly",
       purpose: "subscription",
       returnUrl: `${window.location.origin}/checkout/return?next=/provider&session_id={CHECKOUT_SESSION_ID}`,
     });
   }
+
+  const growthPrice = billing === "yearly" ? `₹${Math.round(YEARLY_PRICE / 12)}` : `₹${MONTHLY_PRICE}`;
+  const growthSuffix = billing === "yearly" ? "/month, billed yearly" : "/month";
 
   return (
     <div className="min-h-screen">
@@ -64,6 +72,23 @@ export default function Pricing() {
           <p className="text-muted-foreground">Learners are always free. Pick a plan that suits your tutoring.</p>
         </div>
 
+        <div className="flex justify-center">
+          <div className="inline-flex items-center rounded-full border bg-muted/40 p-1 text-sm">
+            <button
+              onClick={() => setBilling("monthly")}
+              className={`px-4 py-1.5 rounded-full transition ${billing === "monthly" ? "bg-background shadow-sm font-medium" : "text-muted-foreground"}`}
+            >
+              Monthly
+            </button>
+            <button
+              onClick={() => setBilling("yearly")}
+              className={`px-4 py-1.5 rounded-full transition flex items-center gap-1.5 ${billing === "yearly" ? "bg-background shadow-sm font-medium" : "text-muted-foreground"}`}
+            >
+              Yearly
+              <Badge className="bg-primary text-primary-foreground text-[10px] h-4 px-1.5">Save 10%</Badge>
+            </button>
+          </div>
+        </div>
 
         <div className="grid gap-4 sm:grid-cols-2">
           <PlanCard
@@ -78,16 +103,25 @@ export default function Pricing() {
           />
           <PlanCard
             name="Growth"
-            price="₹399"
-            priceSuffix="/month"
+            price={growthPrice}
+            priceSuffix={growthSuffix}
             tagline="For tutors growing their classes"
             features={GROWTH}
-            cta={isGrowth ? "Active ✓" : authLoading ? "Loading…" : "Activate Growth"}
+            cta={isGrowth ? "Active ✓" : authLoading ? "Loading…" : billing === "yearly" ? "Activate Growth – Yearly" : "Activate Growth – Monthly"}
             ctaDisabled={isGrowth || loading || authLoading}
             onCta={onActivate}
             highlight
+            note={billing === "yearly" ? `₹${YEARLY_PRICE.toLocaleString("en-IN")} billed once a year · save ~₹${(MONTHLY_PRICE * 12 - YEARLY_PRICE).toLocaleString("en-IN")}` : undefined}
           />
         </div>
+
+        <Card className="p-4 flex items-start gap-3 bg-muted/30 border-dashed">
+          <Tag className="h-4 w-4 text-primary mt-0.5 shrink-0" />
+          <div className="text-sm">
+            <div className="font-medium">Got a coupon code?</div>
+            <p className="text-xs text-muted-foreground">Enter it on the checkout screen in the “Add promotion code” field for an additional discount.</p>
+          </div>
+        </Card>
 
         <Card className="p-5 bg-gradient-hero border-primary/20 space-y-2">
           <div className="flex items-center gap-2 flex-wrap">
