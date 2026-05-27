@@ -19,6 +19,7 @@ import ListingForm from "./pages/ListingForm";
 import Auth from "./pages/Auth";
 import Pricing from "./pages/Pricing";
 import Insights from "./pages/Insights";
+import InterestedLearners from "./pages/InterestedLearners";
 import Admin from "./pages/Admin";
 import Terms from "./pages/Terms";
 import Privacy from "./pages/Privacy";
