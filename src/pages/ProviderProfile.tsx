@@ -74,6 +74,17 @@ const SOCIAL_FIELDS: { key: keyof SocialLinks; icon: React.ComponentType<{ class
   { key: "website", icon: Globe, label: "Website", placeholder: "yoursite.com" },
 ];
 
+function socialDisplay(key: keyof SocialLinks, raw: string): string {
+  const v = (raw || "").trim();
+  if (!v) return "";
+  if (key === "whatsapp") return v;
+  let s = v.replace(/^https?:\/\//i, "").replace(/^www\./i, "").replace(/\/$/, "");
+  // strip known domains
+  s = s.replace(/^(instagram\.com|facebook\.com|youtube\.com|youtu\.be|twitter\.com|x\.com|linkedin\.com\/(in|company))\//i, "");
+  const seg = s.split("/").filter(Boolean).pop() || s;
+  return key === "website" ? s : (seg.startsWith("@") ? seg : "@" + seg.replace(/^@/, ""));
+}
+
 const ProviderProfilePage = () => {
   const provider = useStore((s) => s.provider);
   const listings = useStore((s) => s.listings);
@@ -337,9 +348,6 @@ const ProviderProfilePage = () => {
             <DropdownMenuItem onClick={() => setOpen("contact")}>
               <Phone className="h-4 w-4 mr-2" /> Contact
             </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => setOpen("socials")}>
-              <Share2 className="h-4 w-4 mr-2" /> Social links
-            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
 
@@ -372,6 +380,41 @@ const ProviderProfilePage = () => {
               </div>
             </div>
           </div>
+        </div>
+
+        {/* Social links — right after contact */}
+        <div className="rounded-xl border border-border/60 bg-card/40 backdrop-blur-sm p-3">
+          <div className="flex items-center justify-between mb-2">
+            <div className="text-[11px] uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
+              <Share2 className="h-3.5 w-3.5" /> Social links
+            </div>
+            <Button variant="ghost" size="sm" className="h-7 px-2 gap-1 text-xs" onClick={() => setOpen("socials")}>
+              <Plus className="h-3.5 w-3.5" /> {SOCIAL_FIELDS.some((f) => provider.socials?.[f.key]) ? "Add more" : "Add"}
+            </Button>
+          </div>
+          {SOCIAL_FIELDS.some((f) => provider.socials?.[f.key]) ? (
+            <div className="flex flex-wrap gap-1.5">
+              {SOCIAL_FIELDS.filter((f) => provider.socials?.[f.key]).map(({ key, icon: Icon, label }) => {
+                const raw = provider.socials?.[key] ?? "";
+                const handle = socialDisplay(key, raw);
+                return (
+                  <button
+                    key={key}
+                    onClick={() => setOpen("socials")}
+                    title={`Edit ${label}`}
+                    className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs bg-primary/10 text-primary border border-primary/20 hover:bg-primary/15 max-w-full"
+                  >
+                    <Icon className="h-3.5 w-3.5 shrink-0" />
+                    <span className="truncate max-w-[160px]">{handle}</span>
+                  </button>
+                );
+              })}
+            </div>
+          ) : (
+            <button onClick={() => setOpen("socials")} className="text-sm text-primary flex items-center gap-1 hover:underline">
+              <Plus className="h-3.5 w-3.5" /> Add Instagram, YouTube, website…
+            </button>
+          )}
         </div>
 
         {/* Bio preview */}
@@ -483,12 +526,7 @@ const ProviderProfilePage = () => {
           )}
         </ProviderSection>
 
-        {/* Social preview */}
-        {provider.socials && Object.values(provider.socials).some(Boolean) && (
-          <ProviderSection title="Social links" icon={Share2} count={Object.values(provider.socials).filter(Boolean).length}>
-            <SocialLinksRow socials={provider.socials} size="sm" />
-          </ProviderSection>
-        )}
+
 
         <SubscriptionPanel />
 
