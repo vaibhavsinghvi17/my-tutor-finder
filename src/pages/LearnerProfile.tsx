@@ -31,7 +31,7 @@ import { VerifyContact } from "@/components/VerifyContact";
 import { PinCodeInput } from "@/components/PinCodeInput";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { supabase } from "@/integrations/supabase/client";
-import { useAuth } from "@/lib/useAuth";
+
 import { ProfileWizard } from "@/components/ProfileWizard";
 import { ProfileCompletion } from "@/components/ProfileCompletion";
 
@@ -58,7 +58,7 @@ const LearnerProfilePage = () => {
   const { names: categoryNames, addCategory } = useCategories();
   const age = ageFromDob(learner.dob);
   const navigate = useNavigate();
-  const { user } = useAuth();
+  
   const [interestsOpen, setInterestsOpen] = useState(false);
   const [timingsOpen, setTimingsOpen] = useState(false);
   const [customInterest, setCustomInterest] = useState("");
