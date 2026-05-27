@@ -49,12 +49,16 @@ function StepHeader({
   );
 }
 
-export function ProfileWizard({ mode, open, onClose }: Props) {
+export function ProfileWizard({ mode, open, onClose, initialStep }: Props) {
   const learner = useStore((s) => s.learner);
   const provider = useStore((s) => s.provider);
   const { addCategory } = useCategories();
   const { user } = useAuth();
-  const [step, setStep] = useState(0);
+  const [step, setStep] = useState(initialStep ?? 0);
+
+  useEffect(() => {
+    if (open) setStep(initialStep ?? 0);
+  }, [open, initialStep]);
 
   const isLearner = mode === "learner";
   const steps = isLearner
