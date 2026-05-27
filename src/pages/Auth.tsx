@@ -137,7 +137,7 @@ const AuthPage = () => {
         </div>
 
         <div className="text-center space-y-1">
-          <h2 className="text-base font-semibold">Login via WhatsApp OTP</h2>
+          <h2 className="text-base font-semibold">Login via OTP</h2>
           <p className="text-xs text-muted-foreground">Enter your mobile number to receive a one-time code on WhatsApp.</p>
         </div>
 
