@@ -155,7 +155,7 @@ export function ProfileWizard({ mode, open, onClose }: Props) {
         </div>
 
         {/* Body */}
-        <div className="p-5 max-h-[60vh] overflow-y-auto space-y-4">
+        <div className="p-5 flex-1 min-h-0 overflow-y-auto space-y-4">
           {step === 0 && (
             <div className="space-y-4">
               <StepHeader
