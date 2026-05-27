@@ -233,9 +233,7 @@ const LearnerProfilePage = () => {
               })()}
             </div>
             <p className="text-xs text-muted-foreground truncate">
-              {learner.username && <span className="text-primary">@{learner.username}</span>}
-              {learner.username && (age !== null || learner.occupation) && " • "}
-              {age !== null ? `Age ${age}` : (!learner.username ? "Add your details" : "")}
+              {age !== null ? `Age ${age}` : "Add your details"}
               {learner.occupation && ` • ${learner.occupation}`}
             </p>
           </div>
