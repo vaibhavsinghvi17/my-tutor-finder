@@ -49,8 +49,9 @@ export default function Pricing() {
       return;
     }
     openCheckout({
-      priceId: billing === "yearly" ? "growth_yearly" : "growth_monthly",
-      purpose: "subscription",
+      priceId: billing === "yearly" ? "growth_yearly_oneoff" : "growth_monthly_oneoff",
+      purpose: "growth",
+      durationDays: billing === "yearly" ? 365 : 30,
       returnUrl: `${window.location.origin}/checkout/return?next=/provider&session_id={CHECKOUT_SESSION_ID}`,
     });
   }
