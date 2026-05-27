@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -22,6 +22,7 @@ interface Props {
   mode: "learner" | "provider";
   open: boolean;
   onClose: () => void;
+  initialStep?: number;
 }
 
 const Req = () => <span className="text-destructive ml-0.5">*</span>;
@@ -48,12 +49,16 @@ function StepHeader({
   );
 }
 
-export function ProfileWizard({ mode, open, onClose }: Props) {
+export function ProfileWizard({ mode, open, onClose, initialStep }: Props) {
   const learner = useStore((s) => s.learner);
   const provider = useStore((s) => s.provider);
   const { addCategory } = useCategories();
   const { user } = useAuth();
-  const [step, setStep] = useState(0);
+  const [step, setStep] = useState(initialStep ?? 0);
+
+  useEffect(() => {
+    if (open) setStep(initialStep ?? 0);
+  }, [open, initialStep]);
 
   const isLearner = mode === "learner";
   const steps = isLearner

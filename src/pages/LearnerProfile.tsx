@@ -21,7 +21,7 @@ import { ageFromDob, blockSummary } from "@/lib/timeUtils";
 import {
   ArrowLeft, UserCircle2, MapPin, Clock, Pencil, Plus, Camera,
   ChevronDown, Bookmark, Hourglass, Star, GraduationCap, Search, Locate, LogOut,
-  ShieldCheck, ShieldAlert, Phone,
+  ShieldCheck, ShieldAlert, Phone, Sparkles,
 } from "lucide-react";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
@@ -68,18 +68,25 @@ const LearnerProfilePage = () => {
   const [timingsOpen, setTimingsOpen] = useState(false);
   const [customInterest, setCustomInterest] = useState("");
   const [wizardOpen, setWizardOpen] = useState(false);
+  const [wizardStep, setWizardStep] = useState<number | undefined>(undefined);
   const fileRef = useRef<HTMLInputElement>(null);
 
   const phoneVerified = !!learner.phone && learner.verifiedPhone === learner.phone;
   const completionItems = [
-    { label: "Name", done: !!learner.name?.trim() },
-    { label: "Date of birth", done: !!learner.dob?.trim() },
-    { label: "City", done: !!learner.city?.trim() },
-    { label: "Pin code", done: !!learner.pinCode?.trim() },
-    { label: "Interests", done: (learner.interests?.length ?? 0) > 0 },
-    { label: "Phone verified", done: phoneVerified },
+    { label: "Name", done: !!learner.name?.trim(), step: 0 },
+    { label: "Date of birth", done: !!learner.dob?.trim(), step: 0 },
+    { label: "City", done: !!learner.city?.trim(), step: 1 },
+    { label: "Pin code", done: !!learner.pinCode?.trim(), step: 1 },
+    { label: "Interests", done: (learner.interests?.length ?? 0) > 0, step: 2 },
+    { label: "Phone verified", done: phoneVerified, step: 4 },
   ];
   const profileEmpty = !learner.name?.trim();
+  const firstIncomplete = completionItems.find((i) => !i.done);
+  const profileIncomplete = !profileEmpty && !!firstIncomplete;
+  function openWizardAt(step?: number) {
+    setWizardStep(step);
+    setWizardOpen(true);
+  }
 
   useEffect(() => {
     if (profileEmpty && !sessionStorage.getItem("learnerWizardSeen")) {
@@ -236,6 +243,15 @@ const LearnerProfilePage = () => {
               {age !== null ? `Age ${age}` : "Add your details"}
               {learner.occupation && ` • ${learner.occupation}`}
             </p>
+            {profileIncomplete && (
+              <button
+                onClick={() => openWizardAt(firstIncomplete?.step)}
+                className="mt-1 inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-medium bg-primary/10 text-primary border border-primary/30 hover:bg-primary/20 transition"
+                title={`Complete: ${firstIncomplete?.label}`}
+              >
+                <Sparkles className="h-3 w-3" /> Profile incomplete · Quick complete
+              </button>
+            )}
           </div>
         </div>
 
@@ -256,10 +272,10 @@ const LearnerProfilePage = () => {
         )}
 
         {profileEmpty && (
-          <ProfileCompletion items={completionItems} onSetup={() => setWizardOpen(true)} />
+          <ProfileCompletion items={completionItems} onSetup={() => openWizardAt(0)} />
         )}
 
-        <ProfileWizard mode="learner" open={wizardOpen} onClose={() => setWizardOpen(false)} />
+        <ProfileWizard mode="learner" open={wizardOpen} onClose={() => setWizardOpen(false)} initialStep={wizardStep} />
 
         {/* Interests directly under name */}
         <div className="rounded-xl border border-border/60 bg-card/40 backdrop-blur-sm p-3">

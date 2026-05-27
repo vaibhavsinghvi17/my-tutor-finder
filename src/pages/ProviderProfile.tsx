@@ -130,18 +130,25 @@ const ProviderProfilePage = () => {
   const [catsOpen, setCatsOpen] = useState(false);
   const [newCat, setNewCat] = useState("");
   const [wizardOpen, setWizardOpen] = useState(false);
+  const [wizardStep, setWizardStep] = useState<number | undefined>(undefined);
   const [newClassOpen, setNewClassOpen] = useState(false);
 
   const phoneVerified = !!provider.phone && provider.verifiedPhone === provider.phone;
   const completionItems = [
-    { label: (provider.providerKind ?? "business") === "personal" ? "Your name" : "Business name", done: !!provider.businessName?.trim() },
-    { label: "City", done: !!provider.city?.trim() },
-    { label: "Pin code", done: !!provider.pinCode?.trim() },
-    { label: "Address", done: !!provider.address?.trim() },
-    { label: "Categories", done: (provider.categories?.length ?? 0) > 0 },
-    { label: "Phone verified", done: phoneVerified },
+    { label: (provider.providerKind ?? "business") === "personal" ? "Your name" : "Business name", done: !!provider.businessName?.trim(), step: 0 },
+    { label: "City", done: !!provider.city?.trim(), step: 1 },
+    { label: "Pin code", done: !!provider.pinCode?.trim(), step: 1 },
+    { label: "Address", done: !!provider.address?.trim(), step: 1 },
+    { label: "Categories", done: (provider.categories?.length ?? 0) > 0, step: 2 },
+    { label: "Phone verified", done: phoneVerified, step: 3 },
   ];
   const profileEmpty = !provider.businessName?.trim();
+  const firstIncomplete = completionItems.find((i) => !i.done);
+  const profileIncomplete = !profileEmpty && !!firstIncomplete;
+  function openWizardAt(step?: number) {
+    setWizardStep(step);
+    setWizardOpen(true);
+  }
 
   useEffect(() => {
     if (profileEmpty && !sessionStorage.getItem("providerWizardSeen")) {
@@ -251,14 +258,23 @@ const ProviderProfilePage = () => {
               <Sparkles className="h-3 w-3" />
               {isGrowth ? "Growth plan" : "Starter plan"}
             </Link>
+            {profileIncomplete && (
+              <button
+                onClick={() => openWizardAt(firstIncomplete?.step)}
+                className="mt-1.5 ml-1.5 inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-medium bg-primary/10 text-primary border border-primary/30 hover:bg-primary/20 transition"
+                title={`Complete: ${firstIncomplete?.label}`}
+              >
+                <Sparkles className="h-3 w-3" /> Profile incomplete · Quick complete
+              </button>
+            )}
           </div>
         </div>
 
         {profileEmpty && (
-          <ProfileCompletion items={completionItems} onSetup={() => setWizardOpen(true)} />
+          <ProfileCompletion items={completionItems} onSetup={() => openWizardAt(0)} />
         )}
 
-        <ProfileWizard mode="provider" open={wizardOpen} onClose={() => setWizardOpen(false)} />
+        <ProfileWizard mode="provider" open={wizardOpen} onClose={() => setWizardOpen(false)} initialStep={wizardStep} />
 
 
         {(!provider.city || !provider.pinCode) && (
