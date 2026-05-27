@@ -275,7 +275,7 @@ const LearnerProfilePage = () => {
           <ProfileCompletion items={completionItems} onSetup={() => setWizardOpen(true)} />
         )}
 
-        <ProfileWizard mode="learner" open={wizardOpen} onClose={() => setWizardOpen(false)} />
+        <ProfileWizard mode="learner" open={wizardOpen} onClose={() => setWizardOpen(false)} initialStep={wizardStep} />
 
         {/* Interests directly under name */}
         <div className="rounded-xl border border-border/60 bg-card/40 backdrop-blur-sm p-3">
