@@ -7,10 +7,11 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Rocket } from "lucide-react";
 import { toast } from "sonner";
-import { createBoost, useActiveBoosts, isBoosted } from "@/lib/useBoosts";
+import { useActiveBoosts, isBoosted } from "@/lib/useBoosts";
 import { useSubscription } from "@/lib/useSubscription";
 import { useAuth } from "@/lib/useAuth";
-import { Listing, AGE_GROUPS } from "@/lib/types";
+import { useStripeCheckout } from "@/hooks/useStripeCheckout";
+import { Listing } from "@/lib/types";
 import { LocationTargeter, TargetEntry, targetsToString } from "@/components/LocationTargeter";
 
 interface Props {
@@ -22,9 +23,9 @@ const ANY = "__any__";
 export function BoostButton({ listing }: Props) {
   const { user } = useAuth();
   const { isGrowth } = useSubscription();
-  const { boosts, refresh } = useActiveBoosts();
+  const { boosts } = useActiveBoosts();
+  const { openCheckout, checkoutElement } = useStripeCheckout();
   const [open, setOpen] = useState(false);
-  const [busy, setBusy] = useState(false);
   const [targets, setTargets] = useState<TargetEntry[]>(
     listing.city ? [{ kind: "city", value: listing.city }] : []
   );
@@ -33,42 +34,29 @@ export function BoostButton({ listing }: Props) {
   const [gender, setGender] = useState<string>(ANY);
   const boosted = isBoosted(listing.id, boosts);
 
-  const DURATION_OPTIONS: { days: number; label: string; price: number }[] = [
-    { days: 3, label: "3 days", price: 500 },
-    { days: 5, label: "5 days", price: 900 },
-    { days: 7, label: "7 days", price: 1500 },
-    { days: 15, label: "15 days", price: 2900 },
-    { days: 30, label: "1 month", price: 5500 },
-  ];
-  const [durationDays, setDurationDays] = useState<number>(isGrowth ? 7 : 3);
-  const selected = DURATION_OPTIONS.find((d) => d.days === durationDays) ?? DURATION_OPTIONS[0];
-  const price = selected.price;
+  // Boost tier follows the tutor's plan: Starter → 3 days, Growth → 7 days.
+  const durationDays = isGrowth ? 7 : 3;
+  const priceId = isGrowth ? "boost_growth_7d" : "boost_starter_3d";
+  const price = 500;
+  const durationLabel = isGrowth ? "7 days" : "3 days";
 
-  async function handleBoost() {
+  function handleBoost() {
     if (!user) {
       toast.info("Please sign in to boost a class");
       return;
     }
-    setBusy(true);
-    try {
-      // Razorpay test bypass — pretend payment was made and create the boost.
-      await createBoost({
-        listingId: listing.id,
-        providerUserId: user.id,
-        durationDays,
-        city: targetsToString(targets) || null,
-        category: listing.category,
-        ageGroup: `${Math.min(minAge, maxAge)}-${Math.max(minAge, maxAge)}`,
-        gender: gender === ANY ? null : gender,
-      });
-      await refresh();
-      toast.success(`Class boosted for ${selected.label} 🚀`);
-      setOpen(false);
-    } catch (e: any) {
-      toast.error(e.message ?? "Could not boost");
-    } finally {
-      setBusy(false);
-    }
+    setOpen(false);
+    openCheckout({
+      priceId,
+      purpose: "boost",
+      listingId: listing.id,
+      durationDays,
+      city: targetsToString(targets) || undefined,
+      category: listing.category || undefined,
+      ageGroup: `${Math.min(minAge, maxAge)}-${Math.max(minAge, maxAge)}`,
+      gender: gender === ANY ? undefined : gender,
+      returnUrl: `${window.location.origin}/checkout/return?next=/provider&session_id={CHECKOUT_SESSION_ID}`,
+    });
   }
 
   if (boosted) {
@@ -191,20 +179,6 @@ export function BoostButton({ listing }: Props) {
               </Select>
             </div>
 
-            <div className="space-y-1.5">
-              <Label className="text-xs">Boost duration</Label>
-              <Select value={String(durationDays)} onValueChange={(v) => setDurationDays(Number(v))}>
-                <SelectTrigger><SelectValue /></SelectTrigger>
-                <SelectContent>
-                  {DURATION_OPTIONS.map((d) => (
-                    <SelectItem key={d.days} value={String(d.days)}>
-                      {d.label} — ₹{d.price.toLocaleString("en-IN")}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-
             <div className="rounded-lg border p-3 bg-muted/30 space-y-1 text-sm">
               <div className="flex justify-between">
                 <span>Plan</span>
@@ -212,28 +186,26 @@ export function BoostButton({ listing }: Props) {
               </div>
               <div className="flex justify-between">
                 <span>Duration</span>
-                <span className="font-medium">{selected.label}</span>
+                <span className="font-medium">{durationLabel}</span>
               </div>
               <div className="flex justify-between"><span>Price</span><span className="font-bold">₹{price.toLocaleString("en-IN")}</span></div>
-              {isGrowth && (
+              {!isGrowth && (
                 <p className="text-[11px] text-muted-foreground pt-1 leading-snug">
-                  Growth boosts rank above Starter-plan boosts in Discover for the same duration.
+                  Upgrade to Growth for a 7-day boost at the same price.
                 </p>
               )}
-              <p className="text-[11px] text-muted-foreground italic pt-0.5">
-                Razorpay test mode — payment is bypassed for now.
-              </p>
             </div>
           </div>
 
           <DialogFooter>
-            <Button variant="outline" onClick={() => setOpen(false)} disabled={busy}>Cancel</Button>
-            <Button onClick={handleBoost} disabled={busy} className="gap-1.5">
-              <Rocket className="h-4 w-4" /> {busy ? "Boosting..." : `Pay ₹${price.toLocaleString("en-IN")} & Boost`}
+            <Button variant="outline" onClick={() => setOpen(false)}>Cancel</Button>
+            <Button onClick={handleBoost} className="gap-1.5">
+              <Rocket className="h-4 w-4" /> Pay ₹{price.toLocaleString("en-IN")} & Boost
             </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
+      {checkoutElement}
     </>
   );
 }
