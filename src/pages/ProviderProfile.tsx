@@ -136,6 +136,10 @@ const ProviderProfilePage = () => {
   const phoneVerified = !!provider.phone && provider.verifiedPhone === provider.phone;
   const completionItems = [
     { label: (provider.providerKind ?? "business") === "personal" ? "Your name" : "Business name", done: !!provider.businessName?.trim(), step: 0 },
+    { label: "Experience", done: typeof provider.yearsExperience === "number", step: 0 },
+    { label: "Teaching languages", done: (provider.languages?.length ?? 0) > 0, step: 0 },
+    { label: "Email", done: !!provider.email?.trim(), step: 0 },
+    { label: "WhatsApp", done: !!provider.contactInfo?.whatsapp?.trim(), step: 0 },
     { label: "City", done: !!provider.city?.trim(), step: 1 },
     { label: "Pin code", done: !!provider.pinCode?.trim(), step: 1 },
     { label: "Address", done: !!provider.address?.trim(), step: 1 },
