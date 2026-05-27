@@ -429,14 +429,29 @@ const ProviderProfilePage = () => {
           title="My classes"
           icon={BookOpen}
           count={listings.length}
-          action={
-            <Button asChild size="sm" className="h-7 px-2 gap-1">
-              <Link to="/provider/listing/new"><Plus className="h-3.5 w-3.5" /> Add</Link>
-            </Button>
-          }
         >
+          <Button
+            onClick={() => setNewClassOpen(true)}
+            className="w-full gap-1.5 mb-3"
+            size="sm"
+          >
+            <Plus className="h-4 w-4" /> Create a new class
+          </Button>
           {listings.length === 0 ? (
-            <Empty text="No classes yet — add your first one." />
+            <div className="rounded-lg border border-dashed bg-card/40 p-6 text-center space-y-2">
+              <div className="text-2xl">🎓✨</div>
+              <div className="text-sm font-semibold text-foreground">Your students are waiting!</div>
+              <div className="text-xs text-muted-foreground">
+                Create your first class and let learners discover you.
+              </div>
+              <Button
+                onClick={() => setNewClassOpen(true)}
+                size="sm"
+                className="mt-2 gap-1.5"
+              >
+                <Plus className="h-3.5 w-3.5" /> Create a class now
+              </Button>
+            </div>
           ) : (
             <div className="space-y-2">
               {listings.map((l) => {
@@ -525,6 +540,19 @@ const ProviderProfilePage = () => {
             </div>
           )}
         </ProviderSection>
+
+        {/* New class dialog */}
+        <Dialog open={newClassOpen} onOpenChange={setNewClassOpen}>
+          <DialogContent className="max-w-3xl p-0 gap-0 max-h-[calc(100dvh-2rem)] flex flex-col">
+            <DialogHeader className="px-5 py-4 border-b shrink-0">
+              <DialogTitle>New class</DialogTitle>
+            </DialogHeader>
+            <div className="overflow-y-auto p-5 flex-1">
+              <ListingForm embedded onDone={() => setNewClassOpen(false)} />
+            </div>
+          </DialogContent>
+        </Dialog>
+
 
 
 
