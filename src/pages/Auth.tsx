@@ -49,12 +49,15 @@ const AuthPage = () => {
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => {
       if (data.session) {
+        store.setAuthUser(data.session.user.id);
         navigate(getDashboardPath(), { replace: true });
       } else {
+        store.setAuthUser(null);
         setChecking(false);
       }
     });
     const { data: sub } = supabase.auth.onAuthStateChange((_event, session) => {
+      store.setAuthUser(session?.user?.id ?? null);
       if (session) navigate(getDashboardPath(), { replace: true });
     });
     return () => sub.subscription.unsubscribe();
