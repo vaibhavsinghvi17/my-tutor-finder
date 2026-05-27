@@ -42,7 +42,7 @@ import { SubscriptionPanel } from "@/components/SubscriptionPanel";
 import { useSubscription } from "@/lib/useSubscription";
 import { ProfileWizard } from "@/components/ProfileWizard";
 import { ProfileCompletion } from "@/components/ProfileCompletion";
-import { Sparkles, Eye, MousePointerClick, TrendingUp, Rocket, Lightbulb } from "lucide-react";
+import { Sparkles, Eye, MousePointerClick, TrendingUp, Rocket, Lightbulb, Users } from "lucide-react";
 import { useProviderListingInsights, suggestForListing } from "@/lib/useListingInsights";
 import { useActiveBoosts, isBoosted as boostIsActive, createBoost } from "@/lib/useBoosts";
 import ListingForm from "@/pages/ListingForm";
