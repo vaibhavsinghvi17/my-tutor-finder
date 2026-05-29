@@ -10,7 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
-import { Shield, Users, Rocket, Tag, Sparkles, Search, Gift, XCircle, Trash2, CheckCircle2, Flag, Bell, Loader2, Send } from "lucide-react";
+import { Shield, Users, Rocket, Tag, Sparkles, Search, Gift, XCircle, Trash2, CheckCircle2, Flag, Bell, Loader2, Send, Ban } from "lucide-react";
 import { NotificationsAdminTab } from "@/components/NotificationsAdminTab";
 import { supabase } from "@/integrations/supabase/client";
 import { useIsAdmin } from "@/lib/useIsAdmin";
@@ -24,6 +24,8 @@ interface ProfileRow {
   subscription_expires_at: string | null;
   created_at: string;
   avatar_url: string | null;
+  banned_at: string | null;
+  banned_reason: string | null;
 }
 interface BoostRow {
   id: string;
