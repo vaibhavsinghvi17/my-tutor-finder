@@ -130,9 +130,7 @@ const AuthPage = () => {
     <div className="min-h-screen grid place-items-center px-4 bg-gradient-to-br from-background to-muted/40">
       <Card className="w-full max-w-md p-6 space-y-5">
         <div className="flex items-center gap-2 justify-center">
-          <span className="h-9 w-9 rounded-lg bg-gradient-primary grid place-items-center text-primary-foreground">
-            <Sparkles className="h-5 w-5" />
-          </span>
+          <img src="/logo.png" alt="Scholarr" className="h-9 w-auto" />
           <h1 className="text-xl font-bold">Scholarr</h1>
         </div>
 

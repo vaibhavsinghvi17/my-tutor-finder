@@ -68,9 +68,9 @@ const Onboarding = () => {
           <div className="absolute -bottom-40 -right-40 w-[420px] h-[420px] rounded-full bg-secondary/15 blur-3xl animate-blob [animation-delay:-6s]" />
         </div>
         <div className="flex flex-col items-center gap-4 animate-scale-in">
-          <span className="relative h-20 w-20 rounded-2xl bg-gradient-primary grid place-items-center text-primary-foreground shadow-float animate-float">
-            <span className="absolute inset-0 rounded-2xl bg-primary/40 blur-xl animate-pulse -z-10" />
-            <Sparkles className="h-9 w-9" />
+          <span className="relative h-20 w-20 grid place-items-center animate-float">
+            <span className="absolute inset-0 rounded-2xl bg-primary/20 blur-xl animate-pulse -z-10" />
+            <img src="/logo.png" alt="Scholarr" className="h-16 w-auto" />
           </span>
           <div className="text-2xl font-bold tracking-tight animate-fade-in [animation-delay:300ms] opacity-0 [animation-fill-mode:forwards]">
             Scholarr
@@ -94,9 +94,7 @@ const Onboarding = () => {
 
       <main className="flex-1 container py-8 flex flex-col items-center justify-center text-center max-w-3xl mx-auto w-full">
         <div className="flex flex-col items-center gap-2 mb-6 animate-scale-in">
-          <span className="h-12 w-12 rounded-xl bg-gradient-primary grid place-items-center text-primary-foreground shadow-elegant animate-float">
-            <Sparkles className="h-5 w-5" />
-          </span>
+          <img src="/logo.png" alt="Scholarr" className="h-12 w-auto animate-float" />
           <span className="font-bold text-lg">Scholarr</span>
         </div>
 
