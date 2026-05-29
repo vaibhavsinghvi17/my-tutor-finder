@@ -343,6 +343,26 @@ function UserEditDialog({ row, onClose, onSaved }: { row: ProfileRow; onClose: (
               {isAdminUser ? "Remove admin" : "Make admin"}
             </Button>
           </div>
+
+          <div className={`rounded-lg border p-3 space-y-2 ${banned ? "border-destructive/40 bg-destructive/5" : "bg-muted/30"}`}>
+            <div className="flex items-center justify-between gap-2">
+              <div>
+                <div className="text-xs font-semibold flex items-center gap-1.5"><Ban className="h-3.5 w-3.5" />Ban status</div>
+                <div className="text-[11px] text-muted-foreground">{banned ? "User is banned and cannot log in" : "User is active"}</div>
+              </div>
+              <Button size="sm" variant={banned ? "outline" : "destructive"} onClick={toggleBan}>
+                {banned ? "Unban user" : "Ban user"}
+              </Button>
+            </div>
+            {!banned && (
+              <Input
+                value={banReason}
+                onChange={(e) => setBanReason(e.target.value)}
+                placeholder="Reason (optional, shown to user)"
+                className="text-xs h-8"
+              />
+            )}
+          </div>
         </div>
         <DialogFooter>
           <Button variant="outline" onClick={onClose} disabled={busy}>Close</Button>
