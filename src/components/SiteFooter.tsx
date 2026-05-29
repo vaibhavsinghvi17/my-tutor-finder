@@ -8,13 +8,13 @@ export function SiteFooter() {
   return (
     <footer className="border-t bg-muted/30 mt-8">
       <div className="container py-8 flex flex-col items-center gap-5">
-        <div className="text-center">
+        <div className="hidden lg:block text-center">
           <h3 className="text-lg font-semibold">Scholarr on the go 🎓</h3>
           <p className="text-sm text-muted-foreground mt-1">
             Take your classes anywhere — download the app for the best experience.
           </p>
         </div>
-        <div className="flex flex-col sm:flex-row items-center gap-3">
+        <div className="hidden lg:flex flex-col sm:flex-row items-center gap-3">
           <a
             href={PLAY_STORE_URL}
             target="_blank"
