@@ -1,0 +1,1 @@
+REVOKE EXECUTE ON FUNCTION public.notify_provider_on_save() FROM anon, authenticated, PUBLIC;
