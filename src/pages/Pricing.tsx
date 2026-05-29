@@ -73,23 +73,8 @@ export default function Pricing() {
           <p className="text-muted-foreground">Learners are always free. One-time payment — no auto-debit. Pay with UPI or card.</p>
         </div>
 
-        <div className="flex justify-center">
-          <div className="inline-flex items-center rounded-full border bg-muted/40 p-1 text-sm">
-            <button
-              onClick={() => setBilling("monthly")}
-              className={`px-4 py-1.5 rounded-full transition ${billing === "monthly" ? "bg-background shadow-sm font-medium" : "text-muted-foreground"}`}
-            >
-              Monthly
-            </button>
-            <button
-              onClick={() => setBilling("yearly")}
-              className={`px-4 py-1.5 rounded-full transition flex items-center gap-1.5 ${billing === "yearly" ? "bg-background shadow-sm font-medium" : "text-muted-foreground"}`}
-            >
-              Yearly
-              <Badge className="bg-primary text-primary-foreground text-[10px] h-4 px-1.5">Save 10%</Badge>
-            </button>
-          </div>
-        </div>
+
+
 
         <div className="grid gap-4 sm:grid-cols-2">
           <PlanCard
@@ -113,6 +98,23 @@ export default function Pricing() {
             onCta={onActivate}
             highlight
             note={billing === "yearly" ? `₹${YEARLY_PRICE.toLocaleString("en-IN")} billed once a year · save ~₹${(MONTHLY_PRICE * 12 - YEARLY_PRICE).toLocaleString("en-IN")}` : undefined}
+            billingToggle={
+              <div className="inline-flex items-center rounded-full border bg-muted/40 p-1 text-xs w-full">
+                <button
+                  onClick={() => setBilling("monthly")}
+                  className={`flex-1 px-3 py-1.5 rounded-full transition ${billing === "monthly" ? "bg-background shadow-sm font-medium" : "text-muted-foreground"}`}
+                >
+                  Monthly
+                </button>
+                <button
+                  onClick={() => setBilling("yearly")}
+                  className={`flex-1 px-3 py-1.5 rounded-full transition flex items-center justify-center gap-1.5 ${billing === "yearly" ? "bg-background shadow-sm font-medium" : "text-muted-foreground"}`}
+                >
+                  Yearly
+                  <Badge className="bg-primary text-primary-foreground text-[9px] h-4 px-1.5">Save 10%</Badge>
+                </button>
+              </div>
+            }
           />
         </div>
 
@@ -155,11 +157,11 @@ export default function Pricing() {
 }
 
 function PlanCard({
-  name, price, priceSuffix, tagline, features, cta, ctaDisabled, onCta, highlight, note,
+  name, price, priceSuffix, tagline, features, cta, ctaDisabled, onCta, highlight, note, billingToggle,
 }: {
   name: string; price: string; priceSuffix?: string; tagline: string;
   features: string[]; cta: string; ctaDisabled?: boolean; onCta: () => void; highlight: boolean;
-  note?: string;
+  note?: string; billingToggle?: React.ReactNode;
 }) {
   return (
     <Card className={`p-6 space-y-4 ${highlight ? "border-primary border-2 shadow-elegant" : ""}`}>
@@ -170,6 +172,7 @@ function PlanCard({
         </div>
         <p className="text-xs text-muted-foreground">{tagline}</p>
       </div>
+      {billingToggle}
       <div className="flex items-baseline gap-1">
         <span className="text-3xl font-bold">{price}</span>
         {priceSuffix && <span className="text-sm text-muted-foreground">{priceSuffix}</span>}
