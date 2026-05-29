@@ -319,13 +319,11 @@ const Discover = () => {
               className="pl-9"
             />
           </div>
-          <Select value={category} onValueChange={(v) => setCategory(v as any)}>
-            <SelectTrigger><SelectValue placeholder="Category" /></SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All categories</SelectItem>
-              {allCategories.map((c) => <SelectItem key={c} value={c}>{c}</SelectItem>)}
-            </SelectContent>
-          </Select>
+          <CategoryPicker
+            value={category}
+            onChange={(v) => setCategory(v as any)}
+            extraNames={allCategories}
+          />
           <Select value={mode} onValueChange={(v) => setMode(v as any)}>
             <SelectTrigger><SelectValue placeholder="Mode" /></SelectTrigger>
             <SelectContent>
