@@ -91,7 +91,7 @@ const ProviderDashboard = () => {
           <Link to="/pricing">
             <Badge className={isGrowth ? "bg-primary text-primary-foreground gap-1" : "bg-muted text-foreground gap-1"}>
               <Sparkles className="h-3 w-3" />
-              {isGrowth ? "Growth" : "Starter — Upgrade"}
+              Current Plan · {isGrowth ? "Growth" : "Starter"}
             </Badge>
           </Link>
         </div>
