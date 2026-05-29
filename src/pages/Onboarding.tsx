@@ -94,9 +94,7 @@ const Onboarding = () => {
 
       <main className="flex-1 container py-8 flex flex-col items-center justify-center text-center max-w-3xl mx-auto w-full">
         <div className="flex flex-col items-center gap-2 mb-6 animate-scale-in">
-          <span className="h-12 w-12 rounded-xl bg-gradient-primary grid place-items-center text-primary-foreground shadow-elegant animate-float">
-            <Sparkles className="h-5 w-5" />
-          </span>
+          <img src="/logo.png" alt="Scholarr" className="h-12 w-auto animate-float" />
           <span className="font-bold text-lg">Scholarr</span>
         </div>
 
