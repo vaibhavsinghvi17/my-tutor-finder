@@ -199,7 +199,7 @@ function IconTray({ isProvider, pathname }: { isProvider: boolean; pathname: str
     ? [
         { to: "/provider", icon: LayoutDashboard, label: "Dashboard", active: pathname === "/provider" },
         { to: "/profile/provider", icon: UserCircle2, label: "Profile", active: pathname === "/profile/provider" },
-        { to: "/provider/listing/new", icon: BookOpen, label: "Classes", active: pathname.startsWith("/provider/listing") },
+        { to: "/provider/listing/new", icon: BookOpen, label: "Create Class", active: pathname.startsWith("/provider/listing") },
       ]
     : [
         { to: "/dashboard", icon: LayoutDashboard, label: "Dashboard", active: pathname === "/dashboard" },
