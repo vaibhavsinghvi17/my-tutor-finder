@@ -218,7 +218,7 @@ function IconTray({ isProvider, pathname }: { isProvider: boolean; pathname: str
             <ArrowLeft className="h-3.5 w-3.5" /> Back
           </button>
         )}
-        <div className="flex items-center gap-1 ml-auto">
+        <div className="flex items-center gap-1 mx-auto">
           {items.map((it) => (
             <Link
               key={it.to}
