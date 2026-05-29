@@ -98,6 +98,23 @@ export default function Pricing() {
             onCta={onActivate}
             highlight
             note={billing === "yearly" ? `₹${YEARLY_PRICE.toLocaleString("en-IN")} billed once a year · save ~₹${(MONTHLY_PRICE * 12 - YEARLY_PRICE).toLocaleString("en-IN")}` : undefined}
+            billingToggle={
+              <div className="inline-flex items-center rounded-full border bg-muted/40 p-1 text-xs w-full">
+                <button
+                  onClick={() => setBilling("monthly")}
+                  className={`flex-1 px-3 py-1.5 rounded-full transition ${billing === "monthly" ? "bg-background shadow-sm font-medium" : "text-muted-foreground"}`}
+                >
+                  Monthly
+                </button>
+                <button
+                  onClick={() => setBilling("yearly")}
+                  className={`flex-1 px-3 py-1.5 rounded-full transition flex items-center justify-center gap-1.5 ${billing === "yearly" ? "bg-background shadow-sm font-medium" : "text-muted-foreground"}`}
+                >
+                  Yearly
+                  <Badge className="bg-primary text-primary-foreground text-[9px] h-4 px-1.5">Save 10%</Badge>
+                </button>
+              </div>
+            }
           />
         </div>
 
