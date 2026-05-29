@@ -245,7 +245,7 @@ const ProviderProfilePage = () => {
               )}
             >
               <Sparkles className="h-3 w-3" />
-              {isGrowth ? "Growth plan" : "Starter plan"}
+              Current Plan · {isGrowth ? "Growth" : "Starter"}
             </Link>
           </div>
           <LanguageSwitcher minimal />
