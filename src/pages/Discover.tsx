@@ -497,4 +497,92 @@ function ProfileSelector() {
   );
 }
 
+function CategoryPicker({
+  value,
+  onChange,
+  extraNames,
+}: {
+  value: string;
+  onChange: (v: string) => void;
+  extraNames: string[];
+}) {
+  const [open, setOpen] = useState(false);
+  // Build a set of names already in the catalog (lowercased) for dedupe
+  const catalogNames = new Set<string>();
+  INTEREST_CATALOG.forEach((g) => {
+    catalogNames.add(g.name.toLowerCase());
+    g.subcategories.forEach((s) => catalogNames.add(s.toLowerCase()));
+  });
+  const extras = extraNames.filter((n) => !catalogNames.has(n.toLowerCase()));
+  const label = value === "all" ? "All categories" : value;
+
+  return (
+    <Popover open={open} onOpenChange={setOpen}>
+      <PopoverTrigger asChild>
+        <Button
+          variant="outline"
+          role="combobox"
+          className="justify-between font-normal"
+        >
+          <span className="truncate">{label}</span>
+          <ChevronDown className="h-4 w-4 opacity-50 shrink-0" />
+        </Button>
+      </PopoverTrigger>
+      <PopoverContent className="p-0 w-[min(92vw,420px)]" align="start">
+        <Command>
+          <CommandInput placeholder="Search categories or subcategories..." />
+          <CommandList className="max-h-[60vh]">
+            <CommandEmpty>No matches found.</CommandEmpty>
+            <CommandGroup heading="Quick">
+              <CommandItem
+                value="all categories"
+                onSelect={() => { onChange("all"); setOpen(false); }}
+              >
+                <Check className={cn("mr-2 h-4 w-4", value === "all" ? "opacity-100" : "opacity-0")} />
+                All categories
+              </CommandItem>
+            </CommandGroup>
+            {INTEREST_CATALOG.map((group) => (
+              <CommandGroup key={group.name} heading={group.name}>
+                <CommandItem
+                  value={`${group.name} all`}
+                  onSelect={() => { onChange(group.name); setOpen(false); }}
+                >
+                  <Check className={cn("mr-2 h-4 w-4", value === group.name ? "opacity-100" : "opacity-0")} />
+                  <span className="font-medium">{group.name}</span>
+                  <span className="ml-2 text-xs text-muted-foreground">(all)</span>
+                </CommandItem>
+                {group.subcategories.map((sub) => (
+                  <CommandItem
+                    key={`${group.name}-${sub}`}
+                    value={`${sub} ${group.name}`}
+                    onSelect={() => { onChange(sub); setOpen(false); }}
+                  >
+                    <Check className={cn("mr-2 h-4 w-4", value === sub ? "opacity-100" : "opacity-0")} />
+                    <span>{sub}</span>
+                  </CommandItem>
+                ))}
+              </CommandGroup>
+            ))}
+            {extras.length > 0 && (
+              <CommandGroup heading="Other">
+                {extras.map((name) => (
+                  <CommandItem
+                    key={name}
+                    value={name}
+                    onSelect={() => { onChange(name); setOpen(false); }}
+                  >
+                    <Check className={cn("mr-2 h-4 w-4", value === name ? "opacity-100" : "opacity-0")} />
+                    {name}
+                  </CommandItem>
+                ))}
+              </CommandGroup>
+            )}
+          </CommandList>
+        </Command>
+      </PopoverContent>
+    </Popover>
+  );
+}
+
 export default Discover;
