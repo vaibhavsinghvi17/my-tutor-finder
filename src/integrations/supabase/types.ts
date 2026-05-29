@@ -200,6 +200,8 @@ export type Database = {
       profiles: {
         Row: {
           avatar_url: string | null
+          banned_at: string | null
+          banned_reason: string | null
           city: string | null
           created_at: string
           display_name: string | null
@@ -213,6 +215,8 @@ export type Database = {
         }
         Insert: {
           avatar_url?: string | null
+          banned_at?: string | null
+          banned_reason?: string | null
           city?: string | null
           created_at?: string
           display_name?: string | null
@@ -226,6 +230,8 @@ export type Database = {
         }
         Update: {
           avatar_url?: string | null
+          banned_at?: string | null
+          banned_reason?: string | null
           city?: string | null
           created_at?: string
           display_name?: string | null
@@ -373,6 +379,51 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      admin_broadcast: {
+        Args: {
+          _body: string
+          _link?: string
+          _title: string
+          _user_ids?: string[]
+        }
+        Returns: number
+      }
+      admin_search_users: {
+        Args: { _limit?: number; _q?: string }
+        Returns: {
+          banned_at: string
+          city: string
+          created_at: string
+          display_name: string
+          is_admin: boolean
+          subscription_expires_at: string
+          subscription_tier: string
+          user_id: string
+        }[]
+      }
+      admin_set_admin_role: {
+        Args: { _is_admin: boolean; _user_id: string }
+        Returns: undefined
+      }
+      admin_set_ban: {
+        Args: { _banned: boolean; _reason?: string; _user_id: string }
+        Returns: undefined
+      }
+      admin_set_subscription: {
+        Args: { _expires_at: string; _tier: string; _user_id: string }
+        Returns: undefined
+      }
+      admin_stats: {
+        Args: never
+        Returns: {
+          banned_users: number
+          growth_users: number
+          open_reports: number
+          total_messages: number
+          total_saves: number
+          total_users: number
+        }[]
+      }
       get_active_growth_providers: {
         Args: { _ids: string[] }
         Returns: {
