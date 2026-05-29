@@ -32,23 +32,44 @@ function syncAuthToProfile(user: User | null) {
   }
 }
 
+async function checkBanned(userId: string): Promise<{ banned: boolean; reason: string | null }> {
+  const { data } = await supabase
+    .from("profiles")
+    .select("banned_at, banned_reason")
+    .eq("user_id", userId)
+    .maybeSingle();
+  return { banned: !!data?.banned_at, reason: data?.banned_reason ?? null };
+}
+
 export function useAuth() {
   const [session, setSession] = useState<Session | null>(null);
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const { data: sub } = supabase.auth.onAuthStateChange((_event, s) => {
+    async function handle(s: Session | null) {
+      if (s?.user) {
+        const { banned, reason } = await checkBanned(s.user.id);
+        if (banned) {
+          await supabase.auth.signOut();
+          const { toast } = await import("sonner");
+          toast.error(reason ? `Account banned: ${reason}` : "This account has been banned.");
+          setSession(null);
+          setUser(null);
+          store.setAuthUser(null);
+          return;
+        }
+      }
       setSession(s);
       setUser(s?.user ?? null);
       store.setAuthUser(s?.user?.id ?? null);
       syncAuthToProfile(s?.user ?? null);
+    }
+    const { data: sub } = supabase.auth.onAuthStateChange((_event, s) => {
+      void handle(s);
     });
-    supabase.auth.getSession().then(({ data }) => {
-      setSession(data.session);
-      setUser(data.session?.user ?? null);
-      store.setAuthUser(data.session?.user?.id ?? null);
-      syncAuthToProfile(data.session?.user ?? null);
+    supabase.auth.getSession().then(async ({ data }) => {
+      await handle(data.session);
       setLoading(false);
     });
     return () => sub.subscription.unsubscribe();

@@ -10,7 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
-import { Shield, Users, Rocket, Tag, Sparkles, Search, Gift, XCircle, Trash2, CheckCircle2, Flag, Bell, Loader2, Send } from "lucide-react";
+import { Shield, Users, Rocket, Tag, Sparkles, Search, Gift, XCircle, Trash2, CheckCircle2, Flag, Bell, Loader2, Send, Ban } from "lucide-react";
 import { NotificationsAdminTab } from "@/components/NotificationsAdminTab";
 import { supabase } from "@/integrations/supabase/client";
 import { useIsAdmin } from "@/lib/useIsAdmin";
@@ -24,6 +24,8 @@ interface ProfileRow {
   subscription_expires_at: string | null;
   created_at: string;
   avatar_url: string | null;
+  banned_at: string | null;
+  banned_reason: string | null;
 }
 interface BoostRow {
   id: string;
@@ -159,7 +161,7 @@ function UsersTab() {
     setLoading(true);
     const { data } = await supabase
       .from("profiles")
-      .select("user_id, display_name, subscription_tier, subscription_expires_at, created_at, avatar_url")
+      .select("user_id, display_name, subscription_tier, subscription_expires_at, created_at, avatar_url, banned_at, banned_reason")
       .order("created_at", { ascending: false })
       .limit(500);
     setRows((data as ProfileRow[]) ?? []);
@@ -191,6 +193,7 @@ function UsersTab() {
                 <div className="font-medium text-sm truncate">{r.display_name || "(no name)"}</div>
                 <div className="text-[11px] text-muted-foreground truncate">{r.user_id}</div>
               </div>
+              {r.banned_at && <Badge variant="destructive" className="text-[10px] gap-1"><Ban className="h-3 w-3" />Banned</Badge>}
               <Badge variant={r.subscription_tier === "growth" ? "default" : "outline"} className="text-[10px]">
                 {r.subscription_tier}
               </Badge>
@@ -274,6 +277,22 @@ function UserEditDialog({ row, onClose, onSaved }: { row: ProfileRow; onClose: (
     }
   }
 
+  const [banned, setBanned] = useState(!!row.banned_at);
+  const [banReason, setBanReason] = useState(row.banned_reason ?? "");
+  async function toggleBan() {
+    const nextBanned = !banned;
+    const reason = nextBanned ? (banReason.trim() || null) : null;
+    const { error } = await supabase.rpc("admin_set_ban", {
+      _user_id: row.user_id,
+      _banned: nextBanned,
+      _reason: reason,
+    });
+    if (error) return toast.error(error.message);
+    setBanned(nextBanned);
+    toast.success(nextBanned ? "User banned" : "User unbanned");
+    onSaved();
+  }
+
   return (
     <Dialog open onOpenChange={onClose}>
       <DialogContent className="max-w-md">
@@ -323,6 +342,26 @@ function UserEditDialog({ row, onClose, onSaved }: { row: ProfileRow; onClose: (
             <Button size="sm" variant={isAdminUser ? "outline" : "default"} onClick={toggleAdmin} disabled={isAdminUser === null}>
               {isAdminUser ? "Remove admin" : "Make admin"}
             </Button>
+          </div>
+
+          <div className={`rounded-lg border p-3 space-y-2 ${banned ? "border-destructive/40 bg-destructive/5" : "bg-muted/30"}`}>
+            <div className="flex items-center justify-between gap-2">
+              <div>
+                <div className="text-xs font-semibold flex items-center gap-1.5"><Ban className="h-3.5 w-3.5" />Ban status</div>
+                <div className="text-[11px] text-muted-foreground">{banned ? "User is banned and cannot log in" : "User is active"}</div>
+              </div>
+              <Button size="sm" variant={banned ? "outline" : "destructive"} onClick={toggleBan}>
+                {banned ? "Unban user" : "Ban user"}
+              </Button>
+            </div>
+            {!banned && (
+              <Input
+                value={banReason}
+                onChange={(e) => setBanReason(e.target.value)}
+                placeholder="Reason (optional, shown to user)"
+                className="text-xs h-8"
+              />
+            )}
           </div>
         </div>
         <DialogFooter>
