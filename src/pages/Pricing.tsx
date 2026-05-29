@@ -157,11 +157,11 @@ export default function Pricing() {
 }
 
 function PlanCard({
-  name, price, priceSuffix, tagline, features, cta, ctaDisabled, onCta, highlight, note,
+  name, price, priceSuffix, tagline, features, cta, ctaDisabled, onCta, highlight, note, billingToggle,
 }: {
   name: string; price: string; priceSuffix?: string; tagline: string;
   features: string[]; cta: string; ctaDisabled?: boolean; onCta: () => void; highlight: boolean;
-  note?: string;
+  note?: string; billingToggle?: React.ReactNode;
 }) {
   return (
     <Card className={`p-6 space-y-4 ${highlight ? "border-primary border-2 shadow-elegant" : ""}`}>
@@ -172,6 +172,7 @@ function PlanCard({
         </div>
         <p className="text-xs text-muted-foreground">{tagline}</p>
       </div>
+      {billingToggle}
       <div className="flex items-baseline gap-1">
         <span className="text-3xl font-bold">{price}</span>
         {priceSuffix && <span className="text-sm text-muted-foreground">{priceSuffix}</span>}
