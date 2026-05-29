@@ -161,7 +161,7 @@ function UsersTab() {
     setLoading(true);
     const { data } = await supabase
       .from("profiles")
-      .select("user_id, display_name, subscription_tier, subscription_expires_at, created_at, avatar_url")
+      .select("user_id, display_name, subscription_tier, subscription_expires_at, created_at, avatar_url, banned_at, banned_reason")
       .order("created_at", { ascending: false })
       .limit(500);
     setRows((data as ProfileRow[]) ?? []);
