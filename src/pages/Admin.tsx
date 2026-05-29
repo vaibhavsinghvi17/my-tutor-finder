@@ -277,6 +277,22 @@ function UserEditDialog({ row, onClose, onSaved }: { row: ProfileRow; onClose: (
     }
   }
 
+  const [banned, setBanned] = useState(!!row.banned_at);
+  const [banReason, setBanReason] = useState(row.banned_reason ?? "");
+  async function toggleBan() {
+    const nextBanned = !banned;
+    const reason = nextBanned ? (banReason.trim() || null) : null;
+    const { error } = await supabase.rpc("admin_set_ban", {
+      _user_id: row.user_id,
+      _banned: nextBanned,
+      _reason: reason,
+    });
+    if (error) return toast.error(error.message);
+    setBanned(nextBanned);
+    toast.success(nextBanned ? "User banned" : "User unbanned");
+    onSaved();
+  }
+
   return (
     <Dialog open onOpenChange={onClose}>
       <DialogContent className="max-w-md">
