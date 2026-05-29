@@ -193,6 +193,7 @@ function UsersTab() {
                 <div className="font-medium text-sm truncate">{r.display_name || "(no name)"}</div>
                 <div className="text-[11px] text-muted-foreground truncate">{r.user_id}</div>
               </div>
+              {r.banned_at && <Badge variant="destructive" className="text-[10px] gap-1"><Ban className="h-3 w-3" />Banned</Badge>}
               <Badge variant={r.subscription_tier === "growth" ? "default" : "outline"} className="text-[10px]">
                 {r.subscription_tier}
               </Badge>
