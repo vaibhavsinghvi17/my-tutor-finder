@@ -215,12 +215,6 @@ const Discover = () => {
     <div className="min-h-screen">
       <TopBar />
       <main className="container py-6 space-y-6">
-        <button
-          onClick={() => navigate(-1)}
-          className="text-xs text-muted-foreground flex items-center gap-1 hover:text-foreground"
-        >
-          <ArrowLeft className="h-3.5 w-3.5" /> Back
-        </button>
         <section className="space-y-3">
           <div className="flex items-end justify-between gap-3 flex-wrap">
             <div>
