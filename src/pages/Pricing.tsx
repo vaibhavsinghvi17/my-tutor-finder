@@ -73,23 +73,8 @@ export default function Pricing() {
           <p className="text-muted-foreground">Learners are always free. One-time payment — no auto-debit. Pay with UPI or card.</p>
         </div>
 
-        <div className="flex justify-center">
-          <div className="inline-flex items-center rounded-full border bg-muted/40 p-1 text-sm">
-            <button
-              onClick={() => setBilling("monthly")}
-              className={`px-4 py-1.5 rounded-full transition ${billing === "monthly" ? "bg-background shadow-sm font-medium" : "text-muted-foreground"}`}
-            >
-              Monthly
-            </button>
-            <button
-              onClick={() => setBilling("yearly")}
-              className={`px-4 py-1.5 rounded-full transition flex items-center gap-1.5 ${billing === "yearly" ? "bg-background shadow-sm font-medium" : "text-muted-foreground"}`}
-            >
-              Yearly
-              <Badge className="bg-primary text-primary-foreground text-[10px] h-4 px-1.5">Save 10%</Badge>
-            </button>
-          </div>
-        </div>
+
+
 
         <div className="grid gap-4 sm:grid-cols-2">
           <PlanCard
