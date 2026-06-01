@@ -103,9 +103,38 @@ Deno.serve(async (req) => {
       }
       case "subscription.cancelled":
       case "subscription.completed":
-      case "subscription.halted":
       case "subscription.expired": {
-        if (sub) await applySubscription(sub);
+        if (sub) {
+          await applySubscription(sub);
+          const notes = (sub.notes ?? {}) as Record<string, string>;
+          if (notes.user_id) {
+            await admin.from("notifications").insert({
+              user_id: notes.user_id,
+              title: type === "subscription.completed" ? "Subscription completed" : "Subscription ended",
+              body: type === "subscription.completed"
+                ? "Your Growth plan has completed all billing cycles. You're back on Starter — renew anytime from Pricing."
+                : "Your Growth subscription has ended. You're back on Starter — you can resubscribe from Pricing.",
+              kind: "billing",
+              link: "/pricing",
+            });
+          }
+        }
+        break;
+      }
+      case "subscription.halted": {
+        if (sub) {
+          await applySubscription(sub);
+          const notes = (sub.notes ?? {}) as Record<string, string>;
+          if (notes.user_id) {
+            await admin.from("notifications").insert({
+              user_id: notes.user_id,
+              title: "Payment failed — subscription halted",
+              body: "We couldn't charge your card/UPI for your Growth plan. Please update your payment method in Pricing to keep your benefits.",
+              kind: "billing",
+              link: "/pricing",
+            });
+          }
+        }
         break;
       }
       case "subscription.paused": {
@@ -117,11 +146,30 @@ Deno.serve(async (req) => {
         }
         break;
       }
+      case "payment.failed": {
+        // Notify the user if we can attribute it to a subscription
+        const subId = payment?.subscription_id as string | undefined;
+        if (subId) {
+          const { data: profile } = await admin
+            .from("profiles")
+            .select("user_id")
+            .eq("razorpay_subscription_id", subId)
+            .maybeSingle();
+          if (profile?.user_id) {
+            await admin.from("notifications").insert({
+              user_id: profile.user_id,
+              title: "Payment attempt failed",
+              body: "Razorpay couldn't complete a charge for your Growth plan. We'll retry — if it keeps failing your plan may be halted.",
+              kind: "billing",
+              link: "/pricing",
+            });
+          }
+        }
+        break;
+      }
       case "payment.captured":
-      case "payment.failed":
-        // Subscription flows are handled by subscription.* events.
+        // Subscription captures are handled by subscription.charged.
         // Standalone order payments are activated synchronously in razorpay-verify.
-        // Nothing to do here for now.
         break;
     }
   } catch (err) {
