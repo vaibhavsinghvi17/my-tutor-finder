@@ -4,10 +4,11 @@ import { TopBar } from "@/components/TopBar";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Check, Sparkles, ArrowLeft, Tag } from "lucide-react";
+import { Check, Sparkles, ArrowLeft } from "lucide-react";
 import { useSubscription } from "@/lib/useSubscription";
 import { useAuth } from "@/lib/useAuth";
-import { useStripeCheckout } from "@/hooks/useStripeCheckout";
+import { supabase } from "@/integrations/supabase/client";
+import { openRazorpay } from "@/lib/razorpay";
 import { toast } from "sonner";
 
 const STARTER = [
@@ -28,32 +29,55 @@ const GROWTH = [
   "Boost add-on: ₹500 for 7 days — ranks above Starter boosts",
 ];
 
-const MONTHLY_PRICE = 399;
-const YEARLY_PRICE = 4309; // ~10% off vs ₹399 × 12 = ₹4788
+const MONTHLY_PRICE = 359;
+const YEARLY_PRICE = 3858;
 
 export default function Pricing() {
   const navigate = useNavigate();
   const { user, loading: authLoading } = useAuth();
-  const { tier, isGrowth, downgrade, loading } = useSubscription();
-  const { openCheckout, checkoutElement } = useStripeCheckout();
+  const { tier, isGrowth, downgrade, refresh, loading } = useSubscription();
   const [billing, setBilling] = useState<"monthly" | "yearly">("yearly");
+  const [activating, setActivating] = useState(false);
 
   async function onActivate() {
-    if (authLoading) {
-      toast.info("Just a moment…");
-      return;
-    }
+    if (authLoading) { toast.info("Just a moment…"); return; }
     if (!user) {
       toast.info("Please sign in to activate Growth");
       navigate("/auth", { state: { returnTo: "/pricing" } });
       return;
     }
-    openCheckout({
-      priceId: billing === "yearly" ? "growth_yearly_oneoff" : "growth_monthly_oneoff",
-      purpose: "growth",
-      durationDays: billing === "yearly" ? 365 : 30,
-      returnUrl: `${window.location.origin}/checkout/return?next=/provider&session_id={CHECKOUT_SESSION_ID}`,
-    });
+    setActivating(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("razorpay-create-subscription", {
+        body: { billing },
+      });
+      if (error || !data?.subscription_id) {
+        throw new Error(error?.message || data?.error || "Failed to start checkout");
+      }
+      await openRazorpay({
+        key: data.key_id,
+        subscription_id: data.subscription_id,
+        name: "Scholarr",
+        description: billing === "yearly" ? "Growth — Yearly" : "Growth — Monthly",
+        prefill: { email: data.email },
+        handler: async (resp) => {
+          try {
+            const { data: v, error: vErr } = await supabase.functions.invoke("razorpay-verify", { body: resp });
+            if (vErr || !v?.ok) throw new Error(vErr?.message || v?.error || "Verification failed");
+            toast.success("Growth plan activated!");
+            // Webhook will finalise tier; small delay then refresh
+            setTimeout(() => refresh(), 2500);
+          } catch (e: any) {
+            toast.error(e.message || "Verification failed");
+          }
+        },
+        modal: { ondismiss: () => setActivating(false) },
+      });
+    } catch (e: any) {
+      toast.error(e.message || "Could not start checkout");
+    } finally {
+      setActivating(false);
+    }
   }
 
   const growthPrice = billing === "yearly" ? `₹${Math.round(YEARLY_PRICE / 12)}` : `₹${MONTHLY_PRICE}`;
@@ -62,7 +86,6 @@ export default function Pricing() {
   return (
     <div className="min-h-screen">
       <TopBar />
-      {checkoutElement}
       <main className="container py-6 space-y-6 max-w-4xl">
         <button onClick={() => navigate(-1)} className="text-xs text-muted-foreground flex items-center gap-1 hover:text-foreground">
           <ArrowLeft className="h-3.5 w-3.5" /> Back
@@ -70,11 +93,8 @@ export default function Pricing() {
 
         <div className="space-y-2 text-center">
           <h1 className="text-3xl sm:text-4xl font-bold">Tutor plans</h1>
-          <p className="text-muted-foreground">Learners are always free. One-time payment — no auto-debit. Pay with UPI or card.</p>
+          <p className="text-muted-foreground">Learners are always free. Pay securely with UPI, card, or netbanking via Razorpay.</p>
         </div>
-
-
-
 
         <div className="grid gap-4 sm:grid-cols-2">
           <PlanCard
@@ -93,8 +113,8 @@ export default function Pricing() {
             priceSuffix={growthSuffix}
             tagline="For tutors growing their classes"
             features={GROWTH}
-            cta={isGrowth ? "Active ✓" : authLoading ? "Loading…" : billing === "yearly" ? "Activate Growth – Yearly" : "Activate Growth – Monthly"}
-            ctaDisabled={isGrowth || loading || authLoading}
+            cta={isGrowth ? "Active ✓" : activating ? "Opening…" : authLoading ? "Loading…" : billing === "yearly" ? "Activate Growth – Yearly" : "Activate Growth – Monthly"}
+            ctaDisabled={isGrowth || loading || authLoading || activating}
             onCta={onActivate}
             highlight
             note={billing === "yearly" ? `₹${YEARLY_PRICE.toLocaleString("en-IN")} billed once a year · save ~₹${(MONTHLY_PRICE * 12 - YEARLY_PRICE).toLocaleString("en-IN")}` : undefined}
@@ -117,14 +137,6 @@ export default function Pricing() {
             }
           />
         </div>
-
-        <Card className="p-4 flex items-start gap-3 bg-muted/30 border-dashed">
-          <Tag className="h-4 w-4 text-primary mt-0.5 shrink-0" />
-          <div className="text-sm">
-            <div className="font-medium">Got a coupon code?</div>
-            <p className="text-xs text-muted-foreground">Enter it on the checkout screen in the “Add promotion code” field for an additional discount.</p>
-          </div>
-        </Card>
 
         <Card className="p-5 bg-gradient-hero border-primary/20 space-y-2">
           <div className="flex items-center gap-2 flex-wrap">

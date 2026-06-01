@@ -10,7 +10,8 @@ import { toast } from "sonner";
 import { useActiveBoosts, isBoosted } from "@/lib/useBoosts";
 import { useSubscription } from "@/lib/useSubscription";
 import { useAuth } from "@/lib/useAuth";
-import { useStripeCheckout } from "@/hooks/useStripeCheckout";
+import { supabase } from "@/integrations/supabase/client";
+import { openRazorpay } from "@/lib/razorpay";
 import { Listing } from "@/lib/types";
 import { LocationTargeter, TargetEntry, targetsToString } from "@/components/LocationTargeter";
 
@@ -23,9 +24,9 @@ const ANY = "__any__";
 export function BoostButton({ listing }: Props) {
   const { user } = useAuth();
   const { isGrowth } = useSubscription();
-  const { boosts } = useActiveBoosts();
-  const { openCheckout, checkoutElement } = useStripeCheckout();
+  const { boosts, refresh: refreshBoosts } = useActiveBoosts();
   const [open, setOpen] = useState(false);
+  const [paying, setPaying] = useState(false);
   const [targets, setTargets] = useState<TargetEntry[]>(
     listing.city ? [{ kind: "city", value: listing.city }] : []
   );
@@ -40,23 +41,54 @@ export function BoostButton({ listing }: Props) {
   const price = 500;
   const durationLabel = isGrowth ? "7 days" : "3 days";
 
-  function handleBoost() {
+  async function handleBoost() {
     if (!user) {
       toast.info("Please sign in to boost a class");
       return;
     }
     setOpen(false);
-    openCheckout({
-      priceId,
-      purpose: "boost",
-      listingId: listing.id,
-      durationDays,
-      city: targetsToString(targets) || undefined,
-      category: listing.category || undefined,
-      ageGroup: `${Math.min(minAge, maxAge)}-${Math.max(minAge, maxAge)}`,
-      gender: gender === ANY ? undefined : gender,
-      returnUrl: `${window.location.origin}/checkout/return?next=/provider&session_id={CHECKOUT_SESSION_ID}`,
-    });
+    setPaying(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("razorpay-create-order", {
+        body: {
+          priceId,
+          purpose: "boost",
+          listingId: listing.id,
+          durationDays,
+          city: targetsToString(targets) || undefined,
+          category: listing.category || undefined,
+          ageGroup: `${Math.min(minAge, maxAge)}-${Math.max(minAge, maxAge)}`,
+          gender: gender === ANY ? undefined : gender,
+        },
+      });
+      if (error || !data?.order_id) {
+        throw new Error(error?.message || data?.error || "Could not start checkout");
+      }
+      await openRazorpay({
+        key: data.key_id,
+        order_id: data.order_id,
+        amount: data.amount,
+        currency: data.currency,
+        name: "Scholarr",
+        description: `Boost · ${listing.title} · ${durationLabel}`,
+        prefill: { email: data.email },
+        handler: async (resp) => {
+          try {
+            const { data: v, error: vErr } = await supabase.functions.invoke("razorpay-verify", { body: resp });
+            if (vErr || !v?.ok) throw new Error(vErr?.message || v?.error || "Verification failed");
+            toast.success("Class boosted!");
+            await refreshBoosts?.();
+          } catch (e: any) {
+            toast.error(e.message || "Verification failed");
+          }
+        },
+        modal: { ondismiss: () => setPaying(false) },
+      });
+    } catch (e: any) {
+      toast.error(e.message || "Could not start checkout");
+    } finally {
+      setPaying(false);
+    }
   }
 
   if (boosted) {
@@ -199,13 +231,12 @@ export function BoostButton({ listing }: Props) {
 
           <DialogFooter>
             <Button variant="outline" onClick={() => setOpen(false)}>Cancel</Button>
-            <Button onClick={handleBoost} className="gap-1.5">
-              <Rocket className="h-4 w-4" /> Pay ₹{price.toLocaleString("en-IN")} & Boost
+            <Button onClick={handleBoost} disabled={paying} className="gap-1.5">
+              <Rocket className="h-4 w-4" /> {paying ? "Opening…" : `Pay ₹${price.toLocaleString("en-IN")} & Boost`}
             </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
-      {checkoutElement}
     </>
   );
 }
