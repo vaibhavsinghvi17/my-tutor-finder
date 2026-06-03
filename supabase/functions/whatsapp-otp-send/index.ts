@@ -34,6 +34,12 @@ Deno.serve(async (req) => {
       return new Response(JSON.stringify({ error: "invalid phone" }), { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
 
+    // Demo/review account for app store submissions — skip sending an actual OTP.
+    // The verify function accepts a fixed code for this number.
+    if (normalized.endsWith("9828180043")) {
+      return new Response(JSON.stringify({ ok: true, demo: true }), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
+    }
+
     // Rate limit: max 3 sends per phone per 10 minutes
     const tenMinAgo = new Date(Date.now() - 10 * 60 * 1000).toISOString();
     const { count } = await admin
