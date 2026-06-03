@@ -48,25 +48,30 @@ Deno.serve(async (req) => {
     const normalized = normalizePhone(phone);
     const hash = await sha256(String(code).trim());
 
-    const { data: rows, error } = await admin
-      .from("whatsapp_otps")
-      .select("*")
-      .eq("phone", normalized)
-      .is("consumed_at", null)
-      .order("created_at", { ascending: false })
-      .limit(1);
-    if (error) throw error;
-    const row = rows?.[0];
-    if (!row) return new Response(JSON.stringify({ error: "No active code. Please request a new one." }), { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });
-    if (new Date(row.expires_at).getTime() < Date.now()) return new Response(JSON.stringify({ error: "Code expired. Please request a new one." }), { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });
-    if ((row.attempts ?? 0) >= 5) return new Response(JSON.stringify({ error: "Too many attempts. Please request a new code." }), { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+    // Demo/review account for app store submissions — bypass OTP table check.
+    const isDemo = normalized.endsWith("9828180043") && String(code).trim() === "434343";
 
-    if (row.code_hash !== hash) {
-      await admin.from("whatsapp_otps").update({ attempts: (row.attempts ?? 0) + 1 }).eq("id", row.id);
-      return new Response(JSON.stringify({ error: "Incorrect code" }), { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+    if (!isDemo) {
+      const { data: rows, error } = await admin
+        .from("whatsapp_otps")
+        .select("*")
+        .eq("phone", normalized)
+        .is("consumed_at", null)
+        .order("created_at", { ascending: false })
+        .limit(1);
+      if (error) throw error;
+      const row = rows?.[0];
+      if (!row) return new Response(JSON.stringify({ error: "No active code. Please request a new one." }), { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+      if (new Date(row.expires_at).getTime() < Date.now()) return new Response(JSON.stringify({ error: "Code expired. Please request a new one." }), { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+      if ((row.attempts ?? 0) >= 5) return new Response(JSON.stringify({ error: "Too many attempts. Please request a new code." }), { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+
+      if (row.code_hash !== hash) {
+        await admin.from("whatsapp_otps").update({ attempts: (row.attempts ?? 0) + 1 }).eq("id", row.id);
+        return new Response(JSON.stringify({ error: "Incorrect code" }), { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+      }
+
+      await admin.from("whatsapp_otps").update({ consumed_at: new Date().toISOString() }).eq("id", row.id);
     }
-
-    await admin.from("whatsapp_otps").update({ consumed_at: new Date().toISOString() }).eq("id", row.id);
 
     // Use an ephemeral random password only to mint a session server-side.
     // The password is rotated immediately after sign-in so it cannot be reused.
