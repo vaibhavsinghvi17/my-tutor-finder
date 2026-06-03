@@ -23,6 +23,7 @@ import InterestedLearners from "./pages/InterestedLearners";
 import Admin from "./pages/Admin";
 import Terms from "./pages/Terms";
 import Privacy from "./pages/Privacy";
+import DeleteAccount from "./pages/DeleteAccount";
 import NotFound from "./pages/NotFound.tsx";
 import ScrollToTop from "./components/ScrollToTop";
 import { SiteFooter } from "./components/SiteFooter";
